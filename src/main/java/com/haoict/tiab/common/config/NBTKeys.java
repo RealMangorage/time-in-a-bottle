@@ -1,4 +1,4 @@
-package com.haoict.tiab.config;
+package com.haoict.tiab.common.config;
 
 public class NBTKeys {
     // for time in a bottle item

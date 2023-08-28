@@ -1,4 +1,4 @@
-package com.haoict.tiab.utils.lang;
+package com.haoict.tiab.common.utils.lang;
 
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;

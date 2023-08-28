@@ -1,4 +1,4 @@
-package com.haoict.tiab.utils;
+package com.haoict.tiab.common.utils;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;

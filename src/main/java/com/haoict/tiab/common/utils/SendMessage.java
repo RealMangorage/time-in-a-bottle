@@ -1,4 +1,4 @@
-package com.haoict.tiab.utils;
+package com.haoict.tiab.common.utils;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;

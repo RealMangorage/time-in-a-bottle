@@ -1,4 +1,4 @@
-package com.haoict.tiab.utils.lang;
+package com.haoict.tiab.common.utils.lang;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Style;

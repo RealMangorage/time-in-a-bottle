@@ -1,10 +1,10 @@
-package com.haoict.tiab.items;
+package com.haoict.tiab.common.items;
 
-import com.haoict.tiab.config.Constants;
-import com.haoict.tiab.config.NBTKeys;
-import com.haoict.tiab.config.TiabConfig;
-import com.haoict.tiab.utils.lang.Styles;
-import com.haoict.tiab.utils.lang.Translation;
+import com.haoict.tiab.common.config.Constants;
+import com.haoict.tiab.common.config.NBTKeys;
+import com.haoict.tiab.common.config.TiabConfig;
+import com.haoict.tiab.common.utils.lang.Styles;
+import com.haoict.tiab.common.utils.lang.Translation;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -88,7 +88,7 @@ public class TimeInABottleItem extends AbstractTiabItem {
     }
 
     @Override
-    public void setStoredEnergy(ItemStack stack, int energy) {
+    protected void setStoredEnergy(ItemStack stack, int energy) {
         int newStoredTime = Math.min(energy, TiabConfig.COMMON.maxStoredTime.get());
         stack.getOrCreateTag().putInt(NBTKeys.STORED_TIME, newStoredTime);
     }
@@ -102,7 +102,7 @@ public class TimeInABottleItem extends AbstractTiabItem {
         return stack.getOrCreateTag().getInt(NBTKeys.TOTAL_ACCUMULATED_TIME);
     }
 
-    public void setTotalAccumulatedTime(ItemStack stack, int value) {
+    protected void setTotalAccumulatedTime(ItemStack stack, int value) {
         int newValue = Math.min(value, TiabConfig.COMMON.maxStoredTime.get());
         stack.getOrCreateTag().putInt(NBTKeys.TOTAL_ACCUMULATED_TIME, newValue);
     }

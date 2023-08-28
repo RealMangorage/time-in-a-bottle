@@ -1,9 +1,12 @@
 package com.haoict.tiab.commands;
 
-import com.haoict.tiab.config.Constants;
-import com.haoict.tiab.config.TiabConfig;
-import com.haoict.tiab.items.TimeInABottleItem;
-import com.haoict.tiab.utils.SendMessage;
+import com.haoict.tiab.Tiab;
+import com.haoict.tiab.common.config.Constants;
+import com.haoict.tiab.common.config.TiabConfig;
+import com.haoict.tiab.common.items.TimeInABottleItem;
+import com.haoict.tiab.common.utils.SendMessage;
+import com.magorage.tiab.api.BlankTimeInABottleAPI;
+import com.magorage.tiab.api.ITimeInABottleAPI;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -15,10 +18,21 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
+import static com.haoict.tiab.Tiab.*;
+
 public class TiabCommands {
     private static final String ADD_TIME_COMMAND = "addTime";
     private static final String REMOVE_TIME_COMMAND = "removeTime";
     private static final String TIME_PARAM = "seconds";
+    private static ITimeInABottleAPI API = new BlankTimeInABottleAPI();
+    private static boolean CONFIGURED_API = false;
+
+    public static void setAPI(final ITimeInABottleAPI api) {
+        if (CONFIGURED_API) return;
+        CONFIGURED_API = true;
+        API = api;
+    }
+
 
     public static LiteralArgumentBuilder<CommandSourceStack> addTimeCommand = Commands.literal(ADD_TIME_COMMAND).requires(commandSource -> commandSource.hasPermission(2)).then(Commands.argument(TIME_PARAM, MessageArgument.message()).executes((ctx) -> {
         try {
@@ -60,7 +74,7 @@ public class TiabCommands {
                     ItemStack invStack = player.getInventory().getItem(i);
                     Item item = invStack.getItem();
                     if (item instanceof TimeInABottleItem itemTiab) {
-                        int currentStoredEnergy = itemTiab.getStoredEnergy(invStack);
+                        int currentStoredEnergy = API.getStoredTime(invStack);
 
                         if (!isAdd) {
                             if (currentStoredEnergy / Constants.TICK_CONST < timeToAdd) {
@@ -69,7 +83,7 @@ public class TiabCommands {
                             timeToAdd = -timeToAdd;
                         }
 
-                        itemTiab.setStoredEnergy(invStack, currentStoredEnergy + timeToAdd * Constants.TICK_CONST);
+                        API.setStoredTime(invStack, currentStoredEnergy + timeToAdd * Constants.TICK_CONST);
                         SendMessage.sendStatusMessage(player, String.format("%s %d seconds", isAdd ? "Added" : "Removed ", timeToAdd));
                         success = true;
                     }

@@ -1,4 +1,4 @@
-package com.haoict.tiab.config;
+package com.haoict.tiab.common.config;
 
 public class Constants {
     public static final String MOD_ID = "tiab";

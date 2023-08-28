@@ -1,8 +1,8 @@
-package com.haoict.tiab.entities;
+package com.haoict.tiab.common.entities;
 
-import com.haoict.tiab.config.NBTKeys;
-import com.haoict.tiab.config.TiabConfig;
-import com.haoict.tiab.registries.EntityTypeRegistry;
+import com.haoict.tiab.common.config.NBTKeys;
+import com.haoict.tiab.common.config.TiabConfig;
+import com.haoict.tiab.common.core.EntityTypeRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;

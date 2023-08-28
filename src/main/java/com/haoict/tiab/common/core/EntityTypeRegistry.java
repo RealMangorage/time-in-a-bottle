@@ -1,7 +1,7 @@
-package com.haoict.tiab.registries;
+package com.haoict.tiab.common.core;
 
-import com.haoict.tiab.config.Constants;
-import com.haoict.tiab.entities.TimeAcceleratorEntity;
+import com.haoict.tiab.common.config.Constants;
+import com.haoict.tiab.common.entities.TimeAcceleratorEntity;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
