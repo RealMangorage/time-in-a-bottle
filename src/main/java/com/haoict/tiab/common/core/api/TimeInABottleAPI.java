@@ -5,6 +5,7 @@ import com.haoict.tiab.common.core.ItemRegistry;
 import com.haoict.tiab.common.core.api.interfaces.ITimeInABottleCommandAPI;
 import com.haoict.tiab.common.core.api.interfaces.ITimeInABottleItemAPI;
 import com.haoict.tiab.common.items.TimeInABottleItem;
+import com.haoict.tiab.common.utils.Utils;
 import com.magorage.tiab.api.ITimeInABottleAPI;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -15,9 +16,11 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.function.Function;
 
 /**
-  * Used to get The Registry Object for TIAB without needing to try to get it
-  * This is for mods wanting it without worrying about anything changing
-  *  And for anything useful mods may need.
+    Distributed to any mods wanting access to the API
+    ApiRegistry is persistant/never changing on all
+    Instances of this class. Should allow for secure
+    enough api. Should stop mods from screwing around
+    recklessly.
  */
 public final class TimeInABottleAPI implements ITimeInABottleAPI {
     private final String API_MOD_ID;
@@ -91,5 +94,15 @@ public final class TimeInABottleAPI implements ITimeInABottleAPI {
             return api.processCommand(itemStackFunction, player, messageValue, isAdd);
         }
         return 0;
+    }
+
+    @Override
+    public Component getTotalTimeTranslated(ItemStack stack) {
+        return Utils.getTotalTimeTranslated(stack);
+    }
+
+    @Override
+    public Component getStoredTimeTranslated(ItemStack stack) {
+        return Utils.getStoredTimeTranslated(stack);
     }
 }

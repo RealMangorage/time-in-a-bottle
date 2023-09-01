@@ -51,4 +51,14 @@ public final class BlankTimeInABottleAPI implements ITimeInABottleAPI {
         return 0;
     }
 
+    @Override
+    public Component getTotalTimeTranslated(ItemStack stack) {
+        return Component.empty();
+    }
+
+    @Override
+    public Component getStoredTimeTranslated(ItemStack stack) {
+        return Component.empty();
+    }
+
 }

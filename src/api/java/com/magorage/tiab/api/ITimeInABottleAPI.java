@@ -21,4 +21,6 @@ public interface ITimeInABottleAPI {
     void setStoredTime(ItemStack bottle, int time);
     void setTotalTime(ItemStack bottle, int time);
     int processCommand(Function<ServerPlayer, ItemStack> itemStackFunction, ServerPlayer player, Component messageValue, boolean isAdd);
+    Component getTotalTimeTranslated(ItemStack stack);
+    Component getStoredTimeTranslated(ItemStack stack);
 }

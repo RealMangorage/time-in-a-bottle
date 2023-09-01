@@ -8,6 +8,7 @@ import com.haoict.tiab.common.core.ItemRegistry;
 import com.haoict.tiab.common.core.api.ApiRegistry;
 import com.haoict.tiab.common.core.api.TimeInABottleAPI;
 import com.haoict.tiab.common.items.TimeInABottleItem;
+import com.haoict.tiab.common.utils.Utils;
 import com.magorage.tiab.api.TiabProvider;
 import com.magorage.tiab.api.ITimeInABottleAPI;
 import com.mojang.logging.LogUtils;
@@ -37,7 +38,10 @@ import static com.haoict.tiab.common.config.Constants.MOD_ID;
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(MOD_ID)
 public class Tiab {
-    private static final TiabProvider API_PROVIDER = new TiabProvider(TiabCommands::setAPI);
+    private static final TiabProvider API_PROVIDER = new TiabProvider((api) -> {
+        TiabCommands.setAPI(api);
+        Utils.setAPI(api);
+    });
     // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
 

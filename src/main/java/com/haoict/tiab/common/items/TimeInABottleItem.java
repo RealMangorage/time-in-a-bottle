@@ -5,6 +5,7 @@ import com.haoict.tiab.common.config.NBTKeys;
 import com.haoict.tiab.common.config.TiabConfig;
 import com.haoict.tiab.common.core.api.ApiRegistry;
 import com.haoict.tiab.common.core.api.interfaces.ITimeInABottleItemAPI;
+import com.haoict.tiab.common.utils.Utils;
 import com.haoict.tiab.common.utils.lang.Styles;
 import com.haoict.tiab.common.utils.lang.Translation;
 import net.minecraft.network.chat.Component;
@@ -63,14 +64,14 @@ public final class TimeInABottleItem extends AbstractTiabItem {
         }
 
         if (level.getGameTime() % Constants.TICK_CONST == 0) {
-            int storedTime = this.getStoredEnergy(itemStack);
+            int storedTime = this.getStoredEnergy(itemStack);  // TODO: API CALL
             if (storedTime < TiabConfig.COMMON.maxStoredTime.get()) {
-                this.setStoredEnergy(itemStack, storedTime + Constants.TICK_CONST);
+                this.setStoredEnergy(itemStack, storedTime + Constants.TICK_CONST); // TODO: API CALL
             }
 
-            int totalAccumulatedTime = this.getTotalAccumulatedTime(itemStack);
+            int totalAccumulatedTime = this.getTotalAccumulatedTime(itemStack);  // TODO: API CALL
             if (totalAccumulatedTime < TiabConfig.COMMON.maxStoredTime.get()) {
-                this.setTotalAccumulatedTime(itemStack, totalAccumulatedTime + Constants.TICK_CONST);
+                this.setTotalAccumulatedTime(itemStack, totalAccumulatedTime + Constants.TICK_CONST); // TODO: API CALL
             }
         }
 
@@ -84,11 +85,11 @@ public final class TimeInABottleItem extends AbstractTiabItem {
                 ItemStack invStack = player.getInventory().getItem(i);
                 if (invStack.getItem() == this) {
                     if (invStack != itemStack) {
-                        int otherTimeData = this.getStoredEnergy(invStack);
-                        int myTimeData = this.getStoredEnergy(itemStack);
+                        int otherTimeData = this.getStoredEnergy(invStack); // TODO: API CALL
+                        int myTimeData = this.getStoredEnergy(itemStack); // TODO: API CALL
 
                         if (myTimeData < otherTimeData) {
-                            setStoredEnergy(itemStack, 0);
+                            setStoredEnergy(itemStack, 0); // TODO: API CALL; Make it be a reset func
                         }
                     }
                 }
@@ -100,20 +101,8 @@ public final class TimeInABottleItem extends AbstractTiabItem {
     public void appendHoverText(ItemStack itemStack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
         super.appendHoverText(itemStack, world, tooltip, flag);
 
-        int storedTime = this.getStoredEnergy(itemStack);
-        int storedSeconds = storedTime / Constants.TICK_CONST;
-        int hours = storedSeconds / 3600;
-        int minutes = (storedSeconds % 3600) / 60;
-        int seconds = storedSeconds % 60;
-
-        int totalAccumulatedTime = this.getTotalAccumulatedTime(itemStack);
-        int totalAccumulatedTimeSeconds = totalAccumulatedTime / Constants.TICK_CONST;
-        int totalAccumulatedHours = totalAccumulatedTimeSeconds / 3600;
-        int totalAccumulatedMinutes = (totalAccumulatedTimeSeconds % 3600) / 60;
-        int totalAccumulatedSeconds = totalAccumulatedTimeSeconds % 60;
-
-        tooltip.add(Translation.TOOLTIP_STORED_TIME.componentTranslation(String.format("%02d", hours), String.format("%02d", minutes), String.format("%02d", seconds)).setStyle(Styles.GREEN));
-        tooltip.add(Translation.TOOLTIP_TOTAL_ACCUMULATED_TIME.componentTranslation(String.format("%02d", totalAccumulatedHours), String.format("%02d", totalAccumulatedMinutes), String.format("%02d", totalAccumulatedSeconds)).setStyle(Styles.GRAY));
+        tooltip.add(Utils.getStoredTimeTranslated(itemStack));
+        tooltip.add(Utils.getTotalTimeTranslated(itemStack));
     }
 
     @Override
@@ -128,7 +117,7 @@ public final class TimeInABottleItem extends AbstractTiabItem {
     }
 
     @Override
-    public void applyDamage(ItemStack stack, int damage) {
+    protected void applyDamage(ItemStack stack, int damage) {
         setStoredEnergy(stack, getStoredEnergy(stack) - damage);
     }
 
