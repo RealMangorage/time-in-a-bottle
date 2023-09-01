@@ -5,9 +5,11 @@ import com.haoict.tiab.commands.TiabCommands;
 import com.haoict.tiab.common.config.TiabConfig;
 import com.haoict.tiab.common.core.EntityTypeRegistry;
 import com.haoict.tiab.common.core.ItemRegistry;
-import com.haoict.tiab.common.items.TimeInABottleAPI;
+import com.haoict.tiab.common.core.api.ApiRegistry;
+import com.haoict.tiab.common.core.api.TimeInABottleAPI;
+import com.haoict.tiab.common.items.TimeInABottleItem;
+import com.magorage.tiab.api.TiabProvider;
 import com.magorage.tiab.api.ITimeInABottleAPI;
-import com.magorage.tiab.api.ITimeInABottleAPIRequester;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.commands.Commands;
@@ -22,6 +24,7 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
@@ -34,20 +37,7 @@ import static com.haoict.tiab.common.config.Constants.MOD_ID;
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(MOD_ID)
 public class Tiab {
-
-    public static class TiabProvider implements ITimeInABottleAPIRequester {
-        private boolean recieved = false;
-        @Override
-        public void setAPI(ITimeInABottleAPI api) {
-            if (recieved) return;
-            this.recieved = true;
-            TiabCommands.setAPI(api);
-        }
-    }
-
-    public static final TiabProvider API_PROVIDER = new TiabProvider();
-
-
+    private static final TiabProvider API_PROVIDER = new TiabProvider(TiabCommands::setAPI);
     // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
 
@@ -62,6 +52,7 @@ public class Tiab {
         modEventBus.addListener(this::imcProcess);
         modEventBus.addListener(this::clientSetup);
         modEventBus.addListener(this::CreativeTab);
+        modEventBus.addListener(this::commonSetup);
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
@@ -70,16 +61,21 @@ public class Tiab {
         EntityTypeRegistry.TILE_ENTITIES.register(modEventBus);
     }
 
-    @SuppressWarnings("unchecked")
     private void imcProcess(InterModProcessEvent event) {
         List<String> PROCESSED_MODS = new ArrayList<>();
         event.getIMCStream(ITimeInABottleAPI.IMC.GET_API::equals).forEach(e -> {
-            if (PROCESSED_MODS.contains(e.senderModId()))
-                throw new IllegalStateException("Some mod tried to get API for TIAB when it already has been given one! Mods can only get one API! %s mod tried to do this!".formatted(e.senderModId()));
-            PROCESSED_MODS.add(e.senderModId());
-            if (e.messageSupplier().get() instanceof ITimeInABottleAPIRequester requester)
-                requester.setAPI(new TimeInABottleAPI(e.senderModId()));
+            if (e.messageSupplier().get() instanceof TiabProvider provider) {
+                if (PROCESSED_MODS.contains(provider))
+                    throw new IllegalStateException("Some mod tried to get API for TIAB when it already has been given one! Mods can only get one API! %s mod tried to do this!".formatted(e.senderModId()));
+
+                provider.setAPI(new TimeInABottleAPI(provider.getModID()));
+                PROCESSED_MODS.add(provider.getModID());
+            }
         });
+    }
+
+    private void commonSetup(final FMLCommonSetupEvent event) {
+        ApiRegistry.freeze(); // Freeze our API registry!
     }
 
     private void clientSetup(final FMLClientSetupEvent event) {

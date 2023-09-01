@@ -151,6 +151,8 @@ dependencies {
 
 // Example for how to get properties into the manifest for reading at runtime.
 jar {
+    from sourceSets.api.output
+
     manifest {
         attributes([
                 "Specification-Title"     : "Time In A Bottle",

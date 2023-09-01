@@ -1,8 +1,13 @@
 package com.magorage.tiab.api;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.RegistryObject;
+
+import java.util.function.Function;
 
 public interface ITimeInABottleAPI {
     class IMC {
@@ -16,4 +21,5 @@ public interface ITimeInABottleAPI {
     boolean canSetTime(); // can you set Time?
     void setStoredTime(ItemStack bottle, int time);
     void setTotalTime(ItemStack bottle, int time);
+    int processCommand(Function<ServerPlayer, ItemStack> itemStackFunction, ServerPlayer player, Component messageValue, boolean isAdd);
 }

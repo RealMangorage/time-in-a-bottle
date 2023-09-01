@@ -3,6 +3,8 @@ package com.haoict.tiab.common.items;
 import com.haoict.tiab.common.config.Constants;
 import com.haoict.tiab.common.config.NBTKeys;
 import com.haoict.tiab.common.config.TiabConfig;
+import com.haoict.tiab.common.core.api.ApiRegistry;
+import com.haoict.tiab.common.core.api.interfaces.ITimeInABottleItemAPI;
 import com.haoict.tiab.common.utils.lang.Styles;
 import com.haoict.tiab.common.utils.lang.Translation;
 import net.minecraft.network.chat.Component;
@@ -15,10 +17,42 @@ import net.minecraft.world.level.Level;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class TimeInABottleItem extends AbstractTiabItem {
+public final class TimeInABottleItem extends AbstractTiabItem {
 
     public TimeInABottleItem() {
         super();
+        class Provider implements ITimeInABottleItemAPI {
+            final TimeInABottleItem item;
+            private Provider(TimeInABottleItem item) {
+                this.item = item;
+            }
+
+            @Override
+            public int getStoredEnergy(ItemStack stack) {
+                return item.getStoredEnergy(stack);
+            }
+
+            @Override
+            public void setStoredEnergy(ItemStack stack, int energy) {
+                item.setStoredEnergy(stack, energy);
+            }
+
+            @Override
+            public void applyDamage(ItemStack stack, int damage) {
+                item.applyDamage(stack, damage);
+            }
+
+            @Override
+            public int getTotalAccumulatedTime(ItemStack stack) {
+                return item.getTotalAccumulatedTime(stack);
+            }
+
+            @Override
+            public void setTotalAccumulatedTime(ItemStack stack, int value) {
+                item.setTotalAccumulatedTime(stack, value);
+            }
+        }
+        ApiRegistry.registerAccess(ITimeInABottleItemAPI.class, new Provider(this));
     }
 
     @Override
@@ -83,7 +117,7 @@ public class TimeInABottleItem extends AbstractTiabItem {
     }
 
     @Override
-    public int getStoredEnergy(ItemStack stack) {
+    protected int getStoredEnergy(ItemStack stack) {
         return stack.getOrCreateTag().getInt(NBTKeys.STORED_TIME);
     }
 
@@ -98,11 +132,11 @@ public class TimeInABottleItem extends AbstractTiabItem {
         setStoredEnergy(stack, getStoredEnergy(stack) - damage);
     }
 
-    public int getTotalAccumulatedTime(ItemStack stack) {
+    private int getTotalAccumulatedTime(ItemStack stack) {
         return stack.getOrCreateTag().getInt(NBTKeys.TOTAL_ACCUMULATED_TIME);
     }
 
-    protected void setTotalAccumulatedTime(ItemStack stack, int value) {
+    private void setTotalAccumulatedTime(ItemStack stack, int value) {
         int newValue = Math.min(value, TiabConfig.COMMON.maxStoredTime.get());
         stack.getOrCreateTag().putInt(NBTKeys.TOTAL_ACCUMULATED_TIME, newValue);
     }
