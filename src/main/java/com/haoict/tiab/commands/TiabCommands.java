@@ -18,6 +18,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.function.Function;
 
@@ -25,19 +26,35 @@ public class TiabCommands {
     private static final String ADD_TIME_COMMAND = "addTime";
     private static final String REMOVE_TIME_COMMAND = "removeTime";
     private static final String TIME_PARAM = "seconds";
+    public static final Function<ServerPlayer, ItemStack> TIAB_GETTER = (plr) -> {
+        ItemStack found = null;
+        check: for (int i = 0; i < plr.getInventory().getContainerSize(); i++) {
+            ItemStack invStack = plr.getInventory().getItem(i);
+            Item item = invStack.getItem();
+            if (item instanceof TimeInABottleItem) {
+                found = invStack;
+                break check;
+            }
+        }
+        return found;
+    };
     private static ITimeInABottleAPI API = new BlankTimeInABottleAPI();
     private static boolean CONFIGURED_API = false;
+    private static boolean registered = false;
 
     public static void setAPI(final ITimeInABottleAPI api) {
         if (CONFIGURED_API) return;
         CONFIGURED_API = true;
         API = api;
+    }
+
+    public static void register() {
+        if (registered) return;
+        registered = true;
         class Provider implements ITimeInABottleCommandAPI {
-
-
             @Override
             public int processCommand(Function<ServerPlayer, ItemStack> itemStackFunction, ServerPlayer player, Component messageValue, boolean isAdd) {
-                return processCommand(itemStackFunction, player, messageValue, isAdd);
+                return handleCommand(itemStackFunction, player, messageValue, isAdd);
             }
         }
         ApiRegistry.registerAccess(ITimeInABottleCommandAPI.class, new Provider());
@@ -63,25 +80,9 @@ public class TiabCommands {
 
     private static int processTimeCommand(CommandContext<CommandSourceStack> ctx, boolean isAdd) throws CommandSyntaxException {
         Component messageValue = MessageArgument.getMessage(ctx, TIME_PARAM);
-
         CommandSourceStack source = ctx.getSource();
         ServerPlayer player = source.getPlayerOrException();
-
-        Function<ServerPlayer, ItemStack> func = (plr) -> {
-            ItemStack found = null;
-            check: for (int i = 0; i < plr.getInventory().getContainerSize(); i++) {
-                ItemStack invStack = plr.getInventory().getItem(i);
-                Item item = invStack.getItem();
-                if (item instanceof TimeInABottleItem) {
-                    found = invStack;
-                    break check;
-                }
-            }
-            return found;
-        };
-
-
-        return handleCommand(func, player, messageValue, isAdd);
+        return handleCommand(TIAB_GETTER, player, messageValue, isAdd);
     }
 
     private static int handleCommand(Function<ServerPlayer, ItemStack> itemStackFunction, ServerPlayer player, Component messageValue, boolean isAdd) {
@@ -100,7 +101,6 @@ public class TiabCommands {
                         timeToAdd = TiabConfig.COMMON.maxStoredTime.get() / Constants.TICK_CONST;
                     }
 
-
                     if (!isAdd) {
                         if (currentStoredEnergy / Constants.TICK_CONST < timeToAdd) {
                             timeToAdd = currentStoredEnergy / Constants.TICK_CONST;
@@ -110,9 +110,7 @@ public class TiabCommands {
 
                     API.setStoredTime(invStack, currentStoredEnergy + timeToAdd * Constants.TICK_CONST);
                     SendMessage.sendStatusMessage(player, String.format("%s %d seconds", isAdd ? "Added" : "Removed ", timeToAdd));
-                }
-
-                if (invStack == null) {
+                } else {
                     SendMessage.sendStatusMessage(player, "No Time in a bottle item in inventory");
                 }
 

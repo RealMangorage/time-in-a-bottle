@@ -44,7 +44,6 @@ public class Tiab {
     public Tiab()
     {
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, TiabConfig.COMMON_CONFIG);
-
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         // Register the commonSetup method for modloading
@@ -59,13 +58,14 @@ public class Tiab {
 
         ItemRegistry.ITEMS.register(modEventBus);
         EntityTypeRegistry.TILE_ENTITIES.register(modEventBus);
+        TiabCommands.register();
     }
 
     private void imcProcess(InterModProcessEvent event) {
         List<String> PROCESSED_MODS = new ArrayList<>();
         event.getIMCStream(ITimeInABottleAPI.IMC.GET_API::equals).forEach(e -> {
             if (e.messageSupplier().get() instanceof TiabProvider provider) {
-                if (PROCESSED_MODS.contains(provider))
+                if (PROCESSED_MODS.contains(provider.getModID()))
                     throw new IllegalStateException("Some mod tried to get API for TIAB when it already has been given one! Mods can only get one API! %s mod tried to do this!".formatted(e.senderModId()));
 
                 provider.setAPI(new TimeInABottleAPI(provider.getModID()));
