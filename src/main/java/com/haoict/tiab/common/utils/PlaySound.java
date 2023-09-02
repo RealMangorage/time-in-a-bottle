@@ -24,7 +24,6 @@ public class PlaySound {
             case "E" -> level.playSound(null, pos, SoundEvents.NOTE_BLOCK_HARP.get(), SoundSource.BLOCKS, 0.5F, 0.890899F);
             case "F" -> level.playSound(null, pos, SoundEvents.NOTE_BLOCK_HARP.get(), SoundSource.BLOCKS, 0.5F, 0.943874F);
 
-
             // Octave 2
             case "F#2" -> level.playSound(null, pos, SoundEvents.NOTE_BLOCK_HARP.get(), SoundSource.BLOCKS, 0.5F, 1F);
             case "G2" -> level.playSound(null, pos, SoundEvents.NOTE_BLOCK_HARP.get(), SoundSource.BLOCKS, 0.5F, 1.059463F);

@@ -7,6 +7,7 @@ import com.haoict.tiab.common.core.EntityTypeRegistry;
 import com.haoict.tiab.common.core.ItemRegistry;
 import com.haoict.tiab.common.core.api.ApiRegistry;
 import com.haoict.tiab.common.core.api.TimeInABottleAPI;
+import com.haoict.tiab.common.items.AbstractTiabItem;
 import com.haoict.tiab.common.items.TimeInABottleItem;
 import com.haoict.tiab.common.utils.Utils;
 import com.magorage.tiab.api.TiabProvider;
@@ -41,6 +42,8 @@ public class Tiab {
     private static final TiabProvider API_PROVIDER = new TiabProvider((api) -> {
         TiabCommands.setAPI(api);
         Utils.setAPI(api);
+        AbstractTiabItem.setAPI(api);
+        TimeInABottleItem.setAPI(api);
     });
     // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();

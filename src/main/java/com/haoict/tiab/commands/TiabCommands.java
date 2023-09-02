@@ -6,7 +6,6 @@ import com.haoict.tiab.common.core.api.ApiRegistry;
 import com.haoict.tiab.common.core.api.interfaces.ITimeInABottleCommandAPI;
 import com.haoict.tiab.common.items.TimeInABottleItem;
 import com.haoict.tiab.common.utils.SendMessage;
-import com.haoict.tiab.common.core.api.BlankTimeInABottleAPI;
 import com.magorage.tiab.api.ITimeInABottleAPI;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -38,7 +37,7 @@ public class TiabCommands {
         }
         return found;
     };
-    private static ITimeInABottleAPI API = new BlankTimeInABottleAPI();
+    private static ITimeInABottleAPI API;
     private static boolean CONFIGURED_API = false;
     private static boolean registered = false;
 
@@ -86,6 +85,11 @@ public class TiabCommands {
     }
 
     private static int handleCommand(Function<ServerPlayer, ItemStack> itemStackFunction, ServerPlayer player, Component messageValue, boolean isAdd) {
+        if (!API.canUse()) {
+            SendMessage.sendStatusMessage(player, "Tiab has had its API access revoked in the config.");
+            return 1;
+        }
+
         if (!messageValue.getString().isEmpty()) {
             try {
                 ItemStack invStack = itemStackFunction.apply(player);

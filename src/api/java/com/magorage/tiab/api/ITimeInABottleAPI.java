@@ -1,9 +1,11 @@
 package com.magorage.tiab.api;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.RegistryObject;
 import java.util.function.Function;
 
@@ -17,10 +19,13 @@ public interface ITimeInABottleAPI {
     int getTotalTime(ItemStack bottle);
     int getStoredTime(ItemStack bottle);
     String getModID();
-    boolean canSetTime(); // can you set Time?
     void setStoredTime(ItemStack bottle, int time);
     void setTotalTime(ItemStack bottle, int time);
     int processCommand(Function<ServerPlayer, ItemStack> itemStackFunction, ServerPlayer player, Component messageValue, boolean isAdd);
     Component getTotalTimeTranslated(ItemStack stack);
     Component getStoredTimeTranslated(ItemStack stack);
+    void playSound(Level level, BlockPos pos, int nextRate);
+    void applyDamage(ItemStack stack, int damage);
+    int getEnergyCost(int timeRate);
+    boolean canUse();
 }

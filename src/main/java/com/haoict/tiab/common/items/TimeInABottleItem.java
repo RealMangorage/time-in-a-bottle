@@ -8,6 +8,8 @@ import com.haoict.tiab.common.core.api.interfaces.ITimeInABottleItemAPI;
 import com.haoict.tiab.common.utils.Utils;
 import com.haoict.tiab.common.utils.lang.Styles;
 import com.haoict.tiab.common.utils.lang.Translation;
+import com.magorage.tiab.api.ITimeInABottleAPI;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -19,6 +21,12 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public final class TimeInABottleItem extends AbstractTiabItem {
+    private static ITimeInABottleAPI API;
+
+    public static void setAPI(ITimeInABottleAPI api) {
+        if (API != null) return;
+        API = api;
+    }
 
     public TimeInABottleItem() {
         super();
@@ -52,26 +60,37 @@ public final class TimeInABottleItem extends AbstractTiabItem {
             public void setTotalAccumulatedTime(ItemStack stack, int value) {
                 item.setTotalAccumulatedTime(stack, value);
             }
+
+            @Override
+            public int getEnergyCost(int timeRate) {
+                return item.getEnergyCost(timeRate);
+            }
+
+            @Override
+            public void playSound(Level level, BlockPos pos, int nextRate) {
+                item.playSound(level, pos, nextRate);
+            }
         }
         ApiRegistry.registerAccess(ITimeInABottleItemAPI.class, new Provider(this));
     }
 
     @Override
     public void inventoryTick(ItemStack itemStack, Level level, Entity entity, int itemSlot, boolean isSelected) {
+        // TODO: USE API HOOKS
         super.inventoryTick(itemStack, level, entity, itemSlot, isSelected);
         if (level.isClientSide) {
             return;
         }
 
         if (level.getGameTime() % Constants.TICK_CONST == 0) {
-            int storedTime = this.getStoredEnergy(itemStack);  // TODO: API CALL
+            int storedTime = API.getStoredTime(itemStack);
             if (storedTime < TiabConfig.COMMON.maxStoredTime.get()) {
-                this.setStoredEnergy(itemStack, storedTime + Constants.TICK_CONST); // TODO: API CALL
+                API.setStoredTime(itemStack, storedTime + Constants.TICK_CONST);
             }
 
-            int totalAccumulatedTime = this.getTotalAccumulatedTime(itemStack);  // TODO: API CALL
+            int totalAccumulatedTime = API.getTotalTime(itemStack);
             if (totalAccumulatedTime < TiabConfig.COMMON.maxStoredTime.get()) {
-                this.setTotalAccumulatedTime(itemStack, totalAccumulatedTime + Constants.TICK_CONST); // TODO: API CALL
+                API.setTotalTime(itemStack, totalAccumulatedTime + Constants.TICK_CONST);
             }
         }
 
@@ -85,15 +104,17 @@ public final class TimeInABottleItem extends AbstractTiabItem {
                 ItemStack invStack = player.getInventory().getItem(i);
                 if (invStack.getItem() == this) {
                     if (invStack != itemStack) {
-                        int otherTimeData = this.getStoredEnergy(invStack); // TODO: API CALL
-                        int myTimeData = this.getStoredEnergy(itemStack); // TODO: API CALL
+                        int otherTimeData = API.getStoredTime(invStack);
+                        int myTimeData = API.getStoredTime(itemStack);
 
                         if (myTimeData < otherTimeData) {
-                            setStoredEnergy(itemStack, 0); // TODO: API CALL; Make it be a reset func
+                            API.setStoredTime(itemStack, 0);
                         }
                     }
                 }
             }
+
+
         }
     }
 

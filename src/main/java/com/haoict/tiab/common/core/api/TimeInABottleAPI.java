@@ -1,16 +1,19 @@
 package com.haoict.tiab.common.core.api;
 
 import com.haoict.tiab.common.config.Constants;
+import com.haoict.tiab.common.config.TiabConfig;
 import com.haoict.tiab.common.core.ItemRegistry;
 import com.haoict.tiab.common.core.api.interfaces.ITimeInABottleCommandAPI;
 import com.haoict.tiab.common.core.api.interfaces.ITimeInABottleItemAPI;
 import com.haoict.tiab.common.items.TimeInABottleItem;
 import com.haoict.tiab.common.utils.Utils;
 import com.magorage.tiab.api.ITimeInABottleAPI;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.function.Function;
@@ -65,14 +68,9 @@ public final class TimeInABottleAPI implements ITimeInABottleAPI {
     }
 
     @Override
-    public boolean canSetTime() {
-        return true; // Update this later!
-    }
-
-    @Override
     public void setStoredTime(ItemStack bottle, int time) {
         var api = REGISTRY.getRegistered(ITimeInABottleItemAPI.class);
-        if (api != null) {
+        if (api != null && canUse()) {
             if (bottle.getItem() instanceof TimeInABottleItem)
                 api.setStoredEnergy(bottle, time);
         }
@@ -81,7 +79,7 @@ public final class TimeInABottleAPI implements ITimeInABottleAPI {
     @Override
     public void setTotalTime(ItemStack bottle, int time) {
         var api = REGISTRY.getRegistered(ITimeInABottleItemAPI.class);
-        if (api != null) {
+        if (api != null && canUse()) {
             if (bottle.getItem() instanceof TimeInABottleItem)
                 api.setTotalAccumulatedTime(bottle, time);
         }
@@ -90,7 +88,7 @@ public final class TimeInABottleAPI implements ITimeInABottleAPI {
     @Override
     public int processCommand(Function<ServerPlayer, ItemStack> itemStackFunction, ServerPlayer player, Component messageValue, boolean isAdd) {
         var api = REGISTRY.getRegistered(ITimeInABottleCommandAPI.class);
-        if (api != null) {
+        if (api != null && canUse()) {
             return api.processCommand(itemStackFunction, player, messageValue, isAdd);
         }
         return 0;
@@ -104,5 +102,37 @@ public final class TimeInABottleAPI implements ITimeInABottleAPI {
     @Override
     public Component getStoredTimeTranslated(ItemStack stack) {
         return Utils.getStoredTimeTranslated(stack);
+    }
+
+    @Override
+    public void playSound(Level level, BlockPos pos, int nextRate) {
+        var api = REGISTRY.getRegistered(ITimeInABottleItemAPI.class);
+        if (api != null && canUse()) {
+            api.playSound(level, pos, nextRate);
+        }
+    }
+
+    @Override
+    public void applyDamage(ItemStack stack, int damage) {
+        var api = REGISTRY.getRegistered(ITimeInABottleItemAPI.class);
+        if (api != null && canUse()) {
+            api.applyDamage(stack, damage);
+        }
+    }
+
+    @Override
+    public int getEnergyCost(int timeRate) {
+        var api = REGISTRY.getRegistered(ITimeInABottleItemAPI.class);
+        if (api != null) {
+            return api.getEnergyCost(timeRate);
+        }
+        return -1;
+    }
+
+    // All setters should call this first
+    // Getters are fine as they provide info
+    @Override // Do we have access to setters? for API_MOD_ID?
+    public boolean canUse() {
+        return !TiabConfig.COMMON.MODS_API.get().contains(API_MOD_ID);
     }
 }

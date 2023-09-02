@@ -3,7 +3,12 @@ package com.haoict.tiab.common.config;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import org.stringtemplate.v4.ST;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @EventBusSubscriber
@@ -17,6 +22,7 @@ public class TiabConfig {
         public final IntValue eachUseDuration;
         public final IntValue maxStoredTime;
         public final IntValue averageUpdateRandomTick;
+        public final ForgeConfigSpec.ConfigValue<List<? extends String>> MODS_API;
 
         private Common() {
             COMMON_BUILDER.push("Time In A Bottle");
@@ -29,6 +35,7 @@ public class TiabConfig {
 
             maxStoredTime = COMMON_BUILDER.comment("Define max time the items can store - in tick (1 second = 20 ticks)").defineInRange("Max Stored Time", 622080000, 30 * 20, 622080000);
 
+            MODS_API = COMMON_BUILDER.comment("Define which mods dont have access to the API. Can add Tiab aswell").defineListAllowEmpty("Blacklisted API Mods", new ArrayList<>(), (a) -> true);
             COMMON_BUILDER.pop();
         }
     }

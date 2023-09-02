@@ -1,6 +1,5 @@
 package com.haoict.tiab.common.items;
 
-import com.haoict.tiab.Tiab;
 import com.haoict.tiab.common.config.Constants;
 import com.haoict.tiab.common.config.TiabConfig;
 import com.haoict.tiab.common.entities.TimeAcceleratorEntity;
@@ -22,6 +21,12 @@ import java.util.Optional;
 
 public abstract class AbstractTiabItem extends Item {
     private static final String[] NOTES = {"C", "D", "E", "F", "G2", "A2", "B2", "C2", "D2", "E2", "F2"};
+    private static ITimeInABottleAPI API;
+
+    public static void setAPI(ITimeInABottleAPI api) {
+        if (API != null) return;
+        API = api;
+    }
 
     public AbstractTiabItem() {
         super(new Properties().stacksTo(1));
@@ -29,7 +34,7 @@ public abstract class AbstractTiabItem extends Item {
 
     @Override
     @Nonnull
-    public InteractionResult useOn(UseOnContext context) {
+    public InteractionResult useOn(UseOnContext context) { // TODO: API HOOK
         Level level = context.getLevel();
 
         if (level.isClientSide) {
@@ -47,7 +52,7 @@ public abstract class AbstractTiabItem extends Item {
         }
 
         int nextRate = 1;
-        int energyRequired = getEnergyCost(nextRate);
+        int energyRequired = API.getEnergyCost(nextRate);
         boolean isCreativeMode = player != null && player.isCreative();
 
         Optional<TimeAcceleratorEntity> o = level.getEntitiesOfClass(TimeAcceleratorEntity.class, new AABB(pos)).stream().findFirst();
@@ -63,9 +68,9 @@ public abstract class AbstractTiabItem extends Item {
 
             nextRate = currentRate * 2;
             int timeAdded = usedUpTime / 2;
-            energyRequired = getEnergyCost(nextRate);
+            energyRequired = API.getEnergyCost(nextRate);
 
-            if (!canUse(stack, isCreativeMode, energyRequired)) {
+            if (!API.canUse() || !canUse(stack, isCreativeMode, energyRequired)) {
                 return InteractionResult.SUCCESS;
             }
 
@@ -73,7 +78,7 @@ public abstract class AbstractTiabItem extends Item {
             entityTA.setRemainingTime(entityTA.getRemainingTime() + timeAdded);
         } else {
             // First use
-            if (!canUse(stack, isCreativeMode, energyRequired)) {
+            if (!API.canUse() || !canUse(stack, isCreativeMode, energyRequired)) {
                 return InteractionResult.SUCCESS;
             }
 
@@ -83,9 +88,9 @@ public abstract class AbstractTiabItem extends Item {
         }
 
         if (!isCreativeMode) {
-            this.applyDamage(stack, energyRequired);
+            API.applyDamage(stack, energyRequired);
         }
-        playSound(level, pos, nextRate);
+        API.playSound(level, pos, nextRate);
 
         return InteractionResult.SUCCESS;
     }
@@ -94,13 +99,13 @@ public abstract class AbstractTiabItem extends Item {
         return Constants.TICK_CONST * TiabConfig.COMMON.eachUseDuration.get();
     }
 
-    public int getEnergyCost(int timeRate) {
+    protected int getEnergyCost(int timeRate) {
         if (timeRate <= 1) return getEachUseDuration();
         return timeRate / 2 * getEachUseDuration();
     }
 
-    public boolean canUse(ItemStack stack, boolean isCreativeMode, int energyRequired) {
-        return getStoredEnergy(stack) >= energyRequired || isCreativeMode;
+    protected boolean canUse(ItemStack stack, boolean isCreativeMode, int energyRequired) {
+        return API.getStoredTime(stack) >= energyRequired || isCreativeMode;
     }
 
     protected abstract int getStoredEnergy(ItemStack stack);
@@ -109,40 +114,19 @@ public abstract class AbstractTiabItem extends Item {
 
     protected abstract void applyDamage(ItemStack stack, int damage);
 
-    public void playSound(Level level, BlockPos pos, int nextRate) {
+    protected void playSound(Level level, BlockPos pos, int nextRate) {
         switch (nextRate) {
-            case 1:
-                PlaySound.playNoteBlockHarpSound(level, pos, NOTES[0]);
-                break;
-            case 2:
-                PlaySound.playNoteBlockHarpSound(level, pos, NOTES[1]);
-                break;
-            case 4:
-                PlaySound.playNoteBlockHarpSound(level, pos, NOTES[2]);
-                break;
-            case 8:
-                PlaySound.playNoteBlockHarpSound(level, pos, NOTES[3]);
-                break;
-            case 16:
-                PlaySound.playNoteBlockHarpSound(level, pos, NOTES[4]);
-                break;
-            case 32:
-                PlaySound.playNoteBlockHarpSound(level, pos, NOTES[5]);
-                break;
-            case 64:
-                PlaySound.playNoteBlockHarpSound(level, pos, NOTES[6]);
-                break;
-            case 128:
-                PlaySound.playNoteBlockHarpSound(level, pos, NOTES[7]);
-                break;
-            case 256:
-                PlaySound.playNoteBlockHarpSound(level, pos, NOTES[8]);
-                break;
-            case 512:
-                PlaySound.playNoteBlockHarpSound(level, pos, NOTES[9]);
-                break;
-            default:
-                PlaySound.playNoteBlockHarpSound(level, pos, NOTES[10]);
+            case 1 -> PlaySound.playNoteBlockHarpSound(level, pos, NOTES[0]);
+            case 2 -> PlaySound.playNoteBlockHarpSound(level, pos, NOTES[1]);
+            case 4 -> PlaySound.playNoteBlockHarpSound(level, pos, NOTES[2]);
+            case 8 -> PlaySound.playNoteBlockHarpSound(level, pos, NOTES[3]);
+            case 16 -> PlaySound.playNoteBlockHarpSound(level, pos, NOTES[4]);
+            case 32 -> PlaySound.playNoteBlockHarpSound(level, pos, NOTES[5]);
+            case 64 -> PlaySound.playNoteBlockHarpSound(level, pos, NOTES[6]);
+            case 128 -> PlaySound.playNoteBlockHarpSound(level, pos, NOTES[7]);
+            case 256 -> PlaySound.playNoteBlockHarpSound(level, pos, NOTES[8]);
+            case 512 -> PlaySound.playNoteBlockHarpSound(level, pos, NOTES[9]);
+            default -> PlaySound.playNoteBlockHarpSound(level, pos, NOTES[10]);
         }
     }
 
