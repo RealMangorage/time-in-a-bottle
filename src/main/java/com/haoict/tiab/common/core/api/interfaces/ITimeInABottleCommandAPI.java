@@ -7,5 +7,5 @@ import net.minecraft.world.item.ItemStack;
 import java.util.function.Function;
 
 public interface ITimeInABottleCommandAPI {
-    int processCommand(Function<ServerPlayer, ItemStack> itemStackFunction, ServerPlayer player, Component messageValue, boolean isAdd);
+    int processCommand(Function<ServerPlayer, ItemStack> itemStackFunction, ServerPlayer player, String messageValue, boolean isAdd);
 }

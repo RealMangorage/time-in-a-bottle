@@ -4,10 +4,13 @@ import com.haoict.tiab.common.config.Constants;
 import com.haoict.tiab.common.config.TiabConfig;
 import com.haoict.tiab.common.core.ItemRegistry;
 import com.haoict.tiab.common.core.api.interfaces.ITimeInABottleCommandAPI;
+import com.haoict.tiab.common.core.api.interfaces.ITimeInABottleCommandEventAPI;
 import com.haoict.tiab.common.core.api.interfaces.ITimeInABottleItemAPI;
 import com.haoict.tiab.common.items.TimeInABottleItem;
 import com.haoict.tiab.common.utils.Utils;
+import com.magorage.tiab.api.APILevel;
 import com.magorage.tiab.api.ITimeInABottleAPI;
+import com.magorage.tiab.api.events.TimeCommandEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -16,6 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -86,7 +90,7 @@ public final class TimeInABottleAPI implements ITimeInABottleAPI {
     }
 
     @Override
-    public int processCommand(Function<ServerPlayer, ItemStack> itemStackFunction, ServerPlayer player, Component messageValue, boolean isAdd) {
+    public int processCommand(Function<ServerPlayer, ItemStack> itemStackFunction, ServerPlayer player, String messageValue, boolean isAdd) {
         var api = REGISTRY.getRegistered(ITimeInABottleCommandAPI.class);
         if (api != null && canUse()) {
             return api.processCommand(itemStackFunction, player, messageValue, isAdd);
@@ -131,8 +135,19 @@ public final class TimeInABottleAPI implements ITimeInABottleAPI {
 
     // All setters should call this first
     // Getters are fine as they provide info
+    // Check if Mod has api Levels revoked!
     @Override // Do we have access to setters? for API_MOD_ID?
     public boolean canUse() {
-        return !TiabConfig.COMMON.MODS_API.get().contains(API_MOD_ID);
+        if (TiabConfig.COMMON.MODS_API.get().contains(API_MOD_ID))
+            return false;
+        return true; // API level was not revoked
+    }
+
+    @Override
+    public TimeCommandEvent createEvent(ItemStack stack, ServerPlayer player, int time, boolean isAdd) {
+        var api = REGISTRY.getRegistered(ITimeInABottleCommandEventAPI.class);
+        if (api != null)
+            return api.createEvent(stack, player, time, isAdd);
+        return null;
     }
 }

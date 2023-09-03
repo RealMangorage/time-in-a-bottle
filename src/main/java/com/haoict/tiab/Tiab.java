@@ -9,9 +9,12 @@ import com.haoict.tiab.common.core.api.ApiRegistry;
 import com.haoict.tiab.common.core.api.TimeInABottleAPI;
 import com.haoict.tiab.common.items.AbstractTiabItem;
 import com.haoict.tiab.common.items.TimeInABottleItem;
+import com.haoict.tiab.common.utils.SendMessage;
 import com.haoict.tiab.common.utils.Utils;
 import com.magorage.tiab.api.TiabProvider;
 import com.magorage.tiab.api.ITimeInABottleAPI;
+import com.magorage.tiab.api.events.TimeBottleUseEvent;
+import com.magorage.tiab.api.events.TimeCommandEvent;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.commands.Commands;
@@ -21,6 +24,7 @@ import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.Bindings;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -39,11 +43,13 @@ import static com.haoict.tiab.common.config.Constants.MOD_ID;
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(MOD_ID)
 public class Tiab {
+    private static ITimeInABottleAPI API;
     private static final TiabProvider API_PROVIDER = new TiabProvider((api) -> {
         TiabCommands.setAPI(api);
         Utils.setAPI(api);
         AbstractTiabItem.setAPI(api);
         TimeInABottleItem.setAPI(api);
+        API = api;
     });
     // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -51,7 +57,7 @@ public class Tiab {
     public Tiab()
     {
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, TiabConfig.COMMON_CONFIG);
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        var modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         // Register the commonSetup method for modloading
         InterModComms.sendTo(MOD_ID, ITimeInABottleAPI.IMC.GET_API, () -> API_PROVIDER);
@@ -65,6 +71,7 @@ public class Tiab {
 
         ItemRegistry.ITEMS.register(modEventBus);
         EntityTypeRegistry.TILE_ENTITIES.register(modEventBus);
+
         TiabCommands.register();
     }
 
@@ -98,5 +105,14 @@ public class Tiab {
     public void CreativeTab(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() != CreativeModeTabs.TOOLS_AND_UTILITIES) return;
         event.accept(ItemRegistry.timeInABottleItem);
+    }
+
+    @SubscribeEvent
+    public void on(TimeCommandEvent event) {
+        event.setHandled();
+        var player = event.getPlayer();
+        var isAdd = event.isAdd();
+        var timeToAdd = event.getTime();
+        SendMessage.sendStatusMessage(player, String.format("%s %d seconds", isAdd ? "Added" : "Removed ", timeToAdd));
     }
 }

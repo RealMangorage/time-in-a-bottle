@@ -1,13 +1,12 @@
 package com.haoict.tiab.common.config;
 
+import com.magorage.tiab.api.APILevel;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import org.stringtemplate.v4.ST;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -25,6 +24,8 @@ public class TiabConfig {
         public final ForgeConfigSpec.ConfigValue<List<? extends String>> MODS_API;
 
         private Common() {
+            var defaultMap = List.of("tiab");
+
             COMMON_BUILDER.push("Time In A Bottle");
 
             maxTimeRatePower = COMMON_BUILDER.comment("Define maximum time the items can be used continuously. Corresponding to maximum times faster: Eg. 2^8=256").defineInRange("Max Time Rate Power", 8, 1, 12);
@@ -35,7 +36,7 @@ public class TiabConfig {
 
             maxStoredTime = COMMON_BUILDER.comment("Define max time the items can store - in tick (1 second = 20 ticks)").defineInRange("Max Stored Time", 622080000, 30 * 20, 622080000);
 
-            MODS_API = COMMON_BUILDER.comment("Define which mods dont have access to the API. Can add Tiab aswell").defineListAllowEmpty("Blacklisted API Mods", new ArrayList<>(), (a) -> true);
+            MODS_API = COMMON_BUILDER.comment("Define what level of API access mods have to TIAB stuff. Can add Tiab itself aswell").defineList("API Access", defaultMap, (a) -> true);
             COMMON_BUILDER.pop();
         }
     }

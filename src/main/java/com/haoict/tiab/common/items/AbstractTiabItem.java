@@ -5,6 +5,7 @@ import com.haoict.tiab.common.config.TiabConfig;
 import com.haoict.tiab.common.entities.TimeAcceleratorEntity;
 import com.haoict.tiab.common.utils.PlaySound;
 import com.magorage.tiab.api.ITimeInABottleAPI;
+import com.magorage.tiab.api.events.TimeBottleUseEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -15,6 +16,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.common.MinecraftForge;
 
 import javax.annotation.Nonnull;
 import java.util.Optional;
@@ -55,43 +57,48 @@ public abstract class AbstractTiabItem extends Item {
         int energyRequired = API.getEnergyCost(nextRate);
         boolean isCreativeMode = player != null && player.isCreative();
 
-        Optional<TimeAcceleratorEntity> o = level.getEntitiesOfClass(TimeAcceleratorEntity.class, new AABB(pos)).stream().findFirst();
+        if (API.canUse()) {
+            Optional<TimeAcceleratorEntity> o = level.getEntitiesOfClass(TimeAcceleratorEntity.class, new AABB(pos)).stream().findFirst();
 
-        if (o.isPresent()) {
-            TimeAcceleratorEntity entityTA = o.get();
-            int currentRate = entityTA.getTimeRate();
-            int usedUpTime = getEachUseDuration() - entityTA.getRemainingTime();
+            if (o.isPresent()) {
+                TimeAcceleratorEntity entityTA = o.get();
+                int currentRate = entityTA.getTimeRate();
+                int usedUpTime = getEachUseDuration() - entityTA.getRemainingTime();
 
-            if (currentRate >= Math.pow(2, TiabConfig.COMMON.maxTimeRatePower.get() - 1)) {
-                return InteractionResult.SUCCESS;
+                if (currentRate >= Math.pow(2, TiabConfig.COMMON.maxTimeRatePower.get() - 1)) {
+                    return InteractionResult.SUCCESS;
+                }
+
+                nextRate = currentRate * 2;
+                int timeAdded = usedUpTime / 2;
+                energyRequired = API.getEnergyCost(nextRate);
+
+                if (!canUse(stack, isCreativeMode, energyRequired)) {
+                    return InteractionResult.SUCCESS;
+                }
+
+                entityTA.setTimeRate(nextRate);
+                entityTA.setRemainingTime(entityTA.getRemainingTime() + timeAdded);
+            } else {
+                // First use
+                if (!canUse(stack, isCreativeMode, energyRequired)) {
+                    return InteractionResult.SUCCESS;
+                }
+
+                TimeAcceleratorEntity entityTA = new TimeAcceleratorEntity(level, pos, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+                entityTA.setRemainingTime(getEachUseDuration());
+                level.addFreshEntity(entityTA);
             }
 
-            nextRate = currentRate * 2;
-            int timeAdded = usedUpTime / 2;
-            energyRequired = API.getEnergyCost(nextRate);
-
-            if (!API.canUse() || !canUse(stack, isCreativeMode, energyRequired)) {
-                return InteractionResult.SUCCESS;
+            if (!isCreativeMode) {
+                API.applyDamage(stack, energyRequired);
             }
 
-            entityTA.setTimeRate(nextRate);
-            entityTA.setRemainingTime(entityTA.getRemainingTime() + timeAdded);
+            API.playSound(level, pos, nextRate);
+
         } else {
-            // First use
-            if (!API.canUse() || !canUse(stack, isCreativeMode, energyRequired)) {
-                return InteractionResult.SUCCESS;
-            }
-
-            TimeAcceleratorEntity entityTA = new TimeAcceleratorEntity(level, pos, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
-            entityTA.setRemainingTime(getEachUseDuration());
-            level.addFreshEntity(entityTA);
+            MinecraftForge.EVENT_BUS.post(new TimeBottleUseEvent(stack, level, pos));
         }
-
-        if (!isCreativeMode) {
-            API.applyDamage(stack, energyRequired);
-        }
-        API.playSound(level, pos, nextRate);
-
         return InteractionResult.SUCCESS;
     }
 

@@ -1,5 +1,6 @@
 package com.magorage.tiab.api;
 
+import com.magorage.tiab.api.events.TimeCommandEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import java.util.function.Consumer;
 
