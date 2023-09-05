@@ -156,7 +156,7 @@ jar {
 
     manifest {
         attributes([
-                "Specification-Title"     : "Time In A Bottle",
+                "Specification-Title"     : "Time In A Bottle [FORGE]",
                 "Specification-Vendor"    : "haoict",
                 "Specification-Version"   : forge_major, // We are version 1 of ourselves
                 "Implementation-Title"    : project.archivesBaseName,
