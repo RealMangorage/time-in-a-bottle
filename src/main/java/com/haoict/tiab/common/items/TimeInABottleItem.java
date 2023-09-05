@@ -9,7 +9,6 @@ import com.haoict.tiab.common.utils.Utils;
 import com.magorage.tiab.api.ITimeInABottleAPI;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;

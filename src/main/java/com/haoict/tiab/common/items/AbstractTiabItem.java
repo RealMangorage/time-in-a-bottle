@@ -4,9 +4,9 @@ import com.haoict.tiab.common.config.Constants;
 import com.haoict.tiab.common.config.TiabConfig;
 import com.haoict.tiab.common.entities.TimeAcceleratorEntity;
 import com.haoict.tiab.common.utils.PlaySound;
+import com.haoict.tiab.common.utils.SendMessage;
 import com.magorage.tiab.api.ITimeInABottleAPI;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -56,7 +56,9 @@ public abstract class AbstractTiabItem extends Item {
         if (API.canUse()) {
             accelerateBlock(API, stack, player, level, pos);
         } else {
-            API.callUseEvent(stack, player, level, pos);
+            if (!API.callUseEvent(stack, player, level, pos) && player instanceof ServerPlayer serverPlayer)
+                SendMessage.sendStatusMessage(serverPlayer, "TIAB has had its API access revoked.");
+
         }
         return InteractionResult.SUCCESS;
     }

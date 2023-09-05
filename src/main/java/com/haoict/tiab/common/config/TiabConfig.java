@@ -33,7 +33,7 @@ public class TiabConfig {
 
             maxStoredTime = COMMON_BUILDER.comment("Define max time the items can store - in tick (1 second = 20 ticks)").defineInRange("Max Stored Time", 622080000, 30 * 20, 622080000);
 
-            MODS_API = COMMON_BUILDER.comment("Define what level of API access mods have to TIAB stuff. Can add Tiab itself aswell").defineList("API Access", defaultMap, (a) -> true);
+            MODS_API = COMMON_BUILDER.comment("Mods that are blocked from having API access. Can add Tiab itself aswell").defineList("API Access", defaultMap, (a) -> true);
             COMMON_BUILDER.pop();
         }
     }
