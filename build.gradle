@@ -46,9 +46,8 @@ sourceSets {
 }
 
 task apiJar(type: Jar) {
-    //archiveClassifier.set('api')
-    //include 'top/theillusivec4/curios/api/**/*'
     group "build"
+    classifier "api"
     from sourceSets.api.allSource
     from sourceSets.api.output
 }
