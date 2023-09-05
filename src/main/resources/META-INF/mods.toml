@@ -8,7 +8,7 @@ version="${file.jarVersion}" #mandatory
 displayName="Time In A Bottle" #mandatory
 logoFile="tiab-logo.png" #optional
 credits="haoict for standalone, Random things by lumien" #optional
-authors="MangoRage" #optional
+authors="MangoRage, haoict" #optional
 description='''
 This item allows you to accelerate the rate at which blocks tick.
 It passively collects time while in your inventory which you can consume by right clicking a block with it.
