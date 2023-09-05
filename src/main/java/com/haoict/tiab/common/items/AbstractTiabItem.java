@@ -5,8 +5,9 @@ import com.haoict.tiab.common.config.TiabConfig;
 import com.haoict.tiab.common.entities.TimeAcceleratorEntity;
 import com.haoict.tiab.common.utils.PlaySound;
 import com.magorage.tiab.api.ITimeInABottleAPI;
-import com.magorage.tiab.api.events.TimeBottleUseEvent;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -16,7 +17,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.common.MinecraftForge;
 
 import javax.annotation.Nonnull;
 import java.util.Optional;
@@ -53,6 +53,15 @@ public abstract class AbstractTiabItem extends Item {
             return InteractionResult.FAIL;
         }
 
+        if (API.canUse()) {
+            accelerateBlock(API, stack, player, level, pos);
+        } else {
+            API.callUseEvent(stack, player, level, pos);
+        }
+        return InteractionResult.SUCCESS;
+    }
+
+    public InteractionResult accelerateBlock(ITimeInABottleAPI API, ItemStack stack, Player player, Level level, BlockPos pos) {
         int nextRate = 1;
         int energyRequired = API.getEnergyCost(nextRate);
         boolean isCreativeMode = player != null && player.isCreative();
@@ -95,9 +104,6 @@ public abstract class AbstractTiabItem extends Item {
             }
 
             API.playSound(level, pos, nextRate);
-
-        } else {
-            MinecraftForge.EVENT_BUS.post(new TimeBottleUseEvent(stack, level, pos));
         }
         return InteractionResult.SUCCESS;
     }

@@ -3,14 +3,15 @@ package com.haoict.tiab.common.items;
 import com.haoict.tiab.common.config.Constants;
 import com.haoict.tiab.common.config.NBTKeys;
 import com.haoict.tiab.common.config.TiabConfig;
-import com.haoict.tiab.common.core.api.ApiRegistry;
+import com.haoict.tiab.common.core.api.APIRegistry;
 import com.haoict.tiab.common.core.api.interfaces.ITimeInABottleItemAPI;
 import com.haoict.tiab.common.utils.Utils;
-import com.haoict.tiab.common.utils.lang.Styles;
-import com.haoict.tiab.common.utils.lang.Translation;
 import com.magorage.tiab.api.ITimeInABottleAPI;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -70,8 +71,13 @@ public final class TimeInABottleItem extends AbstractTiabItem {
             public void playSound(Level level, BlockPos pos, int nextRate) {
                 item.playSound(level, pos, nextRate);
             }
+
+            @Override
+            public InteractionResult accelerateBlock(ITimeInABottleAPI API, ItemStack stack, Player player, Level level, BlockPos pos) {
+                return item.accelerateBlock(API, stack, player, level, pos);
+            }
         }
-        ApiRegistry.registerAccess(ITimeInABottleItemAPI.class, new Provider(this));
+        APIRegistry.registerAccess(ITimeInABottleItemAPI.class, new Provider(this));
     }
 
     @Override
@@ -82,39 +88,46 @@ public final class TimeInABottleItem extends AbstractTiabItem {
             return;
         }
 
-        if (level.getGameTime() % Constants.TICK_CONST == 0) {
-            int storedTime = API.getStoredTime(itemStack);
-            if (storedTime < TiabConfig.COMMON.maxStoredTime.get()) {
-                API.setStoredTime(itemStack, storedTime + Constants.TICK_CONST);
-            }
+        if (API.canUse()) {
+            if (level.getGameTime() % Constants.TICK_CONST == 0) {
+                int storedTime = API.getStoredTime(itemStack);
+                if (storedTime < TiabConfig.COMMON.maxStoredTime.get()) {
+                    API.setStoredTime(itemStack, storedTime + Constants.TICK_CONST);
+                }
 
-            int totalAccumulatedTime = API.getTotalTime(itemStack);
-            if (totalAccumulatedTime < TiabConfig.COMMON.maxStoredTime.get()) {
-                API.setTotalTime(itemStack, totalAccumulatedTime + Constants.TICK_CONST);
-            }
-        }
-
-        // remove time if player has other TIAB items in his inventory, check every 10 sec
-        if (level.getGameTime() % (Constants.TICK_CONST * 10) == 0) {
-            if (!(entity instanceof Player player)) {
-                return;
-            }
-
-            for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-                ItemStack invStack = player.getInventory().getItem(i);
-                if (invStack.getItem() == this) {
-                    if (invStack != itemStack) {
-                        int otherTimeData = API.getStoredTime(invStack);
-                        int myTimeData = API.getStoredTime(itemStack);
-
-                        if (myTimeData < otherTimeData) {
-                            API.setStoredTime(itemStack, 0);
-                        }
-                    }
+                int totalAccumulatedTime = API.getTotalTime(itemStack);
+                if (totalAccumulatedTime < TiabConfig.COMMON.maxStoredTime.get()) {
+                    API.setTotalTime(itemStack, totalAccumulatedTime + Constants.TICK_CONST);
                 }
             }
 
+            // remove time if player has other TIAB items in his inventory, check every 10 sec
+            if (level.getGameTime() % (Constants.TICK_CONST * 10) == 0) {
+                if (!(entity instanceof Player player)) {
+                    return;
+                }
 
+                for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+                    ItemStack invStack = player.getInventory().getItem(i);
+                    if (invStack.getItem() == this) {
+                        if (invStack != itemStack) {
+                            int otherTimeData = API.getStoredTime(invStack);
+                            int myTimeData = API.getStoredTime(itemStack);
+
+                            if (myTimeData < otherTimeData) {
+                                API.setStoredTime(itemStack, 0);
+                            }
+                        }
+                    }
+                }
+
+
+            }
+        } else {
+            ServerPlayer player = null;
+            if (entity instanceof ServerPlayer serverPlayer)
+                player = serverPlayer;
+            API.callTickEvent(player, itemStack);
         }
     }
 

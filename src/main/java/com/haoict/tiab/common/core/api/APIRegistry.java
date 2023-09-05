@@ -1,21 +1,20 @@
 package com.haoict.tiab.common.core.api;
 
 import com.haoict.tiab.common.config.Constants;
-import com.haoict.tiab.common.core.api.interfaces.ITimeInABottleItemAPI;
 import net.minecraftforge.fml.ModLoadingContext;
 
 import java.util.HashMap;
 
 // For internal use only! Mods can't access this
-public final class ApiRegistry {
-    private static final ApiRegistry API = new ApiRegistry();
+public final class APIRegistry {
+    private static final APIRegistry API = new APIRegistry();
 
-    protected static ApiRegistry getApi() {
+    static APIRegistry getAPI() {
         return API;
     }
 
-    public static void freeze() {
-        API.freezeApi();
+    public static void freezeAll() {
+        API.freeze();
     }
 
     public static <T> void registerAccess(Class<T> tClass, T object) {
@@ -35,7 +34,7 @@ public final class ApiRegistry {
         return null;
     }
 
-    void freezeApi() {
+    void freeze() {
         this.frozen = true;
     }
 

@@ -1,9 +1,10 @@
 package com.magorage.tiab.api;
 
-import com.magorage.tiab.api.events.TimeCommandEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -29,5 +30,8 @@ public interface ITimeInABottleAPI {
     void applyDamage(ItemStack stack, int damage);
     int getEnergyCost(int timeRate);
     boolean canUse();
-    TimeCommandEvent createEvent(ItemStack stack, ServerPlayer player, int time, boolean isAdd);
+    boolean callCommandEvent(ServerPlayer player, int time, boolean isAdd);
+    boolean callTickEvent(ServerPlayer player, ItemStack stack);
+    boolean callUseEvent(ItemStack bottle, Player player, Level level, BlockPos pos);
+    InteractionResult accelerateBlock(ITimeInABottleAPI API, ItemStack stack, Player player, Level level, BlockPos pos);
 }

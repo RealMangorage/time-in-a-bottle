@@ -2,14 +2,12 @@ package com.haoict.tiab.commands;
 
 import com.haoict.tiab.common.config.Constants;
 import com.haoict.tiab.common.config.TiabConfig;
-import com.haoict.tiab.common.core.api.ApiRegistry;
+import com.haoict.tiab.common.core.api.APIRegistry;
+import com.haoict.tiab.common.core.api.TimeInABottleAPI;
 import com.haoict.tiab.common.core.api.interfaces.ITimeInABottleCommandAPI;
-import com.haoict.tiab.common.core.api.interfaces.ITimeInABottleCommandEventAPI;
 import com.haoict.tiab.common.items.TimeInABottleItem;
 import com.haoict.tiab.common.utils.SendMessage;
 import com.magorage.tiab.api.ITimeInABottleAPI;
-import com.magorage.tiab.api.events.CommandEventFactory;
-import com.magorage.tiab.api.events.TimeCommandEvent;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -20,7 +18,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.MinecraftForge;
 import java.util.function.Function;
 
 public class TiabCommands {
@@ -58,20 +55,8 @@ public class TiabCommands {
                 return handleCommand(itemStackFunction, player, messageValue, isAdd);
             }
         }
-        var eventFactory = TimeCommandEvent.registerAPIProvider();
-        class EventProvider implements ITimeInABottleCommandEventAPI {
-            private final CommandEventFactory factory;
-            protected EventProvider(CommandEventFactory factory) {
-                this.factory = factory;
-            }
 
-            @Override
-            public TimeCommandEvent createEvent(ItemStack stack, ServerPlayer player, int time, boolean isAdd) {
-                return factory.createEvent(stack, player, time, isAdd);
-            }
-        }
-        ApiRegistry.registerAccess(ITimeInABottleCommandAPI.class, new Provider());
-        ApiRegistry.registerAccess(ITimeInABottleCommandEventAPI.class, new EventProvider(eventFactory));
+        APIRegistry.registerAccess(ITimeInABottleCommandAPI.class, new Provider());
     }
 
     public static LiteralArgumentBuilder<CommandSourceStack> addTimeCommand = Commands.literal(ADD_TIME_COMMAND).requires(commandSource -> commandSource.hasPermission(2)).then(Commands.argument(TIME_PARAM, MessageArgument.message()).executes((ctx) -> {
@@ -96,7 +81,6 @@ public class TiabCommands {
         Component messageValue = MessageArgument.getMessage(ctx, TIME_PARAM);
         CommandSourceStack source = ctx.getSource();
         ServerPlayer player = source.getPlayerOrException();
-
         return handleCommand(TIAB_GETTER, player, messageValue.getString(), isAdd);
     }
 
@@ -123,20 +107,11 @@ public class TiabCommands {
                         timeToAdd = -timeToAdd;
                     }
 
-                    if (!API.canUse()) {
-                        var event = API.createEvent(invStack, player, timeToAdd, isAdd);
-                        if (event != null) {
-                            MinecraftForge.EVENT_BUS.post(event);
-                            if (!event.isHandled())
-                                SendMessage.sendStatusMessage(player, "Tiab has had its API access revoked in the config.");
-                            return 1;
-                        } else {
-                            SendMessage.sendStatusMessage(player, "Tiab has had its API access revoked in the config. NULL event");
-                            return 1;
-                        }
-                    } else {
+                    if (API.canUse()) {
                         SendMessage.sendStatusMessage(player, String.format("%s %d seconds", isAdd ? "Added" : "Removed ", timeToAdd));
                         API.setStoredTime(invStack, currentStoredEnergy + timeToAdd * Constants.TICK_CONST);
+                    } else if(!API.callCommandEvent(player, timeToAdd, isAdd)) {
+                        SendMessage.sendStatusMessage(player, "TIAB has had its API access revoked.");
                     }
                 } else {
                     SendMessage.sendStatusMessage(player, "No Time in a bottle item in inventory");
