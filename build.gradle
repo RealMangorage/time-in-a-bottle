@@ -167,6 +167,7 @@ dependencies {
 jar {
     from sourceSets.api.output
 
+    finalizedBy('reobfJar')
     manifest {
         attributes([
                 "Specification-Title"     : "Time In A Bottle [FORGE]",
