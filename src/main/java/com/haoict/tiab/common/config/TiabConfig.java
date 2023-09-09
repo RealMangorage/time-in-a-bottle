@@ -21,7 +21,7 @@ public class TiabConfig {
         public final ForgeConfigSpec.ConfigValue<List<? extends String>> MODS_API;
 
         private Common() {
-            var defaultMap = List.of("tiab");
+            var defaultMap = List.of("");
 
             COMMON_BUILDER.push("Time In A Bottle");
 
