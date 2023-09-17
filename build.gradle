@@ -8,10 +8,13 @@ buildscript {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
     }
 }
+
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'maven-publish'
+apply plugin: 'signing'
+apply plugin: 'java-library'
 
 version = "${version}-mc${minecraft_version}"
 group = 'com.haoict' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
@@ -44,18 +47,6 @@ sourceSets {
         runtimeClasspath += sourceSets.api.output
     }
 }
-
-task apiJar(type: Jar) {
-    group "build"
-    classifier "api"
-    from sourceSets.api.allSource
-    from sourceSets.api.output
-}
-
-artifacts {
-    archives apiJar
-}
-
 
 minecraft {
     // The mappings can be changed at any time and must be in the following format.
@@ -181,15 +172,51 @@ jar {
     }
 }
 
+
+task apiJar(type: Jar) {
+    archiveClassifier.set('api')
+
+    from sourceSets.api.allSource
+    from sourceSets.api.output
+}
+
+task sourcesApiJar(type: Jar) {
+    archiveClassifier.set('sources')
+    from sourceSets.api.allJava
+}
+
+artifacts {
+    archives apiJar
+    archives sourcesApiJar
+}
+
+signing {
+    sign configurations.archives
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifact jar
+            pom {
+                groupId = 'org.mangorage'
+                artifactId = 'tiab'
+                version "${api_version}"
+            }
+
+            artifact sourcesApiJar
+            artifact apiJar
         }
     }
     repositories {
         maven {
-            url "file://${project.projectDir}/mcmodsrepo"
+            // change URLs to point to your repos, e.g. http://my.org/repo
+            def releasesRepoUrl = 'https://s01.oss.sonatype.org/content/repositories/releases/io/github/realmangorage/'
+            def snapshotsRepoUrl = 'https://s01.oss.sonatype.org/content/repositories/snapshots/io/github/realmangorage/'
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            credentials {
+                username = findProperty("mango.maven.username")
+                password = findProperty("mango.maven.password")
+            }
         }
     }
 }
