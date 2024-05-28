@@ -87,7 +87,7 @@ public class TimeAcceleratorEntity extends Entity {
     protected void readAdditionalSaveData(CompoundTag compound) {
         entityData.set(timeRate, compound.getInt(NBTKeys.ENTITY_TIME_RATE));
         setRemainingTime(compound.getInt(NBTKeys.ENTITY_REMAINING_TIME));
-        this.pos = NbtUtils.readBlockPos(compound.getCompound(NBTKeys.ENTITY_POS), "").get();
+        this.pos = NbtUtils.readBlockPos(compound, NBTKeys.ENTITY_POS).orElse(new BlockPos(0,0,0));
     }
 
     @Override

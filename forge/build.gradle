@@ -1,10 +1,16 @@
 plugins {
     id 'multiloader-loader'
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'org.spongepowered.mixin' version '0.+'
 }
 base {
     archivesName = "${mod_name}-forge-${minecraft_version}"
 }
+
+mixin {
+    config("${mod_id}.mixins.json")
+}
+
 
 minecraft {
     mappings channel: 'official', version: minecraft_version
@@ -60,7 +66,7 @@ sourceSets.main.resources.srcDir 'src/generated/resources'
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-
+    annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
     implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
 }
 

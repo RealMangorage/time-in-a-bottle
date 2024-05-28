@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "org.mangorage.tiab.fabric.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+  ],
+  "mixins": [
+    "TiabItemMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

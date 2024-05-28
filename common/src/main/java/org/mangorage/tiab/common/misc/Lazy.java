@@ -16,8 +16,6 @@ public class Lazy<T> implements Supplier<T> {
 
     @Override
     public T get() {
-        if (instance == null)
-            instance = supplier.get();
-        return instance;
+        return instance != null ? instance : (instance = supplier.get());
     }
 }

@@ -4,7 +4,6 @@ import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -16,13 +15,13 @@ import org.mangorage.tiab.common.misc.IRegistrationWrapper;
 
 @Mod(CommonConstants.MODID)
 public class ForgeTiabMod {
+
     public ForgeTiabMod() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::register);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::Data);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::Client);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onRegister);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClient);
     }
 
-    public void register(RegisterEvent event) {
+    public void onRegister(RegisterEvent event) {
         CommonRegistration.init(new IRegistrationWrapper() {
             @Override
             public <T> void register(ResourceKey<? extends Registry<T>> resourceKey, ResourceLocation resourceLocation, T value) {
@@ -32,15 +31,7 @@ public class ForgeTiabMod {
         });
     }
 
-    public void Data(GatherDataEvent event) {
-        var gen = event.getGenerator();
-        var output = gen.getPackOutput();
-        var efh = event.getExistingFileHelper();
-
-        gen.addProvider(event.includeClient(), new ModelGen(output, efh));
-    }
-
-    public void Client(FMLClientSetupEvent event) {
+    public void onClient(FMLClientSetupEvent event) {
         EntityRenderers.register(CommonRegistration.ACCELERATOR_ENTITY.get(), TimeAcceleratorEntityRenderer::new);
     }
 }
