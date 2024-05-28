@@ -5,7 +5,6 @@ import org.mangorage.tiab.common.core.CommonRegistration;
 
 public class FabricTiabMod implements ModInitializer {
     public FabricTiabMod() {
-
     }
 
     @Override

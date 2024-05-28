@@ -17,6 +17,9 @@
     "entrypoints": {
         "main": [
             "org.mangorage.tiab.fabric.FabricTiabMod"
+        ],
+        "client": [
+            "org.mangorage.tiab.fabric.FabricTiabClientMod"
         ]
     },
     "mixins": [
