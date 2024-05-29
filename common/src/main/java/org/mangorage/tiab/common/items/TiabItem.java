@@ -33,7 +33,7 @@ public class TiabItem extends Item {
 
         CommonHelper.modify(stack, comp, () -> new StoredTimeComponent(0, 0), old -> {
             if (CommonHelper.isPositive(old.stored() + 1) && CommonHelper.isPositive(old.total() + 1)) {
-                return new StoredTimeComponent(Math.max(old.stored() + 1, CommonConstants.MAX_STORED_TIME), old.total() + 1);
+                return new StoredTimeComponent(Math.min(old.stored() + 1, CommonConstants.MAX_STORED_TIME), old.total() + 1);
             } else {
                 return old;
             }
