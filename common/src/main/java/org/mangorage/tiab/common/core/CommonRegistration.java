@@ -14,32 +14,31 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import org.mangorage.tiab.common.CommonConstants;
 import org.mangorage.tiab.common.commands.TiabCommands;
 import org.mangorage.tiab.common.entities.TimeAcceleratorEntity;
 import org.mangorage.tiab.common.items.TiabItem;
 import org.mangorage.tiab.common.misc.IRegistrationWrapper;
-import org.mangorage.tiab.common.misc.Lazy;
+import org.mangorage.tiab.common.misc.LazySupplier;
 
 import java.util.function.Supplier;
 
 import static org.mangorage.tiab.common.CommonConstants.MODID;
 
 public class CommonRegistration {
-    public static final Supplier<DataComponentType<StoredTimeComponent>> STORED_TIME_COMPONENT = Lazy.of(() -> {
+    public static final Supplier<DataComponentType<StoredTimeComponent>> STORED_TIME_COMPONENT = LazySupplier.of(() -> {
         return new DataComponentType.Builder<StoredTimeComponent>()
                 .persistent(StoredTimeComponent.DIRECT_CODEC)
                 .networkSynchronized(StoredTimeComponent.DIRECT_STREAM_CODEC)
                 .build();
     });
-    public static final Supplier<TiabItem> TIAB_ITEM = Lazy.of(
+    public static final Supplier<TiabItem> TIAB_ITEM = LazySupplier.of(
             () -> new TiabItem(
                     new Item.Properties()
                             .component(STORED_TIME_COMPONENT.get(), new StoredTimeComponent(0, 0))
                             .component(DataComponents.MAX_STACK_SIZE, 1)
             )
     );
-    public static final Supplier<EntityType<TimeAcceleratorEntity>> ACCELERATOR_ENTITY = Lazy.of(() -> {
+    public static final Supplier<EntityType<TimeAcceleratorEntity>> ACCELERATOR_ENTITY = LazySupplier.of(() -> {
        return EntityType.Builder.<TimeAcceleratorEntity>of(TimeAcceleratorEntity::new, MobCategory.MISC).build("accelerator");
     });
 
