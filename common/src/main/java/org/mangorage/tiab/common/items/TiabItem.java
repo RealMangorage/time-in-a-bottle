@@ -13,6 +13,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import org.mangorage.tiab.common.CommonConstants;
 import org.mangorage.tiab.common.core.CommonRegistration;
 import org.mangorage.tiab.common.core.StoredTimeComponent;
 import org.mangorage.tiab.common.entities.TimeAcceleratorEntity;
@@ -29,18 +30,23 @@ public class TiabItem extends Item {
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int $$3, boolean $$4) {
         var comp = CommonRegistration.STORED_TIME_COMPONENT.get();
-        if (stack.has(comp)) {
-            var compInst = stack.get(comp);
-            stack.set(comp, new StoredTimeComponent(compInst.stored() + 1, compInst.total() + 1));
 
-            ItemLore lore = new ItemLore(
-                    List.of(
-                            CommonHelper.getStoredTimeTranslated(stack),
-                            CommonHelper.getTotalTimeTranslated(stack)
-                    )
-            );
-            stack.set(DataComponents.LORE, lore);
-        }
+        CommonHelper.modify(stack, comp, () -> new StoredTimeComponent(0, 0), old -> {
+            if (CommonHelper.isPositive(old.stored() + 1) && CommonHelper.isPositive(old.total() + 1)) {
+                return new StoredTimeComponent(Math.max(old.stored() + 1, CommonConstants.MAX_STORED_TIME), old.total() + 1);
+            } else {
+                return old;
+            }
+        });
+
+        ItemLore lore = new ItemLore(
+                List.of(
+                        CommonHelper.getStoredTimeTranslated(stack),
+                        CommonHelper.getTotalTimeTranslated(stack)
+                )
+        );
+        stack.set(DataComponents.LORE, lore);
+
     }
 
     @Override
@@ -72,7 +78,7 @@ public class TiabItem extends Item {
             int currentRate = entityTA.getTimeRate();
             int usedUpTime = getEachUseDuration() - entityTA.getRemainingTime();
 
-            if (currentRate >= Math.pow(2, 8 - 1)) { // Define maximum time the items can be used continuously. Corresponding to maximum times faster: Eg. 2^8=256
+            if (currentRate >= Math.pow(2, CommonConstants.MAX_RATE_MULTI - 1)) {
                 return InteractionResult.SUCCESS;
             }
 
@@ -100,7 +106,7 @@ public class TiabItem extends Item {
         if (!isCreativeMode) {
             final int required = energyRequired;
             CommonHelper.modify(stack, CommonRegistration.STORED_TIME_COMPONENT.get(), () -> new StoredTimeComponent(0, 0), old -> {
-                var newStoredTime = Math.min(old.stored() - required, 622080000);
+                var newStoredTime = Math.min(old.stored() - required, CommonConstants.MAX_STORED_TIME);
                 return new StoredTimeComponent(newStoredTime, old.total());
             });
         }
@@ -113,7 +119,7 @@ public class TiabItem extends Item {
 
     public int getEachUseDuration() {
         // TICK CONST * EACH USE DURATION (in secs)
-        return 20 * 30;
+        return CommonConstants.TICKS_CONST * CommonConstants.EACH_USE_DURATION;
     }
 
     public int getEnergyCost(int timeRate) {

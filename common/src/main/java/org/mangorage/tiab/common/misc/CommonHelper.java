@@ -93,4 +93,7 @@ public class CommonHelper {
         stack.set(dataComponentType, function.apply(comp));
     }
 
+    public static boolean isPositive(int number) {
+        return !(number < 0);
+    }
 }

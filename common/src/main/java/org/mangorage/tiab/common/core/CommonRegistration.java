@@ -1,5 +1,6 @@
 package org.mangorage.tiab.common.core;
 
+import net.minecraft.commands.Commands;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
@@ -7,11 +8,14 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import org.mangorage.tiab.common.CommonConstants;
+import org.mangorage.tiab.common.commands.TiabCommands;
 import org.mangorage.tiab.common.entities.TimeAcceleratorEntity;
 import org.mangorage.tiab.common.items.TiabItem;
 import org.mangorage.tiab.common.misc.IRegistrationWrapper;
@@ -64,5 +68,9 @@ public class CommonRegistration {
                 Registry.register(registry, resourceLocation, value);
             }
         });
+    }
+
+    public static void initServer(MinecraftServer server) {
+        server.getCommands().getDispatcher().register(Commands.literal(MODID).then(TiabCommands.addTimeCommand).then(TiabCommands.removeTimeCommand));
     }
 }

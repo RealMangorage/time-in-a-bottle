@@ -7,6 +7,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import org.mangorage.tiab.common.client.renderer.TimeAcceleratorEntityRenderer;
 import org.mangorage.tiab.common.core.CommonRegistration;
@@ -20,6 +22,7 @@ public class NeoForgeTiabMod {
     public NeoForgeTiabMod(IEventBus bus) {
         bus.addListener(this::onRegisterEvent);
         bus.addListener(this::onClient);
+        NeoForge.EVENT_BUS.addListener(this::onServer);
     }
 
     public void onRegisterEvent(RegisterEvent event) {
@@ -34,5 +37,9 @@ public class NeoForgeTiabMod {
 
     public void onClient(FMLClientSetupEvent event) {
         EntityRenderers.register(CommonRegistration.ACCELERATOR_ENTITY.get(), TimeAcceleratorEntityRenderer::new);
+    }
+
+    public void onServer(ServerStartingEvent event) {
+        CommonRegistration.initServer(event.getServer());
     }
 }

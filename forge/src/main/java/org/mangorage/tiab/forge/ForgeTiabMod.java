@@ -4,6 +4,8 @@ import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -19,6 +21,7 @@ public class ForgeTiabMod {
     public ForgeTiabMod() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onRegister);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClient);
+        MinecraftForge.EVENT_BUS.addListener(this::onServer);
     }
 
     public void onRegister(RegisterEvent event) {
@@ -33,5 +36,9 @@ public class ForgeTiabMod {
 
     public void onClient(FMLClientSetupEvent event) {
         EntityRenderers.register(CommonRegistration.ACCELERATOR_ENTITY.get(), TimeAcceleratorEntityRenderer::new);
+    }
+
+    public void onServer(ServerStartingEvent event) {
+        CommonRegistration.initServer(event.getServer());
     }
 }
