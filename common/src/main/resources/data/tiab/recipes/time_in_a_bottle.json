@@ -7,13 +7,13 @@
   ],
   "key": {
     "G": {
-      "tag": "forge:ingots/gold"
+      "item": "minecraft:gold_ingot"
     },
     "D": {
-      "tag": "forge:gems/diamond"
+      "item": "minecraft:diamond"
     },
     "L": {
-      "tag": "forge:gems/lapis"
+      "item": "minecraft:lapis_lazuli"
     },
     "C": {
       "item": "minecraft:clock"
@@ -23,6 +23,6 @@
     }
   },
   "result": {
-    "item": "tiab:time_in_a_bottle"
+    "id": "tiab:time_in_a_bottle"
   }
 }

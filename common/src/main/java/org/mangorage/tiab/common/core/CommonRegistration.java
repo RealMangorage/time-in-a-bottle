@@ -1,17 +1,17 @@
 package org.mangorage.tiab.common.core;
 
-import com.mojang.serialization.Codec;
-import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import org.mangorage.tiab.common.entities.TimeAcceleratorEntity;
 import org.mangorage.tiab.common.items.TiabItem;
 import org.mangorage.tiab.common.misc.IRegistrationWrapper;
@@ -22,22 +22,24 @@ import java.util.function.Supplier;
 import static org.mangorage.tiab.common.CommonConstants.MODID;
 
 public class CommonRegistration {
-    public static final Supplier<DataComponentType<Integer>> STORED_TIME_COMPONENT = Lazy.of(() -> {
-        return new DataComponentType.Builder<Integer>()
-                .persistent(Codec.INT)
-                .networkSynchronized(ByteBufCodecs.INT)
+    public static final Supplier<DataComponentType<StoredTimeComponent>> STORED_TIME_COMPONENT = Lazy.of(() -> {
+        return new DataComponentType.Builder<StoredTimeComponent>()
+                .persistent(StoredTimeComponent.DIRECT_CODEC)
+                .networkSynchronized(StoredTimeComponent.DIRECT_STREAM_CODEC)
                 .build();
     });
     public static final Supplier<TiabItem> TIAB_ITEM = Lazy.of(
             () -> new TiabItem(
                     new Item.Properties()
-                            .component(STORED_TIME_COMPONENT.get(), 0)
+                            .component(STORED_TIME_COMPONENT.get(), new StoredTimeComponent(0, 0))
                             .component(DataComponents.MAX_STACK_SIZE, 1)
             )
     );
     public static final Supplier<EntityType<TimeAcceleratorEntity>> ACCELERATOR_ENTITY = Lazy.of(() -> {
        return EntityType.Builder.<TimeAcceleratorEntity>of(TimeAcceleratorEntity::new, MobCategory.MISC).build("accelerator");
     });
+
+    public static final TagKey<Block> TIAB_UN_ACCELERATABLE = TagKey.create(Registries.BLOCK, create("un_acceleratable"));
 
     public static ResourceLocation create(String id) {
         return new ResourceLocation(MODID, id);

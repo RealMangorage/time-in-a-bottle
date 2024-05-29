@@ -1,6 +1,25 @@
 package org.mangorage.tiab.common.core;
 
 
-public class StoredTimeComponent {
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ExtraCodecs;
 
+public record StoredTimeComponent(int stored, int total) {
+    public static final Codec<StoredTimeComponent> DIRECT_CODEC = RecordCodecBuilder.create(
+            buiilder -> buiilder.group(
+                            ExtraCodecs.NON_NEGATIVE_INT.fieldOf("stored").forGetter(StoredTimeComponent::stored),
+                            ExtraCodecs.NON_NEGATIVE_INT.fieldOf("total").forGetter(StoredTimeComponent::total)
+                    ).apply(buiilder, StoredTimeComponent::new)
+    );
+    public static final StreamCodec<RegistryFriendlyByteBuf, StoredTimeComponent> DIRECT_STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.VAR_INT,
+            StoredTimeComponent::stored,
+            ByteBufCodecs.VAR_INT,
+            StoredTimeComponent::total,
+            StoredTimeComponent::new
+    );
 }

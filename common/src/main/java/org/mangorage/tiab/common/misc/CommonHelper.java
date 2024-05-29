@@ -1,14 +1,19 @@
 package org.mangorage.tiab.common.misc;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.mangorage.tiab.common.core.CommonRegistration;
+import org.mangorage.tiab.common.core.StoredTimeComponent;
 import org.mangorage.tiab.common.lang.Styles;
 import org.mangorage.tiab.common.lang.Translation;
+
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class CommonHelper {
     private static final String[] NOTES = {"C", "D", "E", "F", "G2", "A2", "B2", "C2", "D2", "E2", "F2"};
@@ -47,7 +52,7 @@ public class CommonHelper {
         }
     }
 
-    public void playSound(Level level, BlockPos pos, int nextRate) {
+    public static void playSound(Level level, BlockPos pos, int nextRate) {
         switch (nextRate) {
             case 1 -> playNoteBlockHarpSound(level, pos, NOTES[0]);
             case 2 -> playNoteBlockHarpSound(level, pos, NOTES[1]);
@@ -64,7 +69,7 @@ public class CommonHelper {
     }
 
     public static Component getTotalTimeTranslated(ItemStack stack) {
-        int totalAccumulatedTime = stack.getOrDefault(CommonRegistration.STORED_TIME_COMPONENT.get(), 0);
+        int totalAccumulatedTime = stack.getOrDefault(CommonRegistration.STORED_TIME_COMPONENT.get(), new StoredTimeComponent(0, 0)).total();
         int totalAccumulatedTimeSeconds = totalAccumulatedTime / 20;
         int totalAccumulatedHours = totalAccumulatedTimeSeconds / 3600;
         int totalAccumulatedMinutes = (totalAccumulatedTimeSeconds % 3600) / 60;
@@ -74,7 +79,7 @@ public class CommonHelper {
     }
 
     public static Component getStoredTimeTranslated(ItemStack stack) {
-        int storedTime = stack.getOrDefault(CommonRegistration.STORED_TIME_COMPONENT.get(), 0);
+        int storedTime = stack.getOrDefault(CommonRegistration.STORED_TIME_COMPONENT.get(), new StoredTimeComponent(0, 0)).stored();
         int storedSeconds = storedTime / 20;
         int hours = storedSeconds / 3600;
         int minutes = (storedSeconds % 3600) / 60;
@@ -82,4 +87,10 @@ public class CommonHelper {
 
         return Translation.TOOLTIP_STORED_TIME.componentTranslation(String.format("%02d", hours), String.format("%02d", minutes), String.format("%02d", seconds)).setStyle(Styles.GREEN);
     }
+
+    public static <T> void modify(ItemStack stack, DataComponentType<T> dataComponentType, Supplier<T> defaultComponent, Function<T, T> function) {
+        var comp = stack.getOrDefault(dataComponentType, defaultComponent.get());
+        stack.set(dataComponentType, function.apply(comp));
+    }
+
 }

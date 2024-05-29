@@ -17,8 +17,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import org.mangorage.tiab.common.CommonConstants;
 import org.mangorage.tiab.common.core.CommonRegistration;
-import org.mangorage.tiab.common.misc.NBTKeys;
 
 public class TimeAcceleratorEntity extends Entity {
     private static final EntityDataAccessor<Integer> timeRate = SynchedEntityData.defineId(TimeAcceleratorEntity.class, EntityDataSerializers.INT);
@@ -85,16 +85,16 @@ public class TimeAcceleratorEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
-        entityData.set(timeRate, compound.getInt(NBTKeys.ENTITY_TIME_RATE));
-        setRemainingTime(compound.getInt(NBTKeys.ENTITY_REMAINING_TIME));
-        this.pos = NbtUtils.readBlockPos(compound, NBTKeys.ENTITY_POS).orElse(new BlockPos(0,0,0));
+        entityData.set(timeRate, compound.getInt(CommonConstants.NBTKeys.ENTITY_TIME_RATE));
+        setRemainingTime(compound.getInt(CommonConstants.NBTKeys.ENTITY_REMAINING_TIME));
+        this.pos = NbtUtils.readBlockPos(compound, CommonConstants.NBTKeys.ENTITY_POS).orElse(new BlockPos(0,0,0));
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag compound) {
-        compound.putInt(NBTKeys.ENTITY_TIME_RATE, getTimeRate());
-        compound.putInt(NBTKeys.ENTITY_REMAINING_TIME, getRemainingTime());
-        compound.put(NBTKeys.ENTITY_POS, NbtUtils.writeBlockPos(this.pos));
+        compound.putInt(CommonConstants.NBTKeys.ENTITY_TIME_RATE, getTimeRate());
+        compound.putInt(CommonConstants.NBTKeys.ENTITY_REMAINING_TIME, getRemainingTime());
+        compound.put(CommonConstants.NBTKeys.ENTITY_POS, NbtUtils.writeBlockPos(this.pos));
     }
 
     @Override
