@@ -15,6 +15,7 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import org.mangorage.tiab.common.commands.TiabCommands;
+import org.mangorage.tiab.common.config.ConfigHolder;
 import org.mangorage.tiab.common.entities.TimeAcceleratorEntity;
 import org.mangorage.tiab.common.items.TiabItem;
 import org.mangorage.tiab.common.misc.IRegistrationWrapper;
@@ -41,10 +42,11 @@ public class CommonRegistration {
     public static final Supplier<EntityType<TimeAcceleratorEntity>> ACCELERATOR_ENTITY = LazySupplier.of(() -> {
        return EntityType.Builder.<TimeAcceleratorEntity>of(TimeAcceleratorEntity::new, MobCategory.MISC).build("accelerator");
     });
+    public static final ConfigHolder mainConfig = ConfigHolder.create();
 
     public static final TagKey<Block> TIAB_UN_ACCELERATABLE = TagKey.create(Registries.BLOCK, create("un_acceleratable"));
 
-    public static ResourceLocation create(String id) {
+    private static ResourceLocation create(String id) {
         return new ResourceLocation(MODID, id);
     }
 
