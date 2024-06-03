@@ -42,7 +42,7 @@ public class CommonRegistration {
     public static final Supplier<EntityType<TimeAcceleratorEntity>> ACCELERATOR_ENTITY = LazySupplier.of(() -> {
        return EntityType.Builder.<TimeAcceleratorEntity>of(TimeAcceleratorEntity::new, MobCategory.MISC).build("accelerator");
     });
-    public static final ConfigHolder mainConfig = ConfigHolder.create();
+    public static final ConfigHolder SERVER_CONFIG = ConfigHolder.create();
 
     public static final TagKey<Block> TIAB_UN_ACCELERATABLE = TagKey.create(Registries.BLOCK, create("un_acceleratable"));
 

@@ -5,11 +5,15 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
+import org.apache.commons.lang3.tuple.Pair;
 import org.mangorage.tiab.common.client.renderer.TimeAcceleratorEntityRenderer;
 import org.mangorage.tiab.common.core.CommonRegistration;
 import org.mangorage.tiab.common.misc.IRegistrationWrapper;
@@ -23,8 +27,16 @@ public class NeoForgeTiabMod {
         bus.addListener(this::onRegisterEvent);
         bus.addListener(this::onClient);
         NeoForge.EVENT_BUS.addListener(this::onServer);
+
+
+        Pair<NeoForgeTiabConfig, ModConfigSpec> cfg = new ModConfigSpec.Builder()
+                .configure(NeoForgeTiabConfig::new);
+
+        ModLoadingContext.get().getActiveContainer().registerConfig(ModConfig.Type.SERVER, cfg.getRight());
+        CommonRegistration.SERVER_CONFIG.setConfig(cfg.getKey());
     }
 
+    @SuppressWarnings("unchecked")
     public void onRegisterEvent(RegisterEvent event) {
         CommonRegistration.init(new IRegistrationWrapper() {
             @Override
