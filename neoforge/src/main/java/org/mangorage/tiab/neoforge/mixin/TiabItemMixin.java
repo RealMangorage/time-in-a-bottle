@@ -12,4 +12,9 @@ public abstract class TiabItemMixin implements IItemExtension {
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return false;
     }
+
+    @Override
+    public boolean shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
+        return false;
+    }
 }

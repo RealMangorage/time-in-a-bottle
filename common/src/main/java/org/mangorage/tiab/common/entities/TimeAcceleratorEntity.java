@@ -22,7 +22,7 @@ import org.mangorage.tiab.common.core.CommonRegistration;
 
 public class TimeAcceleratorEntity extends Entity {
     private static final EntityDataAccessor<Integer> timeRate = SynchedEntityData.defineId(TimeAcceleratorEntity.class, EntityDataSerializers.INT);
-    private int remainingTime;
+    private static final EntityDataAccessor<Integer> timeRemaining = SynchedEntityData.defineId(TimeAcceleratorEntity.class, EntityDataSerializers.INT);
     private BlockPos pos;
 
     public TimeAcceleratorEntity(EntityType entityType, Level worldIn) {
@@ -40,6 +40,7 @@ public class TimeAcceleratorEntity extends Entity {
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         builder.define(timeRate, 1);
+        builder.define(timeRemaining, 0);
     }
 
     @Override
@@ -77,8 +78,8 @@ public class TimeAcceleratorEntity extends Entity {
             }
         }
 
-        this.remainingTime -= 1;
-        if (this.remainingTime <= 0 && !level.isClientSide) {
+        setRemainingTime(getRemainingTime() - 1);
+        if (getRemainingTime() <= 0 && !level.isClientSide) {
             this.remove(RemovalReason.KILLED);
         }
     }
@@ -111,10 +112,10 @@ public class TimeAcceleratorEntity extends Entity {
     }
 
     public int getRemainingTime() {
-        return this.remainingTime;
+        return entityData.get(timeRemaining);
     }
 
     public void setRemainingTime(int remainingTime) {
-        this.remainingTime = remainingTime;
+        entityData.set(timeRemaining, remainingTime);
     }
 }
