@@ -1,6 +1,5 @@
 package org.mangorage.tiab.common.config;
 
-
 public interface ITiabConfig {
 
     // Max Stored Time Possible in ticks

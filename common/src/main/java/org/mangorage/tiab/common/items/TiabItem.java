@@ -17,6 +17,7 @@ import org.mangorage.tiab.common.core.CommonRegistration;
 import org.mangorage.tiab.common.core.StoredTimeComponent;
 import org.mangorage.tiab.common.entities.TimeAcceleratorEntity;
 import org.mangorage.tiab.common.misc.CommonHelper;
+import org.mangorage.tiab.common.misc.CommonSoundHelper;
 
 import java.util.List;
 import java.util.Optional;
@@ -110,7 +111,7 @@ public class TiabItem extends Item {
             });
         }
 
-        CommonHelper.playSound(level, pos, nextRate);
+        CommonSoundHelper.playSound(level, pos, nextRate);
 
         return InteractionResult.SUCCESS;
     }

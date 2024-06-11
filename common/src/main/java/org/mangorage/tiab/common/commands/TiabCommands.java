@@ -14,7 +14,6 @@ import org.mangorage.tiab.common.core.CommonRegistration;
 import org.mangorage.tiab.common.core.StoredTimeComponent;
 import org.mangorage.tiab.common.items.TiabItem;
 import org.mangorage.tiab.common.misc.CommonHelper;
-import org.mangorage.tiab.common.misc.SendMessage;
 
 public class TiabCommands {
     private static final String ADD_TIME_COMMAND = "addTime";
@@ -78,7 +77,7 @@ public class TiabCommands {
                                 return new StoredTimeComponent(currentStoredEnergy + timeToAddFinal * CommonRegistration.SERVER_CONFIG.get().TICKS_CONST(), old.total());
                             });
 
-                            SendMessage.sendStatusMessage(player, String.format("%s %d seconds", isAdd ? "Added" : "Removed ", timeToAdd));
+                            CommonHelper.sendStatusMessage(player, String.format("%s %d seconds", isAdd ? "Added" : "Removed ", timeToAdd));
                         }
 
                         success = true;
@@ -86,15 +85,15 @@ public class TiabCommands {
                 }
 
                 if (!success) {
-                    SendMessage.sendStatusMessage(player, "No Time in a bottle item in inventory");
+                    CommonHelper.sendStatusMessage(player, "No Time in a bottle item in inventory");
                 }
 
                 return 1;
             } catch (NumberFormatException ex) {
-                SendMessage.sendStatusMessage(player, "Invalid time parameter! (is the number too big?)");
+                CommonHelper.sendStatusMessage(player, "Invalid time parameter! (is the number too big?)");
             }
         } else {
-            SendMessage.sendStatusMessage(player, "Empty time parameter!");
+            CommonHelper.sendStatusMessage(player, "Empty time parameter!");
         }
         return 0;
     }
