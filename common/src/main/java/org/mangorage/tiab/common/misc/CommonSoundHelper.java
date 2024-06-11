@@ -5,7 +5,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 
-public class CommonSoundHelper {
+public final class CommonSoundHelper {
     private static final String[] NOTES = {"C", "D", "E", "F", "G2", "A2", "B2", "C2", "D2", "E2", "F2"};
 
     public static void playNoteBlockHarpSound(Level level, BlockPos pos, String note) {

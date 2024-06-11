@@ -27,7 +27,7 @@ import java.util.function.Supplier;
 
 import static org.mangorage.tiab.common.CommonConstants.MODID;
 
-public class CommonRegistration {
+public final class CommonRegistration {
     public static final Supplier<DataComponentType<StoredTimeComponent>> STORED_TIME_COMPONENT = LazySupplier.of(() -> {
         return new DataComponentType.Builder<StoredTimeComponent>()
                 .persistent(StoredTimeComponent.DIRECT_CODEC)

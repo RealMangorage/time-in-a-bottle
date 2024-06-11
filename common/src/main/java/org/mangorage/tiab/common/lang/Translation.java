@@ -1,7 +1,5 @@
 package org.mangorage.tiab.common.lang;
 
-
-
 public enum Translation implements ITranslationProvider {
     TOOLTIP_STORED_TIME("item.tiab.time_in_a_bottle.tooltip.stored_time", 3),
     TOOLTIP_TOTAL_ACCUMULATED_TIME("item.tiab.time_in_a_bottle.tooltip.total_accumulated_time", 3);

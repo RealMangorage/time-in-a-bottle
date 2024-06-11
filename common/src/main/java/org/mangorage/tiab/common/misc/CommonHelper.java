@@ -12,7 +12,7 @@ import org.mangorage.tiab.common.lang.Translation;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class CommonHelper {
+public final class CommonHelper {
 
     public static Component getTotalTimeTranslated(ItemStack stack) {
         int totalAccumulatedTime = stack.getOrDefault(CommonRegistration.STORED_TIME_COMPONENT.get(), new StoredTimeComponent(0, 0)).total();

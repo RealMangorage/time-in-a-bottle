@@ -2,7 +2,7 @@ package org.mangorage.tiab.common.misc;
 
 import java.util.function.Supplier;
 
-public class LazySupplier<T> implements Supplier<T> {
+public final class LazySupplier<T> implements Supplier<T> {
     public static <T> Supplier<T> of(Supplier<T> supplier) {
         return new LazySupplier<>(supplier);
     }
