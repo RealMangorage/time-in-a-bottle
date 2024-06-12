@@ -1,6 +1,7 @@
 package org.mangorage.tiab.common.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -16,19 +17,16 @@ public class TimeAcceleratorEntityRenderer extends EntityRenderer<TimeAccelerato
 
     @Override
     public void render(TimeAcceleratorEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int packedLightIn) {
-        // Show The Rate
         String timeRate = "x" + 2 * entity.getTimeRate();
         float paddingLeftRight = 2 * entity.getTimeRate() < 10 ? 0.11F : 0.19F;
-        String timeRemaining = entity.getRemainingTime() / 20 + "s";
+
+        int remainingTimeSeconds = entity.getRemainingTime() / 20;
+        String timeRemaining = remainingTimeSeconds + "s";
+
         var rendererText = textRenderer.of(poseStack, bufferSource);
 
-        for (BlockFaceTextRenderer.Face value : BlockFaceTextRenderer.Face.values()) {
-            // Display time rate
-            rendererText.render(timeRate, value, 16777215, paddingLeftRight, 0.064F, 0.51F);
-
-            // Display Time Remaining
-            rendererText.render(timeRemaining, value, 16777215, paddingLeftRight, 0.264F, 0.51F);
-        }
+        rendererText.render(BlockFaceTextRenderer.Face.valuesList(), timeRate, packedLightIn, 16777215, paddingLeftRight, 0.064F, 0.51F); // Render Time Rate
+        rendererText.render(BlockFaceTextRenderer.Face.valuesList(), timeRemaining, packedLightIn, remainingTimeSeconds > 10 ? 16777215 : 16711680, paddingLeftRight, 0.264F, 0.51F); // Render Time Remaining, goes reed when < 10 seconds, otherwise white text.
     }
 
     @Override
