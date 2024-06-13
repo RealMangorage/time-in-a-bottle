@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -15,15 +16,18 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.mangorage.tiab.common.CommonConstants;
+import org.mangorage.tiab.common.CommonTiabMod;
 import org.mangorage.tiab.common.client.renderer.TimeAcceleratorEntityRenderer;
 import org.mangorage.tiab.common.core.CommonRegistration;
+import org.mangorage.tiab.common.core.LoaderSide;
 import org.mangorage.tiab.common.misc.IRegistrationWrapper;
 
 
 @Mod(CommonConstants.MODID)
-public class ForgeTiabMod {
+public class ForgeTiabMod extends CommonTiabMod {
 
     public ForgeTiabMod() {
+        super(LoaderSide.FORGE, modid -> ModList.get().isLoaded(modid));
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onRegister);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClient);
         MinecraftForge.EVENT_BUS.addListener(this::onServer);
