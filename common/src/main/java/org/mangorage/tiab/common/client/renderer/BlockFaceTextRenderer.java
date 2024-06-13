@@ -20,26 +20,26 @@ public record BlockFaceTextRenderer(Font font, Vector3f vector3f) {
     }
 
     public IDrawText of(PoseStack poseStack, MultiBufferSource multiBufferSource) {
-        return (face, text, packed, color, x, y, z) -> {
-            drawText(font, poseStack, multiBufferSource, text, face.of(vector3f, x, y, z), face.axis(), packed, color);
-        };
+        return ((face, text, dropShadows, packedLightCoords, color, backgroundcolor, x, y, z, offsetX, offsetY) -> {
+           drawText(font, poseStack, multiBufferSource, text, face.of(vector3f, x, y, z), face.axis(), packedLightCoords, dropShadows, color, backgroundcolor, offsetX, offsetY);
+        });
     }
 
-    private static void drawText(Font font, PoseStack matrixStack, MultiBufferSource source, String text, Vector3f translateVector, Quaternionf rotate, int pPackedLightCoords, int color) {
+    private static void drawText(Font font, PoseStack matrixStack, MultiBufferSource source, String text, Vector3f translateVector, Quaternionf rotate, int pPackedLightCoords, boolean dropShadows, int color, int backgroundColor, float oX, float oY) {
         matrixStack.pushPose();
         matrixStack.translate(translateVector.x(), translateVector.y(), translateVector.z());
         matrixStack.scale(0.02F, -0.02F, 0.02F);
         matrixStack.mulPose(rotate);
         font.drawInBatch(
                 text, // Text
-                0, // pX
-                0, // pY
+                oX, // pX
+                oY, // pY
                 color, // pColor
-                false, // pDropShadow
+                dropShadows, // pDropShadow
                 matrixStack.last().pose(), // matrix4f
                 source, // MultiBufferSource
                 Font.DisplayMode.NORMAL, // DisplayMode
-                0, // Background Color
+                backgroundColor, // Background Color
                 pPackedLightCoords // pPackedLightsCoords
         );
         matrixStack.popPose();
@@ -95,10 +95,17 @@ public record BlockFaceTextRenderer(Font font, Vector3f vector3f) {
 
     @FunctionalInterface
     public interface IDrawText {
-        void render(Face face, String text, int packedLightCoords, int color, float x, float y, float z);
+        void render(Face face, String text, boolean dropShadows, int packedLightCoords, int color, int backgroundcolor, float x, float y, float z, float offsetX, float offsetY);
+
 
         default void render(List<Face> faces, String text, int packedLightCoords, int color, float x, float y, float z) {
-            faces.forEach(face -> render(face, text, packedLightCoords, color, x, y, z));
+            faces.forEach(face -> render(face, text, false, packedLightCoords, color, 0, x, y, z, 0, 0));
+        }
+        default void render(List<Face> faces, String text, boolean dropShadows, int packedLightCoords, int color, int backgroundcolor, float x, float y, float z, float offsetX, float offsetY) {
+            faces.forEach(face -> render(face, text, dropShadows, packedLightCoords, color, backgroundcolor, x, y, z, offsetX, offsetY));
+        }
+        default void render(List<Face> faces, String text, boolean dropShadows, int packedLightCoords, int color, int backgroundcolor, float x, float y, float z) {
+            faces.forEach(face -> render(face, text, dropShadows, packedLightCoords, color, backgroundcolor, x, y, z, 0, 0));
         }
     }
 }
