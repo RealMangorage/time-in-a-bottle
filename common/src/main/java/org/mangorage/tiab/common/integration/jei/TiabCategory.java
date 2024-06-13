@@ -12,19 +12,16 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.mangorage.tiab.common.CommonConstants;
 import org.mangorage.tiab.common.core.CommonRegistration;
-import java.util.List;
 
 public class TiabCategory implements IRecipeCategory<TiabCategoryInfo> {
     public static final RecipeType<TiabCategoryInfo> RECIPE_TYPE = RecipeType.create(CommonConstants.MODID, "resource_generator", TiabCategoryInfo.class);
 
     private final IDrawable backrgound;
     private final IDrawable icon;
-    private final List<BlockItem> blockItems;
     private final IDrawable slotBackground;
 
     public TiabCategory(IJeiHelpers helper) {
@@ -32,13 +29,6 @@ public class TiabCategory implements IRecipeCategory<TiabCategoryInfo> {
         this.backrgound = gui.createBlankDrawable(160, 125);
         this.icon = gui.createDrawableItemStack(CommonRegistration.TIAB_ITEM.get().getDefaultInstance());
         this.slotBackground = gui.getSlotDrawable();
-        this.blockItems = helper.getIngredientManager()
-                .getAllItemStacks()
-                .stream()
-                .map(ItemStack::getItem)
-                .filter(item -> item instanceof BlockItem)
-                .map(item -> (BlockItem) item)
-                .toList();
     }
 
 
