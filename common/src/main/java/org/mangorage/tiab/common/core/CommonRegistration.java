@@ -15,6 +15,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import org.mangorage.tiab.common.commands.TiabCommands;
 import org.mangorage.tiab.common.config.ConfigHolder;
@@ -61,7 +62,6 @@ public final class CommonRegistration {
         return new ResourceLocation(MODID, id);
     }
 
-    // For Forge
     public static void init(IRegistrationWrapper wrapper) {
         wrapper.register(BuiltInRegistries.ITEM, create("time_in_a_bottle"), TIAB_ITEM.get());
         wrapper.register(BuiltInRegistries.DATA_COMPONENT_TYPE, create("stored_time"), STORED_TIME_COMPONENT.get());
