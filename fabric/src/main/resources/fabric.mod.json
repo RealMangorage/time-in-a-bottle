@@ -19,7 +19,6 @@
             "org.mangorage.tiab.fabric.FabricTiabMod"
         ],
         "client": [
-            "org.mangorage.tiab.fabric.FabricTiabClientMod"
         ],
         "jei_mod_plugin": [
             "org.mangorage.tiab.common.integration.jei.TiabJeiPlugin"
