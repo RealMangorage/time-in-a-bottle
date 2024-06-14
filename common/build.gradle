@@ -11,8 +11,12 @@ minecraft {
     }
 }
 
+repositories {
+    mavenLocal()
+}
+
 dependencies {
-    compileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    compileOnly("mezz.jei:jei-${minecraft_version}-common-api:18.0.0.62")
     compileOnly group:'org.spongepowered', name:'mixin', version:'0.8.5'
 }
 
