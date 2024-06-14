@@ -27,8 +27,18 @@ public class TiabItem extends Item {
         super(properties);
     }
 
-    @Override
-    public void inventoryTick(ItemStack stack, Level level, Entity entity, int $$3, boolean $$4) {
+    public static void tickPlayer(Player player) {
+        for (ItemStack item : player.getInventory().items) {
+            if (item.getItem() instanceof TiabItem tiabItem) {
+                tiabItem.tickBottle(item);
+                break;
+            }
+        }
+    }
+
+    public void tickBottle(ItemStack stack) {
+        if (stack.getItem() != this) return;
+
         var comp = CommonRegistration.STORED_TIME_COMPONENT.get();
 
         CommonHelper.modify(stack, comp, () -> new StoredTimeComponent(0, 0), old -> {
@@ -45,8 +55,8 @@ public class TiabItem extends Item {
                         CommonHelper.getTotalTimeTranslated(stack)
                 )
         );
-        stack.set(DataComponents.LORE, lore);
 
+        stack.set(DataComponents.LORE, lore);
     }
 
     @Override

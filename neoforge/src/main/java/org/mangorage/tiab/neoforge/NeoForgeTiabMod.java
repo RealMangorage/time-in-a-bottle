@@ -13,12 +13,14 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.mangorage.tiab.common.CommonTiabMod;
 import org.mangorage.tiab.common.client.renderer.TimeAcceleratorEntityRenderer;
 import org.mangorage.tiab.common.core.CommonRegistration;
 import org.mangorage.tiab.common.core.LoaderSide;
+import org.mangorage.tiab.common.items.TiabItem;
 import org.mangorage.tiab.common.misc.IRegistrationWrapper;
 
 import static org.mangorage.tiab.common.CommonConstants.MODID;
@@ -31,6 +33,7 @@ public class NeoForgeTiabMod extends CommonTiabMod {
         bus.addListener(this::onRegisterEvent);
         bus.addListener(this::onClient);
         NeoForge.EVENT_BUS.addListener(this::onServer);
+        NeoForge.EVENT_BUS.addListener(this::onPlayerTick);
 
 
         Pair<NeoForgeTiabConfig, ModConfigSpec> cfg = new ModConfigSpec.Builder()
@@ -57,5 +60,9 @@ public class NeoForgeTiabMod extends CommonTiabMod {
 
     public void onServer(ServerStartingEvent event) {
         CommonRegistration.initServer(event.getServer());
+    }
+
+    public void onPlayerTick(PlayerTickEvent.Post event) {
+        TiabItem.tickPlayer(event.getEntity());
     }
 }

@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -20,6 +21,7 @@ import org.mangorage.tiab.common.CommonTiabMod;
 import org.mangorage.tiab.common.client.renderer.TimeAcceleratorEntityRenderer;
 import org.mangorage.tiab.common.core.CommonRegistration;
 import org.mangorage.tiab.common.core.LoaderSide;
+import org.mangorage.tiab.common.items.TiabItem;
 import org.mangorage.tiab.common.misc.IRegistrationWrapper;
 
 
@@ -31,6 +33,7 @@ public class ForgeTiabMod extends CommonTiabMod {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onRegister);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClient);
         MinecraftForge.EVENT_BUS.addListener(this::onServer);
+        MinecraftForge.EVENT_BUS.addListener(this::onPlayerTick);
 
         Pair<ForgeTiabConfig, ForgeConfigSpec> cfg = new ForgeConfigSpec.Builder()
                 .configure(ForgeTiabConfig::new);
@@ -55,5 +58,9 @@ public class ForgeTiabMod extends CommonTiabMod {
 
     public void onServer(ServerStartingEvent event) {
         CommonRegistration.initServer(event.getServer());
+    }
+
+    public void onPlayerTick(TickEvent.PlayerTickEvent event) {
+        TiabItem.tickPlayer(event.player);
     }
 }
