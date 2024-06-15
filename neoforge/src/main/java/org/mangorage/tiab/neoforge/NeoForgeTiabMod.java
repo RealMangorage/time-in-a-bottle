@@ -1,8 +1,8 @@
 package org.mangorage.tiab.neoforge;
 
 import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
@@ -20,8 +20,8 @@ import org.mangorage.tiab.common.CommonTiabMod;
 import org.mangorage.tiab.common.client.renderer.TimeAcceleratorEntityRenderer;
 import org.mangorage.tiab.common.core.CommonRegistration;
 import org.mangorage.tiab.common.core.LoaderSide;
+import org.mangorage.tiab.common.core.registry.RegistryWrapper;
 import org.mangorage.tiab.common.items.TiabItem;
-import org.mangorage.tiab.common.misc.IRegistrationWrapper;
 
 import static org.mangorage.tiab.common.CommonConstants.MODID;
 
@@ -43,13 +43,11 @@ public class NeoForgeTiabMod extends CommonTiabMod {
         CommonRegistration.SERVER_CONFIG.setConfig(cfg.getKey());
     }
 
-    @SuppressWarnings("unchecked")
     public void onRegisterEvent(RegisterEvent event) {
-        CommonRegistration.init(new IRegistrationWrapper() {
+        CommonRegistration.register(event.getRegistry().key(), new RegistryWrapper() {
             @Override
-            public <T> void register(ResourceKey<? extends Registry<T>> resourceKey, ResourceLocation resourceLocation, T value) {
-                if (event.getRegistryKey() == resourceKey)
-                    event.register((ResourceKey<Registry<T>>) event.getRegistry().key(), resourceLocation, () -> value);
+            public <T> Holder<T> registerForHolder(ResourceLocation id, T object) {
+                return Registry.registerForHolder((Registry<T>) event.getRegistry(), id, object);
             }
         });
     }

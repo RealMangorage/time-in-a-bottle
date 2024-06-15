@@ -15,45 +15,63 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import org.mangorage.tiab.common.commands.TiabCommands;
 import org.mangorage.tiab.common.config.ConfigHolder;
+import org.mangorage.tiab.common.core.registry.RegistryController;
+import org.mangorage.tiab.common.core.registry.RegistryHolder;
+import org.mangorage.tiab.common.core.registry.RegistryWrapper;
 import org.mangorage.tiab.common.entities.TimeAcceleratorEntity;
 import org.mangorage.tiab.common.items.TiabItem;
-import org.mangorage.tiab.common.misc.IRegistrationWrapper;
-import org.mangorage.tiab.common.misc.LazySupplier;
-
-import java.util.function.Supplier;
 
 import static org.mangorage.tiab.common.CommonConstants.MODID;
 
 public final class CommonRegistration {
-    public static final Supplier<DataComponentType<StoredTimeComponent>> STORED_TIME_COMPONENT = LazySupplier.of(() -> {
-        return new DataComponentType.Builder<StoredTimeComponent>()
-                .persistent(StoredTimeComponent.DIRECT_CODEC)
-                .networkSynchronized(StoredTimeComponent.DIRECT_STREAM_CODEC)
-                .build();
-    });
-    public static final Supplier<TiabItem> TIAB_ITEM = LazySupplier.of(
+    private static final RegistryController registry = RegistryController.create(MODID);
+
+    public static final RegistryHolder<DataComponentType<StoredTimeComponent>> STORED_TIME_COMPONENT = registry.register(
+            "stored_time",
+            Registries.DATA_COMPONENT_TYPE,
+            BuiltInRegistries.DATA_COMPONENT_TYPE,
+            () -> {
+                return new DataComponentType.Builder<StoredTimeComponent>()
+                        .persistent(StoredTimeComponent.DIRECT_CODEC)
+                        .networkSynchronized(StoredTimeComponent.DIRECT_STREAM_CODEC)
+                        .build();
+            });
+
+    public static final RegistryHolder<TiabItem> TIAB_ITEM = registry.register(
+            "time_in_a_bottle",
+            Registries.ITEM,
+            BuiltInRegistries.ITEM,
             () -> new TiabItem(
                     new Item.Properties()
                             .component(STORED_TIME_COMPONENT.get(), new StoredTimeComponent(0, 0))
                             .component(DataComponents.MAX_STACK_SIZE, 1)
-            )
-    );
-    public static final Supplier<EntityType<TimeAcceleratorEntity>> ACCELERATOR_ENTITY = LazySupplier.of(() -> {
-       return EntityType.Builder.<TimeAcceleratorEntity>of(TimeAcceleratorEntity::new, MobCategory.MISC).build("accelerator");
-    });
-    public static final Supplier<CreativeModeTab> TIAB_CREATIVE_TAB = LazySupplier.of(() -> {
-        return CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
-                .icon(() -> TIAB_ITEM.get().getDefaultInstance())
-                .title(Component.literal("Time in a bottle"))
-                .displayItems((parameters, output) -> {
-                    output.accept(TIAB_ITEM.get());
-                })
-                .build();
-    });
+            ));
+
+    public static final RegistryHolder<EntityType<TimeAcceleratorEntity>> ACCELERATOR_ENTITY = registry.register("" +
+            "accelerator",
+            Registries.ENTITY_TYPE,
+            BuiltInRegistries.ENTITY_TYPE,
+            () -> {
+               return EntityType.Builder.<TimeAcceleratorEntity>of(TimeAcceleratorEntity::new, MobCategory.MISC).build("accelerator");
+            });
+
+    public static final RegistryHolder<CreativeModeTab> TIAB_CREATIVE_TAB = registry.register(
+            "tiab",
+            Registries.CREATIVE_MODE_TAB,
+            BuiltInRegistries.CREATIVE_MODE_TAB,
+            () -> {
+                return CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
+                        .icon(() -> TIAB_ITEM.get().getDefaultInstance())
+                        .title(Component.literal("Time in a bottle"))
+                        .displayItems((parameters, output) -> {
+                            output.accept(TIAB_ITEM.get());
+                        })
+                        .build();
+            });
+
     public static final ConfigHolder SERVER_CONFIG = ConfigHolder.create();
 
     public static final TagKey<Block> TIAB_UN_ACCELERATABLE = TagKey.create(Registries.BLOCK, create("un_acceleratable"));
@@ -62,25 +80,12 @@ public final class CommonRegistration {
         return new ResourceLocation(MODID, id);
     }
 
-    public static void init(IRegistrationWrapper wrapper) {
-        wrapper.register(BuiltInRegistries.ITEM, create("time_in_a_bottle"), TIAB_ITEM.get());
-        wrapper.register(BuiltInRegistries.DATA_COMPONENT_TYPE, create("stored_time"), STORED_TIME_COMPONENT.get());
-        wrapper.register(BuiltInRegistries.ENTITY_TYPE, create("accelerator"), ACCELERATOR_ENTITY.get());
-        wrapper.register(BuiltInRegistries.CREATIVE_MODE_TAB, create("tiab"), TIAB_CREATIVE_TAB.get());
+    public static <T> void register(ResourceKey<? extends Registry<T>> resourceKey, RegistryWrapper registryWrapper) {
+        registry.register(resourceKey, registryWrapper);
     }
 
-    public static void init() {
-        init(new IRegistrationWrapper() {
-            @Override
-            public <T> void register(ResourceKey<? extends Registry<T>> resourceKey, ResourceLocation resourceLocation, T value) {
-                throw new IllegalStateException("Cannot register, use the one that takes the Registry Directly!");
-            }
-
-            @Override
-            public <T> void register(Registry<T> registry, ResourceLocation resourceLocation, T value) {
-                Registry.register(registry, resourceLocation, value);
-            }
-        });
+    public static void register() {
+        registry.registerUsingDefault();
     }
 
     public static void initServer(MinecraftServer server) {

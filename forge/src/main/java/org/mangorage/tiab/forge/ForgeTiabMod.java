@@ -1,6 +1,7 @@
 package org.mangorage.tiab.forge;
 
 import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -14,6 +15,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+
 import net.minecraftforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.mangorage.tiab.common.CommonConstants;
@@ -21,8 +23,8 @@ import org.mangorage.tiab.common.CommonTiabMod;
 import org.mangorage.tiab.common.client.renderer.TimeAcceleratorEntityRenderer;
 import org.mangorage.tiab.common.core.CommonRegistration;
 import org.mangorage.tiab.common.core.LoaderSide;
+import org.mangorage.tiab.common.core.registry.RegistryWrapper;
 import org.mangorage.tiab.common.items.TiabItem;
-import org.mangorage.tiab.common.misc.IRegistrationWrapper;
 
 
 @Mod(CommonConstants.MODID)
@@ -42,12 +44,21 @@ public class ForgeTiabMod extends CommonTiabMod {
         CommonRegistration.SERVER_CONFIG.setConfig(cfg.getKey());
     }
 
+    @SuppressWarnings("unchecked")
+    public <T> ResourceKey<Registry<T>> castRegistry(ResourceKey<? extends Registry<?>> resourceKey) {
+        return (ResourceKey<Registry<T>>) (Object) resourceKey;
+    }
+
     public void onRegister(RegisterEvent event) {
-        CommonRegistration.init(new IRegistrationWrapper() {
+        CommonRegistration.register(castRegistry(event.getRegistryKey()), new RegistryWrapper() {
             @Override
-            public <T> void register(ResourceKey<? extends Registry<T>> resourceKey, ResourceLocation resourceLocation, T value) {
-                if (resourceKey == event.getRegistryKey())
-                    event.register(resourceKey, h -> h.register(resourceLocation, value));
+            public <T> Holder<T> registerForHolder(ResourceLocation id, T object) {
+                if (event.getForgeRegistry() == null) {
+                    return Registry.registerForHolder(event.getVanillaRegistry(), id, object);
+                } else {
+                    event.getForgeRegistry().register(id, object);
+                    return (Holder<T>) event.getForgeRegistry().getHolder(id).get();
+                }
             }
         });
     }
