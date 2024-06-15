@@ -31,6 +31,10 @@ public class RegistryHolder<T> implements Supplier<T> {
         return minecraftHolder.value();
     }
 
+    public Supplier<T> asSupplier() {
+        return this;
+    }
+
     public ResourceLocation getId() {
         return id;
     }
