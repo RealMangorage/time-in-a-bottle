@@ -41,14 +41,16 @@ public class ForgeTiabMod extends CommonTiabMod {
                 .configure(ForgeTiabConfig::new);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, cfg.getRight());
+
         CommonRegistration.SERVER_CONFIG.setConfig(cfg.getKey());
     }
 
     @SuppressWarnings("unchecked")
     public <T> ResourceKey<Registry<T>> castRegistry(ResourceKey<? extends Registry<?>> resourceKey) {
-        return (ResourceKey<Registry<T>>) (Object) resourceKey;
+        return (ResourceKey<Registry<T>>) resourceKey;
     }
 
+    @SuppressWarnings("all")
     public void onRegister(RegisterEvent event) {
         CommonRegistration.register(castRegistry(event.getRegistryKey()), new RegistryWrapper() {
             @Override

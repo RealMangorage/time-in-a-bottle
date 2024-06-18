@@ -3,6 +3,7 @@ package org.mangorage.tiab.common.core.registry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+
 import java.util.function.Supplier;
 
 public class RegistryHolder<T> implements Supplier<T> {

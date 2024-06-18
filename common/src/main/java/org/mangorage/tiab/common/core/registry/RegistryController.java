@@ -1,11 +1,13 @@
 package org.mangorage.tiab.common.core.registry;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -16,7 +18,7 @@ public final class RegistryController {
         return new RegistryController(modID);
     }
 
-    private final Map<ResourceKey<Registry<?>>, List<RegistryHolder<?>>> REGISTRIES = new HashMap<>();
+    private final Map<ResourceKey<Registry<?>>, List<RegistryHolder<?>>> REGISTRIES = new LinkedHashMap<>();
     private final String modID;
     private boolean frozen = false;
 
@@ -44,12 +46,13 @@ public final class RegistryController {
     }
 
     public void registerUsingDefault() {
-        frozen = true;
-        REGISTRIES.forEach((k, v) -> {
-            v.forEach(holder -> {
-                holder.handleDefaultRegister();
+        BuiltInRegistries.REGISTRY.registryKeySet().forEach(key -> {
+            register(key, new RegistryWrapper() {
+                @Override
+                public <T> Holder<T> registerForHolder(ResourceLocation id, T object) {
+                    return Registry.registerForHolder((Registry<T>) BuiltInRegistries.REGISTRY.get(key.location()), id, object);
+                }
             });
         });
-        REGISTRIES.clear();
     }
 }

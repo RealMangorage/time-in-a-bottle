@@ -6,8 +6,7 @@
   "client": [
   ],
   "mixins": [
-    "ServerPlayerMixin",
-    "TiabItemMixin"
+    "ServerPlayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
