@@ -1,13 +1,20 @@
 package org.mangorage.tiab.forge;
 
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
+import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -43,6 +50,8 @@ public class ForgeTiabMod extends CommonTiabMod {
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, cfg.getRight());
 
         CommonRegistration.SERVER_CONFIG.setConfig(cfg.getKey());
+        var a = BuiltInRegistries.REGISTRY.get((ResourceKey) Registries.BLOCK);
+        var b = 1;
     }
 
     @SuppressWarnings("unchecked")
@@ -50,7 +59,7 @@ public class ForgeTiabMod extends CommonTiabMod {
         return (ResourceKey<Registry<T>>) resourceKey;
     }
 
-    @SuppressWarnings("all")
+    @SuppressWarnings({"unchecked", ""})
     public void onRegister(RegisterEvent event) {
         CommonRegistration.register(castRegistry(event.getRegistryKey()), new RegistryWrapper() {
             @Override

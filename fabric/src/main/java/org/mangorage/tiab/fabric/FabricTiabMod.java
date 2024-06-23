@@ -18,7 +18,9 @@ public class FabricTiabMod extends CommonTiabMod implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        CommonRegistration.SERVER_CONFIG.setConfig(FabricTiabConfig.get());
         CommonRegistration.register();
+
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT)
             EntityRendererRegistry.register(CommonRegistration.ACCELERATOR_ENTITY.get(), TimeAcceleratorEntityRenderer::new);
     }

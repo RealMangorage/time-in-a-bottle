@@ -3,17 +3,30 @@ package org.mangorage.tiab.common.core.registry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 
 @SuppressWarnings("all")
 public final class RegistryController {
+    private static final Set<ResourceKey<? extends Registry<?>>> RESOURCE_KEYS = new LinkedHashSet<>();
+
+    static {
+        RESOURCE_KEYS.add(Registries.DATA_COMPONENT_TYPE);
+        RESOURCE_KEYS.add(Registries.ITEM);
+        RESOURCE_KEYS.add(Registries.ENTITY_TYPE);
+        RESOURCE_KEYS.add(Registries.CREATIVE_MODE_TAB);
+    }
+
+
     public static RegistryController create(String modID) {
         return new RegistryController(modID);
     }
@@ -46,7 +59,7 @@ public final class RegistryController {
     }
 
     public void registerUsingDefault() {
-        BuiltInRegistries.REGISTRY.registryKeySet().forEach(key -> {
+        RESOURCE_KEYS.forEach(key -> {
             register(key, new RegistryWrapper() {
                 @Override
                 public <T> Holder<T> registerForHolder(ResourceLocation id, T object) {
