@@ -22,6 +22,9 @@
         ],
         "jei_mod_plugin": [
             "org.mangorage.tiab.common.integration.jei.TiabJeiPlugin"
+        ],
+        "emi": [
+            "org.mangorage.tiab.common.integration.emi.TiabEmiPlugin"
         ]
     },
     "mixins": [

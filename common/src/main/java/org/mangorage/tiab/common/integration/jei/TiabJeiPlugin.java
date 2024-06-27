@@ -9,6 +9,7 @@ import mezz.jei.api.registration.ISubtypeRegistration;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.mangorage.tiab.common.CommonConstants;
+import org.mangorage.tiab.common.integration.TiabCategoryInfo;
 
 @JeiPlugin
 public class TiabJeiPlugin implements IModPlugin {

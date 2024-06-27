@@ -16,6 +16,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.mangorage.tiab.common.CommonConstants;
 import org.mangorage.tiab.common.core.CommonRegistration;
+import org.mangorage.tiab.common.integration.TiabCategoryInfo;
 
 public class TiabCategory implements IRecipeCategory<TiabCategoryInfo> {
     public static final RecipeType<TiabCategoryInfo> RECIPE_TYPE = RecipeType.create(CommonConstants.MODID, "resource_generator", TiabCategoryInfo.class);
@@ -39,7 +40,7 @@ public class TiabCategory implements IRecipeCategory<TiabCategoryInfo> {
 
     @Override
     public Component getTitle() {
-        return Component.literal("TIAB Blacklisted Blocks");
+        return Component.translatable("emi.category.tiab.test");
     }
 
     @Override

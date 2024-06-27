@@ -13,10 +13,15 @@ minecraft {
 
 repositories {
     mavenLocal()
+    maven {
+        url = uri("https://maven.terraformersmc.com/")
+    }
 }
 
 dependencies {
     compileOnly("mezz.jei:jei-${minecraft_version}-common-api:18.0.0.62")
+    compileOnly "dev.emi:emi-xplat-mojmap:$emi_version+$minecraft_version:api"
+
     compileOnly group:'org.spongepowered', name:'mixin', version:'0.8.5'
 }
 

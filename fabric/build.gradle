@@ -2,12 +2,28 @@ plugins {
     id 'multiloader-loader'
     id 'fabric-loom' version '1.6-SNAPSHOT'
 }
+
+repositories {
+    maven {
+        name = "TerraformersMC"
+        url = "https://maven.terraformersmc.com/"
+    }
+}
+
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
 
     // JEI
     modCompileOnlyApi("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
-    modRuntimeOnly("mezz.jei:jei-${minecraft_version}-fabric:${jei_version}")
+    if (RUN_JEI == "true") {
+        modRuntimeOnly("mezz.jei:jei-${minecraft_version}-fabric:${jei_version}")
+    }
+
+    // EMI
+    modCompileOnlyApi "dev.emi:emi-fabric:$emi_version+$minecraft_version:api"
+    if (RUN_EMI == "true") {
+        modRuntimeOnly "dev.emi:emi-fabric:$emi_version+$minecraft_version"
+    }
 
     mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
