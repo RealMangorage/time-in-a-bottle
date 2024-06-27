@@ -43,7 +43,7 @@ public final class RegistryController {
     public <T extends E, E> RegistryHolder<T> register(String id, ResourceKey<Registry<E>> resourceKey, Registry<E> defaultRegistry, Supplier<T> supplier) {
         if (frozen)
             throw new IllegalStateException("Cannot register, RegistryController is frozen.");
-        RegistryHolder<T> holder = new RegistryHolder<>(new ResourceLocation(modID, id), defaultRegistry, supplier);
+        RegistryHolder<T> holder = new RegistryHolder<>(ResourceLocation.fromNamespaceAndPath(modID, id), defaultRegistry, supplier);
         REGISTRIES.computeIfAbsent((ResourceKey<Registry<?>>) (Object) resourceKey, o -> new ArrayList<>()).add(holder);
         return holder;
     }

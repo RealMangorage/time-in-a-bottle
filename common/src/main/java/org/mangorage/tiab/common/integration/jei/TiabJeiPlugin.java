@@ -17,7 +17,7 @@ public class TiabJeiPlugin implements IModPlugin {
 
     @Override
     public ResourceLocation getPluginUid() {
-;        return new ResourceLocation(CommonConstants.MODID, "information");
+        return ResourceLocation.fromNamespaceAndPath(CommonConstants.MODID, "information");
     }
 
     @Override

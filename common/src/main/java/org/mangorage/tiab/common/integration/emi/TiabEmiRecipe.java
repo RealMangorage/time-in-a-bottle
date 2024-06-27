@@ -13,7 +13,7 @@ public class TiabEmiRecipe extends BasicEmiRecipe {
     private final TiabCategoryInfo info;
 
     public TiabEmiRecipe(TiabCategoryInfo info) {
-        super(TiabEmiPlugin.CATEGORY, new ResourceLocation("tiab", "page" + info.getId()), 160, 130);
+        super(TiabEmiPlugin.CATEGORY, ResourceLocation.fromNamespaceAndPath("tiab", "page" + info.getId()), 160, 130);
         this.catalysts.add(EmiIngredient.of(Ingredient.of(CommonRegistration.TIAB_ITEM.get())));
         this.info = info;
     }

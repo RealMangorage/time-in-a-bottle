@@ -30,6 +30,6 @@ public class TimeAcceleratorEntityRenderer extends EntityRenderer<TimeAccelerato
 
     @Override
     public ResourceLocation getTextureLocation(TimeAcceleratorEntity entity) {
-        return new ResourceLocation("");
+        return ResourceLocation.fromNamespaceAndPath("tiab", "accelerate");
     }
 }

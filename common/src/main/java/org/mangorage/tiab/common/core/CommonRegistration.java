@@ -77,7 +77,7 @@ public final class CommonRegistration {
     public static final TagKey<Block> TIAB_UN_ACCELERATABLE = TagKey.create(Registries.BLOCK, create("un_acceleratable"));
 
     private static ResourceLocation create(String id) {
-        return new ResourceLocation(MODID, id);
+        return ResourceLocation.fromNamespaceAndPath(MODID, id);
     }
 
     public static <T> void register(ResourceKey<? extends Registry<T>> resourceKey, RegistryWrapper registryWrapper) {
