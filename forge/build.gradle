@@ -87,12 +87,18 @@ dependencies {
     implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
 }
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            fg.component(it)
-        }
-    }
+task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
+    group "curseforge"
+
+    apiToken = findProperty('curseforge_token')
+
+    def projectId = 895919
+    def mainFile = upload(projectId, jar)
+
+    mainFile.changelog = 'Automated Update'
+    mainFile.addOptional("jei") // JEI
+    mainFile.addOptional("emi") // EMI
+    mainFile.displayName = "Time in a bottle Forge " + project.version
 }
 
 sourceSets.each {
