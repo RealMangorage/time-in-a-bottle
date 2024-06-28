@@ -2,6 +2,7 @@ plugins {
     id 'multiloader-loader'
     id 'net.minecraftforge.gradle' version  '+'
     id 'org.spongepowered.mixin' version '0.+'
+    id "com.modrinth.minotaur" version "2.+"
 }
 base {
     archivesName = "${mod_id}-forge-${minecraft_version}"
@@ -88,7 +89,7 @@ dependencies {
 }
 
 task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
-    group "curseforge"
+    group "modpublishing"
 
     apiToken = findProperty('curseforge_token')
 
@@ -99,6 +100,24 @@ task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge)
     mainFile.addOptional("jei") // JEI
     mainFile.addOptional("emi") // EMI
     mainFile.displayName = "Time in a bottle Forge " + project.version
+}
+
+tasks.getByName("modrinth").setGroup("modpublishing")
+
+modrinth {
+    token = findProperty("modrinth_token") // Remember to have the MODRINTH_TOKEN environment variable set or else this will fail - just make sure it stays private!
+
+    projectId = "time-in-a-bottle-universal" // This can be the project ID or the slug. Either will work!
+    versionNumber = "6.0.0" // You don't need to set this manually. Will fail if Modrinth has this version already
+    versionName = "Time in a bottle Forge " + project.version
+    versionType = "release" // This is the default -- can also be `beta` or `alpha`
+    uploadFile = jar // With Loom, this MUST be set to `remapJar` instead of `jar`!
+    gameVersions = ["1.21"] // Must be an array, even with only one version
+    loaders = ["forge"]
+    dependencies {
+        optional.project "jei"
+        optional.project 'emi'
+    }
 }
 
 sourceSets.each {
