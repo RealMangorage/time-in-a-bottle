@@ -26,6 +26,8 @@ import org.mangorage.tiab.common.items.TiabItem;
 
 import static org.mangorage.tiab.common.CommonConstants.MODID;
 
+
+// Where we register everything....
 public final class CommonRegistration {
     private static final RegistryController registry = RegistryController.create(MODID);
 

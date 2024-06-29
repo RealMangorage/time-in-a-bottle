@@ -1,4 +1,5 @@
 plugins {
+    id 'maven-publish'
     id 'multiloader-common'
     id 'org.spongepowered.gradle.vanilla' version '0.2.1-SNAPSHOT'
 }
@@ -41,3 +42,38 @@ artifacts {
     commonResources sourceSets.main.resources.sourceDirectories.singleFile
 }
 
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+}
+
+
+task customJar(type: Jar) {
+    from sourceSets.main.output
+    setArchiveClassifier("api")
+    exclude 'org/mangorage/tiab/common/integration/**'
+}
+
+// Ensure customJar runs before generateMetadataFileForMavenJavaPublication
+tasks.named('generateMetadataFileForMavenJavaPublication') {
+    dependsOn customJar
+}
+
+// Ensuring the custom jar is built during the build process
+tasks.named('build') {
+    dependsOn customJar
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            // Use project.tasks.getByName to reference the customJar task
+            artifact project.tasks.getByName("customJar")
+        }
+    }
+    repositories {
+        maven {
+            url = uri("$buildDir/repo")
+        }
+    }
+}
