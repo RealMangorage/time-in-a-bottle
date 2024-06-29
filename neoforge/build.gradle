@@ -80,11 +80,11 @@ modrinth {
     token = findProperty("modrinth_token") // Remember to have the MODRINTH_TOKEN environment variable set or else this will fail - just make sure it stays private!
 
     projectId = "time-in-a-bottle-universal" // This can be the project ID or the slug. Either will work!
-    versionNumber = "6.0.0" // You don't need to set this manually. Will fail if Modrinth has this version already
+    versionNumber = project.version // You don't need to set this manually. Will fail if Modrinth has this version already
     versionName = "Time in a bottle Neoforge " + project.version
     versionType = "release" // This is the default -- can also be `beta` or `alpha`
     uploadFile = jar // With Loom, this MUST be set to `remapJar` instead of `jar`!
-    gameVersions = ["1.21"] // Must be an array, even with only one version
+    gameVersions = ["$minecraft_version"] // Must be an array, even with only one version
     loaders = ["neoforge"]
     dependencies {
         optional.project "jei"
