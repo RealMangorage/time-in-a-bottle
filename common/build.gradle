@@ -1,7 +1,13 @@
+import org.gradle.api.publish.internal.DefaultPublishingExtension
+
 plugins {
     id 'maven-publish'
     id 'multiloader-common'
     id 'org.spongepowered.gradle.vanilla' version '0.2.1-SNAPSHOT'
+}
+
+base {
+    archivesName = "common"
 }
 
 minecraft {
@@ -64,13 +70,22 @@ tasks.named('build') {
     dependsOn customJar
 }
 
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
             // Use project.tasks.getByName to reference the customJar task
-            artifact project.tasks.getByName("customJar")
+            artifact customJar {
+                // Specify the filename for the published artifact
+                afterEvaluate {
+                    groupId = 'org.mangorage.tiab'
+                    //artifactId = 'common'
+                    version = '6.0.0'
+                }
+            }
         }
     }
+
     repositories {
         maven {
             url = uri("$buildDir/repo")
