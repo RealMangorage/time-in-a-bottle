@@ -9,9 +9,12 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Tiers;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeTier;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
@@ -41,7 +44,7 @@ public class ForgeTiabMod extends CommonTiabMod {
         super(LoaderSide.FORGE, modid -> ModList.get().isLoaded(modid));
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onRegister);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClient);
-        MinecraftForge.EVENT_BUS.addListener(this::onServer);
+        MinecraftForge.EVENT_BUS.addListener(this::onRegisterCommands);
         MinecraftForge.EVENT_BUS.addListener(this::onPlayerTick);
 
         Pair<ForgeTiabConfig, ForgeConfigSpec> cfg = new ForgeConfigSpec.Builder()
@@ -50,8 +53,6 @@ public class ForgeTiabMod extends CommonTiabMod {
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, cfg.getRight());
 
         CommonRegistration.SERVER_CONFIG.setConfig(cfg.getKey());
-        var a = BuiltInRegistries.REGISTRY.get((ResourceKey) Registries.BLOCK);
-        var b = 1;
     }
 
     @SuppressWarnings("unchecked")
@@ -78,8 +79,8 @@ public class ForgeTiabMod extends CommonTiabMod {
         EntityRenderers.register(CommonRegistration.ACCELERATOR_ENTITY.get(), TimeAcceleratorEntityRenderer::new);
     }
 
-    public void onServer(ServerStartingEvent event) {
-        CommonRegistration.initServer(event.getServer());
+    public void onRegisterCommands(RegisterCommandsEvent event) {
+        CommonRegistration.initServer(event.getDispatcher());
     }
 
     public void onPlayerTick(TickEvent.PlayerTickEvent event) {

@@ -1,5 +1,3 @@
-import org.gradle.api.publish.internal.DefaultPublishingExtension
-
 plugins {
     id 'maven-publish'
     id 'multiloader-common'

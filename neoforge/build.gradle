@@ -23,7 +23,7 @@ runs {
     }
     server {
         systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-        programArgument '--nogui'
+        //programArgument '--nogui'
     }
 
     gameTestServer {
@@ -54,7 +54,7 @@ dependencies {
 
     // JEI
     compileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
-    if (RUN_EMI == "true") {
+    if (RUN_JEI == "true") {
         runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
     }
 }
@@ -66,13 +66,11 @@ task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge)
     def projectId = 895919
     def mainFile = upload(projectId, jar)
 
-    mainFile.changelog = 'Automated Update'
+    mainFile.changelog = changelog
     mainFile.addOptional("jei") // JEI
     mainFile.addOptional("emi") // EMI
     mainFile.displayName = "Time in a bottle NeoForge " + project.version
 }
-
-
 
 tasks.getByName("modrinth").setGroup("modpublishing")
 
@@ -86,6 +84,7 @@ modrinth {
     uploadFile = jar // With Loom, this MUST be set to `remapJar` instead of `jar`!
     gameVersions = ["$minecraft_version"] // Must be an array, even with only one version
     loaders = ["neoforge"]
+    changelog = project.changelog
     dependencies {
         optional.project "jei"
         optional.project 'emi'

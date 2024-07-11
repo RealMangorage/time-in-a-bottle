@@ -2,6 +2,7 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         mavenCentral()
+        maven { url "https://libraries.minecraft.net" }
         exclusiveContent {
             forRepository {
                 maven {
@@ -56,7 +57,7 @@ plugins {
 }
 
 // This should match the folder name of the project, or else IDEA may complain (see https://youtrack.jetbrains.com/issue/IDEA-317606)
-rootProject.name = 'MultiLoader-Template'
+rootProject.name = 'Time in a bottle'
 include("common")
 include("fabric")
 include("forge")

@@ -1,5 +1,7 @@
 package org.mangorage.tiab.common.core;
 
+import com.mojang.brigadier.CommandDispatcher;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
@@ -9,7 +11,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -90,7 +91,7 @@ public final class CommonRegistration {
         registry.registerUsingDefault();
     }
 
-    public static void initServer(MinecraftServer server) {
-        server.getCommands().getDispatcher().register(Commands.literal(MODID).then(TiabCommands.addTimeCommand).then(TiabCommands.removeTimeCommand));
+    public static void initServer(CommandDispatcher<CommandSourceStack> dispatcher) {
+        dispatcher.register(Commands.literal(MODID).then(TiabCommands.addTimeCommand).then(TiabCommands.removeTimeCommand));
     }
 }
