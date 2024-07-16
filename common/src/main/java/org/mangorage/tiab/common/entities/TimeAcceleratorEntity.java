@@ -13,12 +13,13 @@ import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import org.mangorage.tiab.common.CommonConstants;
 import org.mangorage.tiab.common.core.CommonRegistration;
 
@@ -45,45 +46,57 @@ public class TimeAcceleratorEntity extends Entity {
         builder.define(timeRemaining, 0);
     }
 
+    @SuppressWarnings("unchecked") // It's fine!
     @Override
     public void tick() {
-        super.tick();
-        Level level = level();
+        if (level().isClientSide()) return;
+        ServerLevel level = (ServerLevel) level();
 
         if (pos == null) {
-            if (!level.isClientSide) {
-                this.remove(RemovalReason.KILLED);
-            }
+            this.remove(RemovalReason.KILLED);
             return;
         }
 
         BlockState blockState = level.getBlockState(pos);
-        ServerLevel serverWorld = level.getServer().getLevel(level.dimension());
-        BlockEntity targetTE = level.getBlockEntity(pos);
+        if (blockState.is(CommonRegistration.TIAB_UN_ACCELERATABLE)) {
+            this.remove(RemovalReason.KILLED);
+            setRemainingTime(0);
+            setTimeRate(1);
+            return;
+        }
+        BlockEntity targetBlockEntity = level.getBlockEntity(pos);
+        BlockEntityTicker<BlockEntity> targetTicker = null;
+        if (targetBlockEntity != null)
+            targetTicker = targetBlockEntity.getBlockState().getTicker(level, (BlockEntityType<BlockEntity>) targetBlockEntity.getType());
 
         for (int i = 0; i < getTimeRate(); i++) {
-            if (targetTE != null) {
-                // if is TileEntity (furnace, brewing stand, ...)
-                BlockEntityTicker<BlockEntity> ticker = targetTE.getBlockState().getTicker(level, (BlockEntityType<BlockEntity>) targetTE.getType());
-                if (ticker != null) {
-                    ticker.tick(level, pos, targetTE.getBlockState(), targetTE);
-                }
-            } else if (serverWorld != null && blockState.isRandomlyTicking()) {
+            if (targetTicker != null) {
+                targetTicker.tick(level, pos, blockState, targetBlockEntity);
+            } else if (blockState.isRandomlyTicking()) {
                 // if is random ticket block (grass block, sugar cane, wheat or sapling, ...)
                 if (level.random.nextInt(1365) == 0) {
-                    blockState.randomTick(serverWorld, pos, level.random);
+                    blockState.randomTick(level, pos, level.getRandom());
                 }
             } else {
-                // block entity broken
                 this.remove(RemovalReason.KILLED);
                 break;
             }
         }
 
         setRemainingTime(getRemainingTime() - 1);
-        if (getRemainingTime() <= 0 && !level.isClientSide) {
+        if (getRemainingTime() <= 0) {
             this.remove(RemovalReason.KILLED);
         }
+    }
+
+    @Override
+    public boolean isColliding(BlockPos $$0, BlockState $$1) {
+        return false;
+    }
+
+    @Override
+    protected Vec3 limitPistonMovement(Vec3 $$0) {
+        return Vec3.ZERO;
     }
 
     @Override

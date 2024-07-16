@@ -36,12 +36,10 @@ public final class CommonRegistration {
             "stored_time",
             Registries.DATA_COMPONENT_TYPE,
             BuiltInRegistries.DATA_COMPONENT_TYPE,
-            () -> {
-                return new DataComponentType.Builder<StoredTimeComponent>()
-                        .persistent(StoredTimeComponent.DIRECT_CODEC)
-                        .networkSynchronized(StoredTimeComponent.DIRECT_STREAM_CODEC)
-                        .build();
-            });
+            () -> new DataComponentType.Builder<StoredTimeComponent>()
+                    .persistent(StoredTimeComponent.DIRECT_CODEC)
+                    .networkSynchronized(StoredTimeComponent.DIRECT_STREAM_CODEC)
+                    .build());
 
     public static final RegistryHolder<TiabItem> TIAB_ITEM = registry.register(
             "time_in_a_bottle",
@@ -53,27 +51,23 @@ public final class CommonRegistration {
                             .component(DataComponents.MAX_STACK_SIZE, 1)
             ));
 
-    public static final RegistryHolder<EntityType<TimeAcceleratorEntity>> ACCELERATOR_ENTITY = registry.register("" +
+    public static final RegistryHolder<EntityType<TimeAcceleratorEntity>> ACCELERATOR_ENTITY = registry.register(
             "accelerator",
             Registries.ENTITY_TYPE,
             BuiltInRegistries.ENTITY_TYPE,
-            () -> {
-               return EntityType.Builder.<TimeAcceleratorEntity>of(TimeAcceleratorEntity::new, MobCategory.MISC).build("accelerator");
-            });
+            () -> EntityType.Builder.<TimeAcceleratorEntity>of(TimeAcceleratorEntity::new, MobCategory.MISC).build("accelerator"));
 
     public static final RegistryHolder<CreativeModeTab> TIAB_CREATIVE_TAB = registry.register(
             "tiab",
             Registries.CREATIVE_MODE_TAB,
             BuiltInRegistries.CREATIVE_MODE_TAB,
-            () -> {
-                return CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
-                        .icon(() -> TIAB_ITEM.get().getDefaultInstance())
-                        .title(Component.literal("Time in a bottle"))
-                        .displayItems((parameters, output) -> {
-                            output.accept(TIAB_ITEM.get());
-                        })
-                        .build();
-            });
+            () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
+                    .icon(() -> TIAB_ITEM.get().getDefaultInstance())
+                    .title(Component.literal("Time in a bottle"))
+                    .displayItems((parameters, output) -> {
+                        output.accept(TIAB_ITEM.get());
+                    })
+                    .build());
 
     public static final ConfigHolder SERVER_CONFIG = ConfigHolder.create();
 

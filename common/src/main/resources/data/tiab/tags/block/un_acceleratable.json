@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "minecraft:chest"
+    "minecraft:chest",
+    "minecraft:grass_block"
   ]
 }
