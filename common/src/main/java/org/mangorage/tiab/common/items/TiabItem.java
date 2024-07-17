@@ -14,6 +14,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import org.mangorage.tiab.api.common.components.IStoredTimeComponent;
+import org.mangorage.tiab.api.common.item.ITiabItem;
 import org.mangorage.tiab.common.core.CommonRegistration;
 import org.mangorage.tiab.common.core.StoredTimeComponent;
 import org.mangorage.tiab.common.entities.TimeAcceleratorEntity;
@@ -23,7 +25,7 @@ import org.mangorage.tiab.common.misc.CommonSoundHelper;
 import java.util.List;
 import java.util.Optional;
 
-public class TiabItem extends Item {
+public class TiabItem extends Item implements ITiabItem {
     public TiabItem(Properties properties) {
         super(properties);
     }
@@ -163,5 +165,15 @@ public class TiabItem extends Item {
 
     public boolean shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
         return false;
+    }
+
+    @Override
+    public IStoredTimeComponent getStoredTime(ItemStack itemStack) {
+        return itemStack.get(CommonRegistration.STORED_TIME_COMPONENT.get());
+    }
+
+    @Override
+    public void setStoredTime(ItemStack itemStack, IStoredTimeComponent iStoredTimeComponent) {
+        itemStack.set(CommonRegistration.STORED_TIME_COMPONENT.get(), StoredTimeComponent.create(iStoredTimeComponent));
     }
 }
