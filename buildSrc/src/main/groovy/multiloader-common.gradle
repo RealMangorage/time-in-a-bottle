@@ -4,7 +4,7 @@ plugins {
 }
 
 base {
-    archivesName = "common"
+    archivesName = "$mod_id-common"
 }
 
 java {
@@ -94,18 +94,4 @@ processResources {
         expand expandProps
     }
     inputs.properties(expandProps)
-}
-
-publishing {
-    publications {
-        register('mavenJava', MavenPublication) {
-            artifactId base.archivesName.get()
-            from components.java
-        }
-    }
-    repositories {
-        maven {
-            url System.getenv("local_maven_url")
-        }
-    }
 }

@@ -13,11 +13,10 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
-import org.mangorage.tiab.common.CommonTiabMod;
+import org.mangorage.tiab.common.CommonCommonTiabMod;
 import org.mangorage.tiab.common.client.renderer.TimeAcceleratorEntityRenderer;
 import org.mangorage.tiab.common.core.CommonRegistration;
 import org.mangorage.tiab.common.core.LoaderSide;
@@ -27,9 +26,9 @@ import org.mangorage.tiab.common.items.TiabItem;
 import static org.mangorage.tiab.common.CommonConstants.MODID;
 
 @Mod(MODID)
-public class NeoForgeTiabMod extends CommonTiabMod {
+public class NeoForgeCommonTiabMod extends CommonCommonTiabMod {
 
-    public NeoForgeTiabMod(IEventBus bus) {
+    public NeoForgeCommonTiabMod(IEventBus bus) {
         super(LoaderSide.NEOFORGE, modid -> ModList.get().isLoaded(modid));
         bus.addListener(this::onRegisterEvent);
         bus.addListener(this::onClient);

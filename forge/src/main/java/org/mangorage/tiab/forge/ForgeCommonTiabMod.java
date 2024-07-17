@@ -1,24 +1,14 @@
 package org.mangorage.tiab.forge;
 
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Tiers;
-import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.ForgeTier;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
-import net.minecraftforge.event.entity.living.MobEffectEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -29,7 +19,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.mangorage.tiab.common.CommonConstants;
-import org.mangorage.tiab.common.CommonTiabMod;
+import org.mangorage.tiab.common.CommonCommonTiabMod;
 import org.mangorage.tiab.common.client.renderer.TimeAcceleratorEntityRenderer;
 import org.mangorage.tiab.common.core.CommonRegistration;
 import org.mangorage.tiab.common.core.LoaderSide;
@@ -38,9 +28,9 @@ import org.mangorage.tiab.common.items.TiabItem;
 
 
 @Mod(CommonConstants.MODID)
-public class ForgeTiabMod extends CommonTiabMod {
+public class ForgeCommonTiabMod extends CommonCommonTiabMod {
 
-    public ForgeTiabMod() {
+    public ForgeCommonTiabMod() {
         super(LoaderSide.FORGE, modid -> ModList.get().isLoaded(modid));
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onRegister);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClient);

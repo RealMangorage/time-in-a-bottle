@@ -4,10 +4,6 @@ plugins {
     id 'org.spongepowered.gradle.vanilla' version '0.2.1-SNAPSHOT'
 }
 
-base {
-    archivesName = "common"
-}
-
 minecraft {
     version(minecraft_version)
     def aw = file("src/main/resources/${mod_id}.accesswidener")
@@ -51,34 +47,22 @@ task sourceJar(type: Jar) {
     from sourceSets.main.allSource
 }
 
-
-task customJar(type: Jar) {
-    from sourceSets.main.output
-    setArchiveClassifier("api")
-    exclude 'org/mangorage/tiab/common/integration/**'
-}
-
-// Ensure customJar runs before generateMetadataFileForMavenJavaPublication
-tasks.named('generateMetadataFileForMavenJavaPublication') {
-    dependsOn customJar
-}
-
-// Ensuring the custom jar is built during the build process
-tasks.named('build') {
-    dependsOn customJar
-}
-
-
 publishing {
     publications {
         mavenJava(MavenPublication) {
             // Use project.tasks.getByName to reference the customJar task
-            artifact customJar {
-                // Specify the filename for the published artifact
-                afterEvaluate {
-                    groupId = 'org.mangorage.tiab'
-                    //artifactId = 'common'
-                    version = '6.0.0'
+            groupId = 'org.mangorage.tiab'
+            artifactId = "common-$minecraft_version"
+            version = "$api_version"
+            artifacts {
+                artifact jar {
+                    exclude  "org/mangorage/tiab/common/**"
+                }
+                artifact sourcesJar {
+                    exclude  "org/mangorage/tiab/common/**"
+                }
+                artifact javadocJar {
+                    exclude  "org/mangorage/tiab/common/**"
                 }
             }
         }

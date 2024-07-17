@@ -16,7 +16,7 @@
     "environment": "*",
     "entrypoints": {
         "main": [
-            "org.mangorage.tiab.fabric.FabricTiabMod"
+          "org.mangorage.tiab.fabric.FabricCommonTiabMod"
         ],
         "client": [
         ],
