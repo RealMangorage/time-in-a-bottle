@@ -55,7 +55,7 @@ public final class CommonRegistration {
             "accelerator",
             Registries.ENTITY_TYPE,
             BuiltInRegistries.ENTITY_TYPE,
-            () -> EntityType.Builder.<TimeAcceleratorEntity>of(TimeAcceleratorEntity::new, MobCategory.MISC).build("accelerator"));
+            () -> EntityType.Builder.<TimeAcceleratorEntity>of((entityType, level) -> new TimeAcceleratorEntity(level), MobCategory.MISC).build("accelerator"));
 
     public static final RegistryHolder<CreativeModeTab> TIAB_CREATIVE_TAB = registry.register(
             "tiab",

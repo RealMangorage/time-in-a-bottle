@@ -111,7 +111,8 @@ public class TiabItem extends Item implements ITiabItem {
                 return InteractionResult.SUCCESS;
             }
 
-            TimeAcceleratorEntity entityTA = new TimeAcceleratorEntity(level, pos);
+            TimeAcceleratorEntity entityTA = new TimeAcceleratorEntity(level);
+            entityTA.setBlockPos(pos);
             entityTA.setRemainingTime(getEachUseDuration());
             level.addFreshEntity(entityTA);
         }
@@ -174,6 +175,6 @@ public class TiabItem extends Item implements ITiabItem {
 
     @Override
     public void setStoredTime(ItemStack itemStack, IStoredTimeComponent iStoredTimeComponent) {
-        itemStack.set(CommonRegistration.STORED_TIME_COMPONENT.get(), StoredTimeComponent.create(iStoredTimeComponent));
+        itemStack.set(CommonRegistration.STORED_TIME_COMPONENT.get(), StoredTimeComponent.cast(iStoredTimeComponent));
     }
 }

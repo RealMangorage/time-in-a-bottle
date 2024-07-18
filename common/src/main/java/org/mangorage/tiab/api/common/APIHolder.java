@@ -3,10 +3,10 @@ package org.mangorage.tiab.api.common;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
-
-public final class APIHolder<T> implements Supplier<T> {
+public final class APIHolder<T> implements Supplier<Optional<T>> {
     private static Logger LOGGER = LogManager.getLogger();
 
     private final String ID;
@@ -23,7 +23,7 @@ public final class APIHolder<T> implements Supplier<T> {
         this.value = value;
     }
 
-    public T get() {
-        return value;
+    public Optional<T> get() {
+        return Optional.of(value);
     }
 }

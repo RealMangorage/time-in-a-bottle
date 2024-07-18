@@ -24,7 +24,7 @@ public record StoredTimeComponent(int stored, int total) implements IStoredTimeC
             StoredTimeComponent::new
     );
 
-    public static StoredTimeComponent create(IStoredTimeComponent iStoredTimeComponent) {
-        return new StoredTimeComponent(iStoredTimeComponent.stored(), iStoredTimeComponent.total());
+    public static StoredTimeComponent cast(IStoredTimeComponent iStoredTimeComponent) {
+        return iStoredTimeComponent instanceof StoredTimeComponent component ? component : new StoredTimeComponent(iStoredTimeComponent.stored(), iStoredTimeComponent.total());
     }
 }

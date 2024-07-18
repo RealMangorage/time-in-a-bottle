@@ -19,7 +19,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.mangorage.tiab.common.CommonConstants;
-import org.mangorage.tiab.common.CommonTiabMod;
+import org.mangorage.tiab.common.TiabMod;
 import org.mangorage.tiab.common.client.renderer.TimeAcceleratorEntityRenderer;
 import org.mangorage.tiab.common.core.CommonRegistration;
 import org.mangorage.tiab.common.core.LoaderSide;
@@ -28,9 +28,9 @@ import org.mangorage.tiab.common.items.TiabItem;
 
 
 @Mod(CommonConstants.MODID)
-public class ForgeCommonTiabMod extends CommonTiabMod {
+public class ForgeTiabMod extends TiabMod {
 
-    public ForgeCommonTiabMod() {
+    public ForgeTiabMod() {
         super(LoaderSide.FORGE, modid -> ModList.get().isLoaded(modid));
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onRegister);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClient);
