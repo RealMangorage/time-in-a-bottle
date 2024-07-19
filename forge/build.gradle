@@ -1,0 +1,128 @@
+plugins {
+    id 'multiloader-loader'
+    id 'net.minecraftforge.gradle' version  '+'
+    id 'org.spongepowered.mixin' version '0.+'
+    id "com.modrinth.minotaur" version "2.+"
+}
+base {
+    archivesName = "${mod_id}-forge-${minecraft_version}"
+}
+
+minecraft {
+    mappings channel: 'official', version: minecraft_version
+
+    copyIdeResources = true //Calls processResources when in dev
+
+    // Dont obfuscate!
+    reobf = false
+
+    // Automatically enable forge AccessTransformers if the file exists
+    // This location is hardcoded in Forge and can not be changed.
+    // https://github.com/MinecraftForge/MinecraftForge/blob/be1698bb1554f9c8fa2f58e32b9ab70bc4385e60/fmlloader/src/main/java/net/minecraftforge/fml/loading/moddiscovery/ModFile.java#L123
+    def at = file('src/main/resources/META-INF/accesstransformer.cfg')
+    if (at.exists()) {
+        accessTransformer = at
+    }
+
+    runs {
+        client {
+            property("bsl.debug", "true")
+            workingDirectory file('runs/client')
+            ideaModule "${rootProject.name}.${project.name}.main"
+            taskName 'runClient'
+            mods {
+                modClientRun {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        server {
+            workingDirectory file('runs/server')
+            ideaModule "${rootProject.name}.${project.name}.main"
+            taskName 'runServer'
+            mods {
+                modServerRun {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        data {
+            workingDirectory file('runs/data')
+            ideaModule "${rootProject.name}.${project.name}.main"
+            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            taskName 'runData'
+            mods {
+                modDataRun {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+sourceSets.main.resources.srcDir 'src/generated/resources'
+
+repositories {
+    mavenLocal()
+    maven {
+        url = uri("https://maven.terraformersmc.com/")
+    }
+}
+
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+
+    // JEI
+    compileOnly("mezz.jei:jei-${minecraft_version}-common-api:$jei_version")
+    if (RUN_JEI == "true") {
+        runtimeOnly("mezz.jei:jei-${minecraft_version}-forge:$jei_version")
+    }
+
+    // EMI
+    compileOnly "dev.emi:emi-xplat-mojmap:$emi_version+$minecraft_version:api"
+
+    annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
+    implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
+}
+
+task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
+    group "modpublishing"
+
+    apiToken = findProperty('curseforge_token')
+
+    def projectId = 895919
+    def mainFile = upload(projectId, jar)
+
+    mainFile.changelog = changelog
+    mainFile.addOptional("jei") // JEI
+    mainFile.addOptional("emi") // EMI
+    mainFile.displayName = "Time in a bottle Forge " + project.version
+}
+
+tasks.getByName("modrinth").setGroup("modpublishing")
+
+modrinth {
+    token = findProperty("modrinth_token") // Remember to have the MODRINTH_TOKEN environment variable set or else this will fail - just make sure it stays private!
+
+    projectId = "time-in-a-bottle-universal" // This can be the project ID or the slug. Either will work!
+    versionNumber = project.version // You don't need to set this manually. Will fail if Modrinth has this version already
+    versionName = "Time in a bottle Forge " + project.version
+    versionType = "release" // This is the default -- can also be `beta` or `alpha`
+    uploadFile = jar // With Loom, this MUST be set to `remapJar` instead of `jar`!
+    gameVersions = ["$minecraft_version"] // Must be an array, even with only one version
+    loaders = ["forge"]
+    changelog = project.changelog
+    dependencies {
+        optional.project "jei"
+        optional.project 'emi'
+    }
+}
+
+sourceSets.each {
+    def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
+    it.output.resourcesDir = dir
+    it.java.destinationDirectory = dir
+}

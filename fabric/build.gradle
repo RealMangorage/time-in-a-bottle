@@ -1,0 +1,88 @@
+plugins {
+    id 'multiloader-loader'
+    id 'fabric-loom' version '1.6-SNAPSHOT'
+    id "com.modrinth.minotaur" version "2.+"
+}
+
+repositories {
+    maven {
+        name = "TerraformersMC"
+        url = "https://maven.terraformersmc.com/"
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+
+    // JEI
+    modCompileOnlyApi("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    if (RUN_JEI == "true") {
+        modRuntimeOnly("mezz.jei:jei-${minecraft_version}-fabric:${jei_version}")
+    }
+
+    // EMI
+    modCompileOnlyApi "dev.emi:emi-fabric:$emi_version+$minecraft_version:api"
+    if (RUN_EMI == "true") {
+        modRuntimeOnly "dev.emi:emi-fabric:$emi_version+$minecraft_version"
+    }
+
+    mappings loom.officialMojangMappings()
+    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+}
+
+loom {
+    def aw = project(":common").file("src/main/resources/${mod_id}.accesswidener")
+    if (aw.exists()) {
+        accessWidenerPath.set(aw)
+    }
+    mixin {
+        defaultRefmapName.set("${mod_id}.refmap.json")
+    }
+    runs {
+        client {
+            client()
+            setConfigName("Fabric Client")
+            ideConfigGenerated(true)
+            runDir("runs/client")
+        }
+        server {
+            server()
+            setConfigName("Fabric Server")
+            ideConfigGenerated(true)
+            runDir("runs/server")
+        }
+    }
+}
+
+task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
+    group "modpublishing"
+    apiToken = findProperty('curseforge_token')
+
+    def projectId = 895919
+    def mainFile = upload(projectId, jar)
+
+    mainFile.changelog = changelog
+    mainFile.addOptional("jei") // JEI
+    mainFile.addOptional("emi") // EMI
+    mainFile.displayName = "Time in a bottle Fabric " + project.version
+}
+
+tasks.getByName("modrinth").setGroup("modpublishing")
+
+modrinth {
+    token = findProperty("modrinth_token") // Remember to have the MODRINTH_TOKEN environment variable set or else this will fail - just make sure it stays private!
+
+    projectId = "time-in-a-bottle-universal" // This can be the project ID or the slug. Either will work!
+    versionNumber = project.version // You don't need to set this manually. Will fail if Modrinth has this version already
+    versionName = "Time in a bottle Fabric " + project.version
+    versionType = "release" // This is the default -- can also be `beta` or `alpha`
+    uploadFile = jar // With Loom, this MUST be set to `remapJar` instead of `jar`!
+    gameVersions = ["$minecraft_version"] // Must be an array, even with only one version
+    loaders = ["fabric"]
+    changelog = project.changelog
+    dependencies {
+        optional.project "jei"
+        optional.project 'emi'
+    }
+}
