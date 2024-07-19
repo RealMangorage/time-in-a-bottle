@@ -1,0 +1,23 @@
+modLoader="javafml" #mandatory
+license="MIT"
+loaderVersion="[41,)" #mandatory
+
+[[mods]] #mandatory
+modId="tiab" #mandatory
+version="${file.jarVersion}" #mandatory
+displayName="Time In A Bottle" #mandatory
+logoFile="tiab-logo.png" #optional
+credits="haoict for standalone, Random things by lumien" #optional
+authors="MangoRage, haoict" #optional
+description='''
+This item allows you to accelerate the rate at which blocks tick.
+It passively collects time while in your inventory which you can consume by right clicking a block with it.
+The first click requires 30 Seconds, the second 60, the third 120 the fourth 240 and the fifth 480.
+The speed at which the block ticks doubles with each click. The effect lasts 30 seconds.
+
+
+Fork created by MangoRage which adds API for ModPack Devs/Addon Devs to do more with TIAB
+aswell as keeping it up to date with versions 1.20.1+
+
+Original by Random Things Mod (Owner: Lumien231). Standalone originally by haoict
+'''
