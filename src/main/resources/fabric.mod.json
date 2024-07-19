@@ -1,0 +1,45 @@
+{
+    "schemaVersion": 1,
+    "id": "tiab",
+    "version": "6.1.0",
+    "name": "Time In A Bottle",
+    "description": "Allows you to tick accelerate blocks!",
+    "authors": [
+        "RealMangoRage",
+        "haoict",
+        "Asbestosstar"
+    ],
+    "contact": {
+        "homepage": "https://fabricmc.net/",
+        "sources": "https://github.com/FabricMC/fabric-example-mod"
+    },
+    "license": "MIT",
+    "icon": "tiab.png",
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+          "org.mangorage.tiab.fabric.FabricTiabMod"
+        ],
+        "client": [
+        ],
+        "jei_mod_plugin": [
+            "org.mangorage.tiab.common.integration.jei.TiabJeiPlugin"
+        ],
+        "emi": [
+            "org.mangorage.tiab.common.integration.emi.TiabEmiPlugin"
+        ]
+    },
+    "mixins": [
+        "tiab.mixins.json"
+    ],
+    "depends": {
+        "fabricloader": ">=0.15",
+        "fabric-api": "*",
+        "minecraft": ">=1.20",
+        "java": ">=17"
+    },
+    "suggests": {
+        "another-mod": "*"
+    }
+}
+  
