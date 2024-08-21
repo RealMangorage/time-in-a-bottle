@@ -99,6 +99,7 @@ task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge)
     mainFile.changelog = changelog
     mainFile.addOptional("jei") // JEI
     mainFile.addOptional("emi") // EMI
+    mainFile.releaseType = "release"
     mainFile.displayName = "Time in a bottle Forge " + project.version
 }
 
