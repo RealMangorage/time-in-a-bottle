@@ -1,9 +1,6 @@
 package org.mangorage.tiab.neoforge;
 
 import net.minecraft.client.renderer.entity.EntityRenderers;
-import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.ModLoadingContext;
@@ -14,14 +11,14 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import net.neoforged.neoforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.mangorage.tiab.common.TiabMod;
+import org.mangorage.tiab.common.api.ITiabRegistration;
 import org.mangorage.tiab.common.client.renderer.TimeAcceleratorEntityRenderer;
 import org.mangorage.tiab.common.core.CommonRegistration;
 import org.mangorage.tiab.common.core.LoaderSide;
-import org.mangorage.tiab.common.core.registry.RegistryWrapper;
 import org.mangorage.tiab.common.items.TiabItem;
+import org.mangorage.tiab.neoforge.core.Registration;
 
 import static org.mangorage.tiab.common.CommonConstants.MODID;
 
@@ -29,8 +26,9 @@ import static org.mangorage.tiab.common.CommonConstants.MODID;
 public class NeoForgeTiabMod extends TiabMod {
 
     public NeoForgeTiabMod(IEventBus bus) {
-        super(LoaderSide.NEOFORGE, modid -> ModList.get().isLoaded(modid));
-        bus.addListener(this::onRegisterEvent);
+        super(LoaderSide.NEOFORGE);
+
+        Registration.register(bus);
         bus.addListener(this::onClient);
         NeoForge.EVENT_BUS.addListener(this::onRegisterCommands);
         NeoForge.EVENT_BUS.addListener(this::onPlayerTick);
@@ -42,17 +40,9 @@ public class NeoForgeTiabMod extends TiabMod {
         CommonRegistration.SERVER_CONFIG.setConfig(cfg.getKey());
     }
 
-    public void onRegisterEvent(RegisterEvent event) {
-        CommonRegistration.register(event.getRegistry().key(), new RegistryWrapper() {
-            @Override
-            public <T> Holder<T> registerForHolder(ResourceLocation id, T object) {
-                return Registry.registerForHolder((Registry<T>) event.getRegistry(), id, object);
-            }
-        });
-    }
 
     public void onClient(FMLClientSetupEvent event) {
-        EntityRenderers.register(CommonRegistration.ACCELERATOR_ENTITY.get(), TimeAcceleratorEntityRenderer::new);
+        EntityRenderers.register(Registration.ACCELERATOR_ENTITY.get(), TimeAcceleratorEntityRenderer::new);
     }
 
     public void onRegisterCommands(RegisterCommandsEvent event) {
@@ -61,5 +51,15 @@ public class NeoForgeTiabMod extends TiabMod {
 
     public void onPlayerTick(PlayerTickEvent.Post event) {
         TiabItem.tickPlayer(event.getEntity());
+    }
+
+    @Override
+    public boolean isModLoaded(String modId) {
+        return ModList.get().isLoaded(modId);
+    }
+
+    @Override
+    public ITiabRegistration getRegistration() {
+        return new Registration.NeoForgeRegistration() {};
     }
 }

@@ -9,12 +9,12 @@ import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiStack;
 import net.minecraft.resources.ResourceLocation;
-import org.mangorage.tiab.common.core.CommonRegistration;
+import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
 import org.mangorage.tiab.common.integration.TiabCategoryInfo;
 
 @EmiEntrypoint
 public class TiabEmiPlugin implements EmiPlugin {
-    public static EmiRecipeCategory CATEGORY = new EmiRecipeCategory(ResourceLocation.fromNamespaceAndPath("tiab", "test"), EmiStack.of(CommonRegistration.TIAB_ITEM.get()));
+    public static EmiRecipeCategory CATEGORY = new EmiRecipeCategory(ResourceLocation.fromNamespaceAndPath("tiab", "test"), EmiStack.of(ICommonTimeInABottleAPI.COMMON_API.getDirect().getRegistration().getTiabItem()));
 
     @Override
     public void register(EmiRegistry emiRegistry) {

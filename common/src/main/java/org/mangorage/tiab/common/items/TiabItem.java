@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -14,8 +13,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import org.mangorage.tiab.api.common.components.IStoredTimeComponent;
-import org.mangorage.tiab.api.common.item.ITiabItem;
+import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
 import org.mangorage.tiab.common.core.CommonRegistration;
 import org.mangorage.tiab.common.core.StoredTimeComponent;
 import org.mangorage.tiab.common.entities.TimeAcceleratorEntity;
@@ -25,7 +23,7 @@ import org.mangorage.tiab.common.misc.CommonSoundHelper;
 import java.util.List;
 import java.util.Optional;
 
-public class TiabItem extends Item implements ITiabItem {
+public class TiabItem extends Item {
     public TiabItem(Properties properties) {
         super(properties);
     }
@@ -42,7 +40,7 @@ public class TiabItem extends Item implements ITiabItem {
     public void tickBottle(ItemStack stack) {
         if (stack.getItem() != this) return;
 
-        var comp = CommonRegistration.STORED_TIME_COMPONENT.get();
+        var comp = ICommonTimeInABottleAPI.COMMON_API.getDirect().getRegistration().getStoredTime();
 
         CommonHelper.modify(stack, comp, () -> new StoredTimeComponent(0, 0), old -> {
             if (CommonHelper.isPositive(old.stored() + 1) && CommonHelper.isPositive(old.total() + 1)) {
@@ -119,7 +117,7 @@ public class TiabItem extends Item implements ITiabItem {
 
         if (!isCreativeMode) {
             final int required = energyRequired;
-            CommonHelper.modify(stack, CommonRegistration.STORED_TIME_COMPONENT.get(), () -> new StoredTimeComponent(0, 0), old -> {
+            CommonHelper.modify(stack, ICommonTimeInABottleAPI.COMMON_API.getDirect().getRegistration().getStoredTime(), () -> new StoredTimeComponent(0, 0), old -> {
                 var newStoredTime = Math.min(old.stored() - required, CommonRegistration.SERVER_CONFIG.get().MAX_STORED_TIME());
                 return new StoredTimeComponent(newStoredTime, old.total());
             });
@@ -146,7 +144,7 @@ public class TiabItem extends Item implements ITiabItem {
     }
 
     public StoredTimeComponent getStoredComponent(ItemStack stack) {
-        return stack.getOrDefault(CommonRegistration.STORED_TIME_COMPONENT.get(), new StoredTimeComponent(0, 0));
+        return stack.getOrDefault(ICommonTimeInABottleAPI.COMMON_API.getDirect().getRegistration().getStoredTime(), new StoredTimeComponent(0, 0));
     }
 
 
@@ -166,15 +164,5 @@ public class TiabItem extends Item implements ITiabItem {
 
     public boolean shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
         return false;
-    }
-
-    @Override
-    public IStoredTimeComponent getStoredTime(ItemStack itemStack) {
-        return itemStack.get(CommonRegistration.STORED_TIME_COMPONENT.get());
-    }
-
-    @Override
-    public void setStoredTime(ItemStack itemStack, IStoredTimeComponent iStoredTimeComponent) {
-        itemStack.set(CommonRegistration.STORED_TIME_COMPONENT.get(), StoredTimeComponent.cast(iStoredTimeComponent));
     }
 }

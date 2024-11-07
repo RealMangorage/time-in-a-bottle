@@ -6,7 +6,7 @@ import dev.emi.emi.api.widget.WidgetHolder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
-import org.mangorage.tiab.common.core.CommonRegistration;
+import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
 import org.mangorage.tiab.common.integration.TiabCategoryInfo;
 
 public class TiabEmiRecipe extends BasicEmiRecipe {
@@ -14,7 +14,7 @@ public class TiabEmiRecipe extends BasicEmiRecipe {
 
     public TiabEmiRecipe(TiabCategoryInfo info) {
         super(TiabEmiPlugin.CATEGORY, ResourceLocation.fromNamespaceAndPath("tiab", "page" + info.getId()), 160, 130);
-        this.catalysts.add(EmiIngredient.of(Ingredient.of(CommonRegistration.TIAB_ITEM.get())));
+        this.catalysts.add(EmiIngredient.of(Ingredient.of(ICommonTimeInABottleAPI.COMMON_API.getDirect().getRegistration().getTiabItem())));
         this.info = info;
     }
 
@@ -24,7 +24,7 @@ public class TiabEmiRecipe extends BasicEmiRecipe {
         int startPosWidth = 0;
         int startPosHeight = 20;
 
-        widgets.addSlot(EmiIngredient.of(Ingredient.of(CommonRegistration.TIAB_ITEM.get())), xPos - 1, 1);
+        widgets.addSlot(EmiIngredient.of(Ingredient.of(ICommonTimeInABottleAPI.COMMON_API.getDirect().getRegistration().getTiabItem())), xPos - 1, 1);
 
         for (Item item : info.getItems()) {
             widgets.addSlot(EmiIngredient.of(Ingredient.of(item)), startPosWidth - 1, startPosHeight);

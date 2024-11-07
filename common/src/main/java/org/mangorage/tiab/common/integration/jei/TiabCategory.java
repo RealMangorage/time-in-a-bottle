@@ -14,8 +14,8 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
 import org.mangorage.tiab.common.CommonConstants;
-import org.mangorage.tiab.common.core.CommonRegistration;
 import org.mangorage.tiab.common.integration.TiabCategoryInfo;
 
 public class TiabCategory implements IRecipeCategory<TiabCategoryInfo> {
@@ -28,7 +28,7 @@ public class TiabCategory implements IRecipeCategory<TiabCategoryInfo> {
     public TiabCategory(IJeiHelpers helper) {
         var gui = helper.getGuiHelper();
         this.backrgound = gui.createBlankDrawable(160, 125);
-        this.icon = gui.createDrawableItemStack(CommonRegistration.TIAB_ITEM.get().getDefaultInstance());
+        this.icon = gui.createDrawableItemStack(ICommonTimeInABottleAPI.COMMON_API.getDirect().getRegistration().getTiabItem().getDefaultInstance());
         this.slotBackground = gui.getSlotDrawable();
     }
 
@@ -60,7 +60,7 @@ public class TiabCategory implements IRecipeCategory<TiabCategoryInfo> {
         int startPosHeight = 20;
 
         IRecipeSlotBuilder inputSlotBuilder = builder.addSlot(RecipeIngredientRole.CATALYST, xPos, 1).setBackground(slotBackground, -1, -1);
-        addIngredient(VanillaTypes.ITEM_STACK, CommonRegistration.TIAB_ITEM.get().getDefaultInstance(), inputSlotBuilder);
+        addIngredient(VanillaTypes.ITEM_STACK, ICommonTimeInABottleAPI.COMMON_API.getDirect().getRegistration().getTiabItem().getDefaultInstance(), inputSlotBuilder);
 
         for (Item item : recipe.getItems()) {
             builder.addSlot(RecipeIngredientRole.OUTPUT, startPosWidth, startPosHeight).setBackground(slotBackground, -1, -1).addIngredient(VanillaTypes.ITEM_STACK, new ItemStack(item));

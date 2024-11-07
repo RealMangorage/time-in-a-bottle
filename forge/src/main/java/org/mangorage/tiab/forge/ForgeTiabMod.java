@@ -1,10 +1,7 @@
 package org.mangorage.tiab.forge;
 
 import net.minecraft.client.renderer.entity.EntityRenderers;
-import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -15,25 +12,27 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-
-import net.minecraftforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
+import org.mangorage.tiab.common.api.ITiabRegistration;
 import org.mangorage.tiab.common.CommonConstants;
 import org.mangorage.tiab.common.TiabMod;
 import org.mangorage.tiab.common.client.renderer.TimeAcceleratorEntityRenderer;
 import org.mangorage.tiab.common.core.CommonRegistration;
 import org.mangorage.tiab.common.core.LoaderSide;
-import org.mangorage.tiab.common.core.registry.RegistryWrapper;
 import org.mangorage.tiab.common.items.TiabItem;
+import org.mangorage.tiab.forge.core.Registration;
 
 
 @Mod(CommonConstants.MODID)
 public class ForgeTiabMod extends TiabMod {
 
     public ForgeTiabMod() {
-        super(LoaderSide.FORGE, modid -> ModList.get().isLoaded(modid));
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onRegister);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClient);
+        super(LoaderSide.FORGE);
+        var modBus = FMLJavaModLoadingContext.get().getModEventBus();
+
+        Registration.register(modBus);
+        modBus.addListener(this::onClient);
+
         MinecraftForge.EVENT_BUS.addListener(this::onRegisterCommands);
         MinecraftForge.EVENT_BUS.addListener(this::onPlayerTick);
 
@@ -45,35 +44,25 @@ public class ForgeTiabMod extends TiabMod {
         CommonRegistration.SERVER_CONFIG.setConfig(cfg.getKey());
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> ResourceKey<Registry<T>> castRegistry(ResourceKey<? extends Registry<?>> resourceKey) {
-        return (ResourceKey<Registry<T>>) resourceKey;
-    }
-
-    @SuppressWarnings({"unchecked", ""})
-    public void onRegister(RegisterEvent event) {
-        CommonRegistration.register(castRegistry(event.getRegistryKey()), new RegistryWrapper() {
-            @Override
-            public <T> Holder<T> registerForHolder(ResourceLocation id, T object) {
-                if (event.getForgeRegistry() == null) {
-                    return Registry.registerForHolder(event.getVanillaRegistry(), id, object);
-                } else {
-                    event.getForgeRegistry().register(id, object);
-                    return (Holder<T>) event.getForgeRegistry().getHolder(id).get();
-                }
-            }
-        });
-    }
-
     public void onClient(FMLClientSetupEvent event) {
-        EntityRenderers.register(CommonRegistration.ACCELERATOR_ENTITY.get(), TimeAcceleratorEntityRenderer::new);
+        EntityRenderers.register(Registration.ACCELERATOR_ENTITY.get(), TimeAcceleratorEntityRenderer::new);
     }
 
     public void onRegisterCommands(RegisterCommandsEvent event) {
-        CommonRegistration.initServer(event.getDispatcher());
+        registerCommand(event.getDispatcher());
     }
 
     public void onPlayerTick(TickEvent.PlayerTickEvent event) {
         TiabItem.tickPlayer(event.player);
+    }
+
+    @Override
+    public boolean isModLoaded(String modId) {
+        return ModList.get().isLoaded(modId);
+    }
+
+    @Override
+    public ITiabRegistration getRegistration() {
+        return new Registration.ForgeRegistration() {};
     }
 }

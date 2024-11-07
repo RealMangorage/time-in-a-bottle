@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
 import org.mangorage.tiab.common.core.CommonRegistration;
 import org.mangorage.tiab.common.core.StoredTimeComponent;
 import org.mangorage.tiab.common.items.TiabItem;
@@ -73,7 +74,7 @@ public class TiabCommands {
 
                         // Check if the number becomes negative
                         if (CommonHelper.isPositive(currentStoredEnergy + timeToAddFinal * CommonRegistration.SERVER_CONFIG.get().TICKS_CONST())) {
-                            CommonHelper.modify(invStack, CommonRegistration.STORED_TIME_COMPONENT.get(), () -> new StoredTimeComponent(0, 0), old -> {
+                            CommonHelper.modify(invStack, ICommonTimeInABottleAPI.COMMON_API.getDirect().getRegistration().getStoredTime(), () -> new StoredTimeComponent(0, 0), old -> {
                                 return new StoredTimeComponent(currentStoredEnergy + timeToAddFinal * CommonRegistration.SERVER_CONFIG.get().TICKS_CONST(), old.total());
                             });
 
