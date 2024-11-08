@@ -11,6 +11,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -31,6 +32,8 @@ public class TimeAcceleratorEntity extends Entity {
         super(TiabMod.COMMON_API.getDirect().getRegistration().getAcceleratorEntity(), worldIn);
         entityData.set(timeRate, 1);
     }
+
+
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
@@ -89,6 +92,11 @@ public class TimeAcceleratorEntity extends Entity {
     @Override
     protected Vec3 limitPistonMovement(Vec3 $$0) {
         return Vec3.ZERO;
+    }
+
+    @Override
+    public boolean hurtServer(ServerLevel serverLevel, DamageSource damageSource, float v) {
+        return false;
     }
 
     @Override

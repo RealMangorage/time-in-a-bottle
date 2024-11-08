@@ -1,4 +1,4 @@
-package org.mangorage.tiab.common.integration.emi;
+package integration.emi;
 
 
 import dev.emi.emi.api.EmiApi;

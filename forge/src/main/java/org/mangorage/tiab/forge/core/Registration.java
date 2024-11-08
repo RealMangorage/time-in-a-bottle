@@ -1,9 +1,12 @@
 package org.mangorage.tiab.forge.core;
 
+import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.CreativeModeTab;
@@ -25,6 +28,10 @@ public class Registration {
     private static final DeferredRegister<DataComponentType<?>> DATA_COMPONENT_TYPES = DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, MODID);
     private static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
+    private static <T> ResourceKey<T> create(ResourceKey<Registry<T>> key, String id) {
+        return ResourceKey.create(key, ResourceLocation.fromNamespaceAndPath(MODID, id));
+    }
+
     public static final RegistryObject<DataComponentType<StoredTimeComponent>> STORED_TIME_COMPONENT = DATA_COMPONENT_TYPES.register("stored_time",
             () -> new DataComponentType.Builder<StoredTimeComponent>()
                     .persistent(StoredTimeComponent.DIRECT_CODEC)
@@ -34,6 +41,7 @@ public class Registration {
     public static final RegistryObject<TiabItem> TIAB_ITEM = ITEMS.register("time_in_a_bottle",
             () -> new TiabItem(
                     new Item.Properties()
+                            .setId(create(Registries.ITEM, "time_in_a_bottle"))
                             .component(STORED_TIME_COMPONENT.get(), new StoredTimeComponent(0, 0))
                             .component(DataComponents.MAX_STACK_SIZE, 1)
             ));
@@ -42,7 +50,7 @@ public class Registration {
             () -> EntityType.Builder.<TimeAcceleratorEntity>of(
                     (entityType, level) -> new TimeAcceleratorEntity(level),
                     MobCategory.MISC
-            ).build("accelerator"));
+            ).build(create(Registries.ENTITY_TYPE, "accelerator")));
 
     public static final RegistryObject<CreativeModeTab> TIAB_CREATIVE_TAB = TABS.register("tiab", () -> CreativeModeTab.builder()
             .icon(() -> TIAB_ITEM.get().getDefaultInstance())

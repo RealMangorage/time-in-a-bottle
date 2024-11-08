@@ -75,14 +75,14 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    // JEI
+/*    // JEI
     compileOnly("mezz.jei:jei-${minecraft_version}-common-api:$jei_version")
     if (RUN_JEI == "true") {
         runtimeOnly("mezz.jei:jei-${minecraft_version}-forge:$jei_version")
     }
 
     // EMI
-    compileOnly "dev.emi:emi-xplat-mojmap:$emi_version+$minecraft_version:api"
+    compileOnly "dev.emi:emi-xplat-mojmap:$emi_version+$minecraft_version:api"*/
 
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
     implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }

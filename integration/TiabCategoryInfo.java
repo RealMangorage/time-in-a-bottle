@@ -1,4 +1,4 @@
-package org.mangorage.tiab.common.integration;
+package integration;
 
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;

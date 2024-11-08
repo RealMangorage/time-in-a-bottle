@@ -1,4 +1,4 @@
-package org.mangorage.tiab.common.integration.jei;
+package integration.jei;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
