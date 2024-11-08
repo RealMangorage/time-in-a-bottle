@@ -6,6 +6,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -26,9 +27,9 @@ import org.mangorage.tiab.forge.core.Registration;
 @Mod(CommonConstants.MODID)
 public class ForgeTiabMod extends TiabMod {
 
-    public ForgeTiabMod() {
+    public ForgeTiabMod(FMLJavaModLoadingContext context) {
         super(LoaderSide.FORGE);
-        var modBus = FMLJavaModLoadingContext.get().getModEventBus();
+        var modBus = context.getModEventBus();
 
         Registration.register(modBus);
         modBus.addListener(this::onClient);
@@ -39,7 +40,8 @@ public class ForgeTiabMod extends TiabMod {
         Pair<ForgeTiabConfig, ForgeConfigSpec> cfg = new ForgeConfigSpec.Builder()
                 .configure(ForgeTiabConfig::new);
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, cfg.getRight());
+        context.registerConfig(ModConfig.Type.SERVER, cfg.getRight());
+
 
         CommonRegistration.SERVER_CONFIG.setConfig(cfg.getKey());
     }
