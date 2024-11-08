@@ -1,16 +1,24 @@
 package org.mangorage.tiab.common.client.renderer;
 
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import org.mangorage.tiab.common.entities.TimeAcceleratorEntity;
 
 public class AcceleratorEntityRenderState extends EntityRenderState {
-    private TimeAcceleratorEntity entity;
+    private int timeRate = 0;
+    private int timeRemaining = 0;
 
-    void set(TimeAcceleratorEntity entity) {
-        this.entity = entity;
+    public void setTimeRate(int timeRate) {
+        this.timeRate = timeRate;
     }
 
-    TimeAcceleratorEntity get() {
-        return entity;
+    public void setTimeRemaining(int timeRemaining) {
+        this.timeRemaining = timeRemaining;
+    }
+
+    public int getTimeRate() {
+        return timeRate;
+    }
+
+    public int getTimeRemaining() {
+        return timeRemaining;
     }
 }

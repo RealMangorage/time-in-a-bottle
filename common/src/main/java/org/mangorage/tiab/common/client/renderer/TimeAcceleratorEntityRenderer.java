@@ -24,17 +24,17 @@ public class TimeAcceleratorEntityRenderer extends EntityRenderer<TimeAccelerato
     }
 
     @Override
-    public void extractRenderState(TimeAcceleratorEntity timeAcceleratorEntity, AcceleratorEntityRenderState acceleratorEntityRenderState, float $$2) {
-        acceleratorEntityRenderState.set(timeAcceleratorEntity);
+    public void extractRenderState(TimeAcceleratorEntity entity, AcceleratorEntityRenderState renderState, float something) {
+        renderState.setTimeRate(entity.getTimeRate());
+        renderState.setTimeRemaining(entity.getRemainingTime());
     }
 
     @Override
     public void render(AcceleratorEntityRenderState renderState, PoseStack poseStack, MultiBufferSource bufferSource, int packedLightIn) {
-        var entity = renderState.get();
-        String timeRate = "x" + 2 * entity.getTimeRate();
-        float paddingLeftRight = 2 * entity.getTimeRate() < 10 ? 0.11F : 0.19F;
+        String timeRate = "x" + 2 * renderState.getTimeRate();
+        float paddingLeftRight = 2 * renderState.getTimeRate() < 10 ? 0.11F : 0.19F;
 
-        int remainingTimeSeconds = entity.getRemainingTime() / 20;
+        int remainingTimeSeconds = renderState.getTimeRemaining() / 20;
         String timeRemaining = remainingTimeSeconds + "s";
 
         var rendererText = textRenderer.of(poseStack, bufferSource);
