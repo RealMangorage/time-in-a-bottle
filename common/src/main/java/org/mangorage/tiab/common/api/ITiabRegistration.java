@@ -1,6 +1,5 @@
 package org.mangorage.tiab.common.api;
 
-import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.CreativeModeTab;

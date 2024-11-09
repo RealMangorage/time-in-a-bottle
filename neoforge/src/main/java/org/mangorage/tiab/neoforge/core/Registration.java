@@ -8,7 +8,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -33,7 +32,7 @@ public final class Registration {
                     .build());
 
     public static final DeferredItem<TiabItem> TIAB_ITEM = ITEMS.registerItem("time_in_a_bottle",
-            properties -> new TiabItem(
+            properties -> new NeoForgeTiabItem(
                     properties
                             .component(STORED_TIME_COMPONENT.get(), new StoredTimeComponent(0, 0))
                             .component(DataComponents.MAX_STACK_SIZE, 1)

@@ -35,7 +35,7 @@ public final class Registration {
             .networkSynchronized(StoredTimeComponent.DIRECT_STREAM_CODEC)
             .build());
 
-    public static final TiabItem TIAB_ITEM = registerWithKey(BuiltInRegistries.ITEM, "time_in_a_bottle", key -> new TiabItem(
+    public static final TiabItem TIAB_ITEM = registerWithKey(BuiltInRegistries.ITEM, "time_in_a_bottle", key -> new FabricTiabItem(
             new Item.Properties()
                     .setId(key)
                     .component(STORED_TIME_COMPONENT, new StoredTimeComponent(0, 0))

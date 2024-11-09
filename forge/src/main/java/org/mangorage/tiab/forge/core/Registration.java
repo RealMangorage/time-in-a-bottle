@@ -39,7 +39,7 @@ public class Registration {
                     .build());
 
     public static final RegistryObject<TiabItem> TIAB_ITEM = ITEMS.register("time_in_a_bottle",
-            () -> new TiabItem(
+            () -> new ForgeTiabItem(
                     new Item.Properties()
                             .setId(create(Registries.ITEM, "time_in_a_bottle"))
                             .component(STORED_TIME_COMPONENT.get(), new StoredTimeComponent(0, 0))
