@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class TiabItem extends Item {
+
     public TiabItem(Properties properties) {
         super(properties);
     }
@@ -34,10 +35,13 @@ public class TiabItem extends Item {
                 break;
             }
         }
+        var itemStack = ICommonTimeInABottleAPI.COMMON_API.getDirect().findTiabItem(player);
+        if (itemStack == null) return;
+        tickBottle(itemStack);
     }
 
-    public void tickBottle(ItemStack stack) {
-        if (stack.getItem() != this) return;
+    public static void tickBottle(ItemStack stack) {
+        if (stack.getItem() != ICommonTimeInABottleAPI.COMMON_API.getDirect().getRegistration().getTiabItem()) return;
 
         var comp = ICommonTimeInABottleAPI.COMMON_API.getDirect().getRegistration().getStoredTime();
 
