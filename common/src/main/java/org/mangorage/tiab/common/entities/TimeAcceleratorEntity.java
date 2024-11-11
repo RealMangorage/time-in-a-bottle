@@ -21,7 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.mangorage.tiab.common.CommonConstants;
 import org.mangorage.tiab.common.TiabMod;
-import org.mangorage.tiab.common.core.CommonRegistration;
+import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
 
 public class TimeAcceleratorEntity extends Entity {
     private static final EntityDataAccessor<Integer> timeRate = SynchedEntityData.defineId(TimeAcceleratorEntity.class, EntityDataSerializers.INT);
@@ -53,7 +53,7 @@ public class TimeAcceleratorEntity extends Entity {
         }
 
         BlockState blockState = level.getBlockState(pos);
-        if (blockState.is(CommonRegistration.TIAB_UN_ACCELERATABLE)) {
+        if (blockState.is(ICommonTimeInABottleAPI.COMMON_API.getDirect().getTagKey())) {
             this.remove(RemovalReason.KILLED);
             setRemainingTime(0);
             setTimeRate(1);

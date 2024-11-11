@@ -11,7 +11,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
-import org.mangorage.tiab.common.core.CommonRegistration;
 import org.mangorage.tiab.common.core.StoredTimeComponent;
 import org.mangorage.tiab.common.items.TiabItem;
 import org.mangorage.tiab.common.misc.CommonHelper;
@@ -43,6 +42,7 @@ public class TiabCommands {
         Component messageValue = MessageArgument.getMessage(ctx, TIME_PARAM);
         CommandSourceStack source = ctx.getSource();
         ServerPlayer player = source.getPlayerOrException();
+        var config = ICommonTimeInABottleAPI.COMMON_API.getDirect().getConfig();
 
         if (!messageValue.getString().isEmpty()) {
             try {
@@ -51,8 +51,8 @@ public class TiabCommands {
                 if (timeToAdd < 0) {
                     throw new NumberFormatException();
                 }
-                if (timeToAdd > CommonRegistration.SERVER_CONFIG.get().MAX_STORED_TIME() / CommonRegistration.SERVER_CONFIG.get().TICKS_CONST()) {
-                    timeToAdd = CommonRegistration.SERVER_CONFIG.get().MAX_STORED_TIME() / CommonRegistration.SERVER_CONFIG.get().TICKS_CONST();
+                if (timeToAdd > config.MAX_STORED_TIME() / config.TICKS_CONST()) {
+                    timeToAdd = config.MAX_STORED_TIME() / config.TICKS_CONST();
                 }
 
                 boolean success = false;
@@ -64,8 +64,8 @@ public class TiabCommands {
                         int currentStoredEnergy = itemTiab.getStoredComponent(invStack).stored();
 
                         if (!isAdd) {
-                            if (currentStoredEnergy / CommonRegistration.SERVER_CONFIG.get().TICKS_CONST() < timeToAdd) {
-                                timeToAdd = currentStoredEnergy / CommonRegistration.SERVER_CONFIG.get().TICKS_CONST();
+                            if (currentStoredEnergy / config.TICKS_CONST() < timeToAdd) {
+                                timeToAdd = currentStoredEnergy / config.TICKS_CONST();
                             }
                             timeToAdd = -timeToAdd;
                         }
@@ -73,9 +73,9 @@ public class TiabCommands {
                         final int timeToAddFinal = timeToAdd;
 
                         // Check if the number becomes negative
-                        if (CommonHelper.isPositive(currentStoredEnergy + timeToAddFinal * CommonRegistration.SERVER_CONFIG.get().TICKS_CONST())) {
+                        if (CommonHelper.isPositive(currentStoredEnergy + timeToAddFinal * config.TICKS_CONST())) {
                             CommonHelper.modify(invStack, ICommonTimeInABottleAPI.COMMON_API.getDirect().getRegistration().getStoredTime(), () -> new StoredTimeComponent(0, 0), old -> {
-                                return new StoredTimeComponent(currentStoredEnergy + timeToAddFinal * CommonRegistration.SERVER_CONFIG.get().TICKS_CONST(), old.total());
+                                return new StoredTimeComponent(currentStoredEnergy + timeToAddFinal * config.TICKS_CONST(), old.total());
                             });
 
                             CommonHelper.sendStatusMessage(player, String.format("%s %d seconds", isAdd ? "Added" : "Removed ", timeToAdd));

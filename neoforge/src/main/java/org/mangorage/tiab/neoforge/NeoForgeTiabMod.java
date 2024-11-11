@@ -13,9 +13,9 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.mangorage.tiab.common.TiabMod;
+import org.mangorage.tiab.common.api.ITiabConfig;
 import org.mangorage.tiab.common.api.ITiabRegistration;
 import org.mangorage.tiab.common.client.renderer.TimeAcceleratorEntityRenderer;
-import org.mangorage.tiab.common.core.CommonRegistration;
 import org.mangorage.tiab.common.core.LoaderSide;
 import org.mangorage.tiab.common.items.TiabItem;
 import org.mangorage.tiab.neoforge.core.Registration;
@@ -24,6 +24,8 @@ import static org.mangorage.tiab.common.CommonConstants.MODID;
 
 @Mod(MODID)
 public class NeoForgeTiabMod extends TiabMod {
+    private final ITiabRegistration registration = new Registration.NeoForgeRegistration() {};
+    private final ITiabConfig config;
 
     public NeoForgeTiabMod(IEventBus bus) {
         super(LoaderSide.NEOFORGE);
@@ -37,7 +39,7 @@ public class NeoForgeTiabMod extends TiabMod {
                 .configure(NeoForgeTiabConfig::new);
 
         ModLoadingContext.get().getActiveContainer().registerConfig(ModConfig.Type.SERVER, cfg.getRight());
-        CommonRegistration.SERVER_CONFIG.setConfig(cfg.getKey());
+        this.config = cfg.getKey();
     }
 
 
@@ -46,7 +48,7 @@ public class NeoForgeTiabMod extends TiabMod {
     }
 
     public void onRegisterCommands(RegisterCommandsEvent event) {
-        CommonRegistration.initServer(event.getDispatcher());
+        registerCommand(event.getDispatcher());
     }
 
     public void onPlayerTick(PlayerTickEvent.Post event) {
@@ -60,6 +62,11 @@ public class NeoForgeTiabMod extends TiabMod {
 
     @Override
     public ITiabRegistration getRegistration() {
-        return new Registration.NeoForgeRegistration() {};
+        return registration;
+    }
+
+    @Override
+    public ITiabConfig getConfig() {
+        return config;
     }
 }

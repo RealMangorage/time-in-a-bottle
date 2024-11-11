@@ -1,7 +1,7 @@
 package org.mangorage.tiab.forge;
 
 import net.minecraftforge.common.ForgeConfigSpec;
-import org.mangorage.tiab.common.config.ITiabConfig;
+import org.mangorage.tiab.common.api.ITiabConfig;
 
 public class ForgeTiabConfig implements ITiabConfig {
     private final ForgeConfigSpec.ConfigValue<Integer> MAX_STORED_TIME;
