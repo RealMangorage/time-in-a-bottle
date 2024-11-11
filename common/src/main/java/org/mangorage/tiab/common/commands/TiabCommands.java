@@ -55,13 +55,12 @@ public class TiabCommands {
                     timeToAdd = config.MAX_STORED_TIME() / config.TICKS_CONST();
                 }
 
-                boolean success = false;
+                var bottle = ICommonTimeInABottleAPI.COMMON_API.get().findTiabItem(player);
 
-                for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-                    ItemStack invStack = player.getInventory().getItem(i);
-                    Item item = invStack.getItem();
+                if (bottle != null) {
+                    Item item = bottle.getItem();
                     if (item instanceof TiabItem itemTiab) {
-                        int currentStoredEnergy = itemTiab.getStoredComponent(invStack).stored();
+                        int currentStoredEnergy = itemTiab.getStoredComponent(bottle).stored();
 
                         if (!isAdd) {
                             if (currentStoredEnergy / config.TICKS_CONST() < timeToAdd) {
@@ -74,18 +73,14 @@ public class TiabCommands {
 
                         // Check if the number becomes negative
                         if (CommonHelper.isPositive(currentStoredEnergy + timeToAddFinal * config.TICKS_CONST())) {
-                            CommonHelper.modify(invStack, ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getStoredTime(), () -> new StoredTimeComponent(0, 0), old -> {
+                            CommonHelper.modify(bottle, ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getStoredTime(), () -> new StoredTimeComponent(0, 0), old -> {
                                 return new StoredTimeComponent(currentStoredEnergy + timeToAddFinal * config.TICKS_CONST(), old.total());
                             });
 
                             CommonHelper.sendStatusMessage(player, String.format("%s %d seconds", isAdd ? "Added" : "Removed ", timeToAdd));
                         }
-
-                        success = true;
                     }
-                }
-
-                if (!success) {
+                } else {
                     CommonHelper.sendStatusMessage(player, "No Time in a bottle item in inventory");
                 }
 

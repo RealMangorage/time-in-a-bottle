@@ -7,19 +7,20 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
+import org.mangorage.tiab.common.api.impl.IStoredTimeComponent;
 
-public record StoredTimeComponent(int stored, int total) {
-    public static final Codec<StoredTimeComponent> DIRECT_CODEC = RecordCodecBuilder.create(
+public record StoredTimeComponent(int stored, int total) implements IStoredTimeComponent {
+    public static final Codec<IStoredTimeComponent> DIRECT_CODEC = RecordCodecBuilder.create(
             buiilder -> buiilder.group(
-                            ExtraCodecs.NON_NEGATIVE_INT.fieldOf("stored").forGetter(StoredTimeComponent::stored),
-                            ExtraCodecs.NON_NEGATIVE_INT.fieldOf("total").forGetter(StoredTimeComponent::total)
+                            ExtraCodecs.NON_NEGATIVE_INT.fieldOf("stored").forGetter(IStoredTimeComponent::stored),
+                            ExtraCodecs.NON_NEGATIVE_INT.fieldOf("total").forGetter(IStoredTimeComponent::total)
                     ).apply(buiilder, StoredTimeComponent::new)
     );
-    public static final StreamCodec<RegistryFriendlyByteBuf, StoredTimeComponent> DIRECT_STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<RegistryFriendlyByteBuf, IStoredTimeComponent> DIRECT_STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT,
-            StoredTimeComponent::stored,
+            IStoredTimeComponent::stored,
             ByteBufCodecs.VAR_INT,
-            StoredTimeComponent::total,
+            IStoredTimeComponent::total,
             StoredTimeComponent::new
     );
 }

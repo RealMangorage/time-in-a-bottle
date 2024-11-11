@@ -16,6 +16,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.mangorage.tiab.common.api.ITiabRegistration;
+import org.mangorage.tiab.common.api.impl.IStoredTimeComponent;
 import org.mangorage.tiab.common.core.StoredTimeComponent;
 import org.mangorage.tiab.common.entities.TimeAcceleratorEntity;
 import org.mangorage.tiab.common.items.TiabItem;
@@ -32,8 +33,8 @@ public class Registration {
         return ResourceKey.create(key, ResourceLocation.fromNamespaceAndPath(MODID, id));
     }
 
-    public static final RegistryObject<DataComponentType<StoredTimeComponent>> STORED_TIME_COMPONENT = DATA_COMPONENT_TYPES.register("stored_time",
-            () -> new DataComponentType.Builder<StoredTimeComponent>()
+    public static final RegistryObject<DataComponentType<IStoredTimeComponent>> STORED_TIME_COMPONENT = DATA_COMPONENT_TYPES.register("stored_time",
+            () -> new DataComponentType.Builder<IStoredTimeComponent>()
                     .persistent(StoredTimeComponent.DIRECT_CODEC)
                     .networkSynchronized(StoredTimeComponent.DIRECT_STREAM_CODEC)
                     .build());
@@ -74,7 +75,7 @@ public class Registration {
         }
 
         @Override
-        default DataComponentType<StoredTimeComponent> getStoredTime() {
+        default DataComponentType<IStoredTimeComponent> getStoredTime() {
             return Registration.STORED_TIME_COMPONENT.get();
         }
 

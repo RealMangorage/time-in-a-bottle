@@ -13,6 +13,7 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.mangorage.tiab.common.TiabMod;
+import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
 import org.mangorage.tiab.common.api.ITiabConfig;
 import org.mangorage.tiab.common.api.ITiabRegistration;
 import org.mangorage.tiab.common.client.renderer.TimeAcceleratorEntityRenderer;
@@ -52,7 +53,7 @@ public class NeoForgeTiabMod extends TiabMod {
     }
 
     public void onPlayerTick(PlayerTickEvent.Post event) {
-        TiabItem.tickPlayer(event.getEntity());
+        ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getTiabItem().tickPlayer(event.getEntity());
     }
 
     @Override

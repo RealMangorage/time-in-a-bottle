@@ -13,6 +13,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.mangorage.tiab.common.api.ITiabRegistration;
+import org.mangorage.tiab.common.api.impl.IStoredTimeComponent;
 import org.mangorage.tiab.common.core.StoredTimeComponent;
 import org.mangorage.tiab.common.entities.TimeAcceleratorEntity;
 import org.mangorage.tiab.common.items.TiabItem;
@@ -25,8 +26,8 @@ public final class Registration {
     private static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
     private static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(Registries.ENTITY_TYPE, MODID);
 
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<StoredTimeComponent>> STORED_TIME_COMPONENT = DATA_COMPONENT_TYPES.register("stored_time",
-            () -> new DataComponentType.Builder<StoredTimeComponent>()
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<IStoredTimeComponent>> STORED_TIME_COMPONENT = DATA_COMPONENT_TYPES.register("stored_time",
+            () -> new DataComponentType.Builder<IStoredTimeComponent>()
                     .persistent(StoredTimeComponent.DIRECT_CODEC)
                     .networkSynchronized(StoredTimeComponent.DIRECT_STREAM_CODEC)
                     .build());
@@ -66,7 +67,7 @@ public final class Registration {
         }
 
         @Override
-        default DataComponentType<StoredTimeComponent> getStoredTime() {
+        default DataComponentType<IStoredTimeComponent> getStoredTime() {
             return Registration.STORED_TIME_COMPONENT.get();
         }
 

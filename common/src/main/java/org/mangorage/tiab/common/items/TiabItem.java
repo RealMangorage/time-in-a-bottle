@@ -13,6 +13,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
+import org.mangorage.tiab.common.api.impl.IStoredTimeComponent;
+import org.mangorage.tiab.common.api.impl.ITiabItem;
 import org.mangorage.tiab.common.core.StoredTimeComponent;
 import org.mangorage.tiab.common.entities.TimeAcceleratorEntity;
 import org.mangorage.tiab.common.misc.CommonHelper;
@@ -21,19 +23,19 @@ import org.mangorage.tiab.common.misc.CommonSoundHelper;
 import java.util.List;
 import java.util.Optional;
 
-public class TiabItem extends Item {
+public class TiabItem extends Item implements ITiabItem {
 
     public TiabItem(Properties properties) {
         super(properties);
     }
 
-    public static void tickPlayer(Player player) {
+    public void tickPlayer(Player player) {
         var itemStack = ICommonTimeInABottleAPI.COMMON_API.get().findTiabItem(player);
         if (itemStack == null) return;
         tickBottle(itemStack);
     }
 
-    public static void tickBottle(ItemStack stack) {
+    public void tickBottle(ItemStack stack) {
         if (stack.getItem() != ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getTiabItem()) return;
 
         var comp = ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getStoredTime();
@@ -124,7 +126,6 @@ public class TiabItem extends Item {
         return InteractionResult.SUCCESS;
     }
 
-
     public int getEachUseDuration() {
         // TICK CONST * EACH USE DURATION (in secs)
         return ICommonTimeInABottleAPI.COMMON_API.get().getConfig().TICKS_CONST() * ICommonTimeInABottleAPI.COMMON_API.get().getConfig().EACH_USE_DURATION();
@@ -139,7 +140,8 @@ public class TiabItem extends Item {
         return getStoredComponent(stack).stored() >= energyRequired || isCreativeMode;
     }
 
-    public StoredTimeComponent getStoredComponent(ItemStack stack) {
+    @Override
+    public IStoredTimeComponent getStoredComponent(ItemStack stack) {
         return stack.getOrDefault(ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getStoredTime(), new StoredTimeComponent(0, 0));
     }
 }

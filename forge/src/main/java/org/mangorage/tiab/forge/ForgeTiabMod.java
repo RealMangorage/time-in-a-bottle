@@ -15,6 +15,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.commons.lang3.tuple.Pair;
+import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
 import org.mangorage.tiab.common.api.ITiabConfig;
 import org.mangorage.tiab.common.api.ITiabRegistration;
 import org.mangorage.tiab.common.CommonConstants;
@@ -57,7 +58,7 @@ public final class ForgeTiabMod extends TiabMod {
     }
 
     public void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        TiabItem.tickPlayer(event.player);
+        ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getTiabItem().tickPlayer(event.player);
     }
 
     @Override

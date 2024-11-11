@@ -12,8 +12,10 @@ import net.minecraft.world.level.block.Block;
 import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
 import org.mangorage.tiab.common.api.ITiabConfig;
 import org.mangorage.tiab.common.api.ITiabItemSearch;
+import org.mangorage.tiab.common.api.impl.IStoredTimeComponent;
 import org.mangorage.tiab.common.commands.TiabCommands;
 import org.mangorage.tiab.common.core.LoaderSide;
+import org.mangorage.tiab.common.core.StoredTimeComponent;
 import org.mangorage.tiab.common.items.TiabItem;
 
 import java.util.List;
@@ -67,9 +69,7 @@ public abstract class TiabMod implements ICommonTimeInABottleAPI {
     public ItemStack findTiabItem(Player player) {
         for (ITiabItemSearch search : itemSearchList) {
             var item = search.findItem(player);
-            if (item != null) {
-                return item;
-            }
+            if (item != null) return item;
         }
         return null;
     }
@@ -82,5 +82,10 @@ public abstract class TiabMod implements ICommonTimeInABottleAPI {
     @Override
     public ITiabConfig getConfig() {
         return defaultConfig;
+    }
+
+    @Override
+    public IStoredTimeComponent createStoredTimeComponent(int stored, int total) {
+        return new StoredTimeComponent(stored, total);
     }
 }
