@@ -6,15 +6,14 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import org.mangorage.tiab.common.TiabMod;
 import org.mangorage.tiab.common.api.impl.IStoredTimeComponent;
 import org.mangorage.tiab.common.api.impl.ITimeAcceleratorEntity;
-import org.mangorage.tiab.common.core.LoaderSide;
 
 import java.util.function.Supplier;
 
 public interface ICommonTimeInABottleAPI {
-    Supplier<ICommonTimeInABottleAPI> COMMON_API = TiabMod.getAPIHolder();
+
+    Supplier<ICommonTimeInABottleAPI> COMMON_API = Getter.GETTER.get();
     LoaderSide getLoaderSide();
 
     boolean isModLoaded(String modId);

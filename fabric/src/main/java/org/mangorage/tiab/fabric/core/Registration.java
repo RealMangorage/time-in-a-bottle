@@ -7,6 +7,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.CreativeModeTab;
@@ -67,7 +68,7 @@ public final class Registration {
         }
 
         @Override
-        default EntityType<TimeAcceleratorEntity> getAcceleratorEntityType() {
+        default EntityType<? extends Entity> getAcceleratorEntityType() {
             return ACCELERATOR_ENTITY;
         }
 

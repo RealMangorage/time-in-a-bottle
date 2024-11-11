@@ -17,8 +17,7 @@ import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
 import org.mangorage.tiab.common.api.ITiabConfig;
 import org.mangorage.tiab.common.api.ITiabRegistration;
 import org.mangorage.tiab.common.client.renderer.TimeAcceleratorEntityRenderer;
-import org.mangorage.tiab.common.core.LoaderSide;
-import org.mangorage.tiab.common.items.TiabItem;
+import org.mangorage.tiab.common.api.LoaderSide;
 import org.mangorage.tiab.neoforge.core.Registration;
 
 import static org.mangorage.tiab.common.CommonConstants.MODID;

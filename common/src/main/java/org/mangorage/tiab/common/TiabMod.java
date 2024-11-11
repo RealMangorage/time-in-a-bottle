@@ -17,7 +17,7 @@ import org.mangorage.tiab.common.api.ITiabItemSearch;
 import org.mangorage.tiab.common.api.impl.IStoredTimeComponent;
 import org.mangorage.tiab.common.api.impl.ITimeAcceleratorEntity;
 import org.mangorage.tiab.common.commands.TiabCommands;
-import org.mangorage.tiab.common.core.LoaderSide;
+import org.mangorage.tiab.common.api.LoaderSide;
 import org.mangorage.tiab.common.core.StoredTimeComponent;
 import org.mangorage.tiab.common.items.TiabItem;
 
@@ -94,6 +94,6 @@ public abstract class TiabMod implements ICommonTimeInABottleAPI {
 
     @Override
     public ITimeAcceleratorEntity createEntity(ServerLevel level, EntitySpawnReason reason) {
-        return ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getAcceleratorEntityType().create(level, reason);
+        return (ITimeAcceleratorEntity) ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getAcceleratorEntityType().create(level, reason);
     }
 }

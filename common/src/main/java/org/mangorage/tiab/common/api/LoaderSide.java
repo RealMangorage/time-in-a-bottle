@@ -1,4 +1,4 @@
-package org.mangorage.tiab.common.core;
+package org.mangorage.tiab.common.api;
 
 public enum LoaderSide {
     FORGE,

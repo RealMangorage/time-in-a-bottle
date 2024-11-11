@@ -2,14 +2,11 @@ package org.mangorage.tiab.forge;
 
 import net.minecraft.client.renderer.entity.EntityRenderers;
 
-import net.minecraft.tags.BlockTags;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -21,8 +18,7 @@ import org.mangorage.tiab.common.api.ITiabRegistration;
 import org.mangorage.tiab.common.CommonConstants;
 import org.mangorage.tiab.common.TiabMod;
 import org.mangorage.tiab.common.client.renderer.TimeAcceleratorEntityRenderer;
-import org.mangorage.tiab.common.core.LoaderSide;
-import org.mangorage.tiab.common.items.TiabItem;
+import org.mangorage.tiab.common.api.LoaderSide;
 import org.mangorage.tiab.forge.core.Registration;
 
 
