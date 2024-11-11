@@ -42,7 +42,7 @@ public class TiabCommands {
         Component messageValue = MessageArgument.getMessage(ctx, TIME_PARAM);
         CommandSourceStack source = ctx.getSource();
         ServerPlayer player = source.getPlayerOrException();
-        var config = ICommonTimeInABottleAPI.COMMON_API.getDirect().getConfig();
+        var config = ICommonTimeInABottleAPI.COMMON_API.get().getConfig();
 
         if (!messageValue.getString().isEmpty()) {
             try {
@@ -74,7 +74,7 @@ public class TiabCommands {
 
                         // Check if the number becomes negative
                         if (CommonHelper.isPositive(currentStoredEnergy + timeToAddFinal * config.TICKS_CONST())) {
-                            CommonHelper.modify(invStack, ICommonTimeInABottleAPI.COMMON_API.getDirect().getRegistration().getStoredTime(), () -> new StoredTimeComponent(0, 0), old -> {
+                            CommonHelper.modify(invStack, ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getStoredTime(), () -> new StoredTimeComponent(0, 0), old -> {
                                 return new StoredTimeComponent(currentStoredEnergy + timeToAddFinal * config.TICKS_CONST(), old.total());
                             });
 

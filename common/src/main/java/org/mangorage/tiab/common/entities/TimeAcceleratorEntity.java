@@ -29,7 +29,7 @@ public class TimeAcceleratorEntity extends Entity {
     private BlockPos pos;
 
     public TimeAcceleratorEntity(Level worldIn) {
-        super(TiabMod.COMMON_API.getDirect().getRegistration().getAcceleratorEntity(), worldIn);
+        super(TiabMod.COMMON_API.get().getRegistration().getAcceleratorEntity(), worldIn);
         entityData.set(timeRate, 1);
     }
 
@@ -53,7 +53,7 @@ public class TimeAcceleratorEntity extends Entity {
         }
 
         BlockState blockState = level.getBlockState(pos);
-        if (blockState.is(ICommonTimeInABottleAPI.COMMON_API.getDirect().getTagKey())) {
+        if (blockState.is(ICommonTimeInABottleAPI.COMMON_API.get().getTagKey())) {
             this.remove(RemovalReason.KILLED);
             setRemainingTime(0);
             setTimeRate(1);

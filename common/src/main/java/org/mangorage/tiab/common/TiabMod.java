@@ -18,10 +18,17 @@ import org.mangorage.tiab.common.items.TiabItem;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Supplier;
 
 import static org.mangorage.tiab.common.CommonConstants.MODID;
 
 public abstract class TiabMod implements ICommonTimeInABottleAPI {
+    private static ICommonTimeInABottleAPI API;
+
+    public static Supplier<ICommonTimeInABottleAPI> getAPIHolder() {
+        return () -> API;
+    }
+
     private static final TagKey<Block> TIAB_UN_ACCELERATABLE = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MODID, "un_acceleratable"));
 
     private final List<ITiabItemSearch> itemSearchList = new CopyOnWriteArrayList<>(); // To handle Concurrency
@@ -30,7 +37,7 @@ public abstract class TiabMod implements ICommonTimeInABottleAPI {
 
     public TiabMod(LoaderSide loaderSide) {
         this.loaderSide = loaderSide;
-        ICommonTimeInABottleAPI.COMMON_API.setValue(this);
+        TiabMod.API = this;
 
         // Default Search
         registerItemSearch(p -> {

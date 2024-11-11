@@ -27,7 +27,7 @@ public final class FabricTiabMod extends TiabMod implements ModInitializer {
     @Override
     public void onInitialize() {
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT)
-            EntityRendererRegistry.register(ICommonTimeInABottleAPI.COMMON_API.getDirect().getRegistration().getAcceleratorEntity(), TimeAcceleratorEntityRenderer::new);
+            EntityRendererRegistry.register(ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getAcceleratorEntity(), TimeAcceleratorEntityRenderer::new);
     }
 
     @Override
