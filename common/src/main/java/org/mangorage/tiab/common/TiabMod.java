@@ -5,7 +5,9 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -13,6 +15,7 @@ import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
 import org.mangorage.tiab.common.api.ITiabConfig;
 import org.mangorage.tiab.common.api.ITiabItemSearch;
 import org.mangorage.tiab.common.api.impl.IStoredTimeComponent;
+import org.mangorage.tiab.common.api.impl.ITimeAcceleratorEntity;
 import org.mangorage.tiab.common.commands.TiabCommands;
 import org.mangorage.tiab.common.core.LoaderSide;
 import org.mangorage.tiab.common.core.StoredTimeComponent;
@@ -87,5 +90,10 @@ public abstract class TiabMod implements ICommonTimeInABottleAPI {
     @Override
     public IStoredTimeComponent createStoredTimeComponent(int stored, int total) {
         return new StoredTimeComponent(stored, total);
+    }
+
+    @Override
+    public ITimeAcceleratorEntity createEntity(ServerLevel level, EntitySpawnReason reason) {
+        return ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getAcceleratorEntityType().create(level, reason);
     }
 }

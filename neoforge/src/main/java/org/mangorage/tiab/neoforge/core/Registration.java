@@ -77,7 +77,7 @@ public final class Registration {
         }
 
         @Override
-        default EntityType<TimeAcceleratorEntity> getAcceleratorEntity() {
+        default EntityType<TimeAcceleratorEntity> getAcceleratorEntityType() {
             return Registration.ACCELERATOR_ENTITY.get();
         }
     }
