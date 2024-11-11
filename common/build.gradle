@@ -56,13 +56,38 @@ publishing {
             version = "$api_version"
             artifacts {
                 artifact jar {
-                    exclude  "org/mangorage/tiab/common/**"
+                    exclude "org/mangorage/tiab/common/client/**"
+                    exclude "org/mangorage/tiab/common/commands/**"
+                    exclude "org/mangorage/tiab/common/core/**"
+                    exclude "org/mangorage/tiab/common/entities/**"
+                    exclude "org/mangorage/tiab/common/items/**"
+                    exclude "org/mangorage/tiab/common/lang/**"
+                    exclude "org/mangorage/tiab/common/misc/**"
+                    exclude "org/mangorage/tiab/common/CommonConstants.class"
+                    exclude "org/mangorage/tiab/common/TiabMod.class"
                 }
                 artifact sourcesJar {
-                    exclude  "org/mangorage/tiab/common/**"
+                    exclude "org/mangorage/tiab/common/client/**"
+                    exclude "org/mangorage/tiab/common/commands/**"
+                    exclude "org/mangorage/tiab/common/core/**"
+                    exclude "org/mangorage/tiab/common/entities/**"
+                    exclude "org/mangorage/tiab/common/items/**"
+                    exclude "org/mangorage/tiab/common/lang/**"
+                    exclude "org/mangorage/tiab/common/misc/**"
+                    exclude "org/mangorage/tiab/common/CommonConstants.class"
+                    exclude "org/mangorage/tiab/common/TiabMod.class"
                 }
                 artifact javadocJar {
-                    exclude  "org/mangorage/tiab/common/**"
+                    exclude "org/mangorage/tiab/common/client/**"
+                    exclude "org/mangorage/tiab/common/commands/**"
+                    exclude "org/mangorage/tiab/common/core/**"
+                    exclude "org/mangorage/tiab/common/entities/**"
+                    exclude "org/mangorage/tiab/common/items/**"
+                    exclude "org/mangorage/tiab/common/lang/**"
+                    exclude "org/mangorage/tiab/common/misc/**"
+                    exclude "org/mangorage/tiab/common/CommonConstants.class"
+                    exclude "org/mangorage/tiab/common/TiabMod.class"
+                    include "org/mangorage/tiab/common/api/**"
                 }
             }
         }
