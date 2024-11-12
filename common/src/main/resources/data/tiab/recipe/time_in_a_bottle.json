@@ -6,21 +6,11 @@
     "LBL"
   ],
   "key": {
-    "G": {
-      "item": "minecraft:gold_ingot"
-    },
-    "D": {
-      "item": "minecraft:diamond"
-    },
-    "L": {
-      "item": "minecraft:lapis_lazuli"
-    },
-    "C": {
-      "item": "minecraft:clock"
-    },
-    "B": {
-      "item": "minecraft:glass_bottle"
-    }
+    "G": "minecraft:gold_ingot",
+    "D": "minecraft:diamond",
+    "L": "minecraft:lapis_lazuli",
+    "C": "minecraft:clock",
+    "B": "minecraft:glass_bottle"
   },
   "result": {
     "id": "tiab:time_in_a_bottle"
