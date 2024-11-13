@@ -51,9 +51,9 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             // Use project.tasks.getByName to reference the customJar task
-            groupId = 'org.mangorage.tiab'
-            artifactId = "common-$minecraft_version"
-            version = "$api_version"
+            groupId = 'org.mangorage'
+            artifactId = "tiab-api"
+            version = "$minecraft_version-$api_version"
             artifacts {
                 artifact jar {
                     exclude "org/mangorage/tiab/common/client/**"
