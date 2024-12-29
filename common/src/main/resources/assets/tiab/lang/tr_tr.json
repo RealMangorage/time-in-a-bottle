@@ -1,0 +1,6 @@
+{
+  "item.tiab.time_in_a_bottle": "Şişedeki zaman",
+  "item.tiab.time_in_a_bottle.tooltip.stored_time": "Depolanan zaman %s:%s:%s",
+  "item.tiab.time_in_a_bottle.tooltip.total_accumulated_time": "Toplam biriken zaman %s:%s:%s",
+  "emi.category.tiab.test": "TIAB Kara Listeye Alınmış Bloklar"
+}
