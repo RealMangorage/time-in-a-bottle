@@ -3,9 +3,9 @@
 A Minecraft mod that adds one simple game mechanic: small rooms inside of blocks. You can grab the latest build off
 [Curseforge] or on [Modrinth].
 
-| Version | Minecraft Version |      Released | Support | Support Ends   |
-|:--------|:-----------------:|--------------:|:-------:|----------------|
-| 6.x     |   1.21 / 1.21.1   |          2024 |    ✅   |  N/A           |
+| Version | Minecraft Version | API Version |      Released | Support | Support Ends   |
+|:--------|:-----------------:|-------------|--------------:|:-------:|----------------|
+| 6.x     |   1.21 / 1.21.1   | 1.x         |          2024 |    ✅   |  N/A           |
 
 
 \* *Note - only the most recent versions are shown here for brevity.*
@@ -27,6 +27,23 @@ The following is a quick summary of each module's purpose:
 |         forge    | Where all the common code built against forge is at          |
 |         fabric   | Where all the common code built against fabric is at         |
 |         neoforge | Where all the common code built against neoforge is at       |
+
+## API
+
+To use the API just add https://maven.minecraftforge.net/ as a maven repo
+
+```
+repositories {
+    maven {
+        url = https://maven.minecraftforge.net/
+    }
+}
+
+dependencies {
+    compileOnly("org.mangorage:tiab:<module>-api-<mc_version>-<api_version>
+}
+```
+
 
 
 ## External Libraries

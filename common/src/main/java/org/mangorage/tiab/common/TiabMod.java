@@ -13,7 +13,6 @@ import net.minecraft.world.level.block.Block;
 import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
 import org.mangorage.tiab.common.api.ITiabConfig;
 import org.mangorage.tiab.common.api.ITiabItemSearch;
-import org.mangorage.tiab.common.api.ITiabRegistration;
 import org.mangorage.tiab.common.api.LoaderSide;
 import org.mangorage.tiab.common.api.impl.IStoredTimeComponent;
 import org.mangorage.tiab.common.api.impl.ITimeAcceleratorEntity;
