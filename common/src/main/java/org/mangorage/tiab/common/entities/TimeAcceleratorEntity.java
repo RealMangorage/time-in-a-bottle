@@ -21,8 +21,9 @@ import net.minecraft.world.phys.Vec3;
 import org.mangorage.tiab.common.CommonConstants;
 import org.mangorage.tiab.common.TiabMod;
 import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
+import org.mangorage.tiab.common.api.impl.ITimeAcceleratorEntity;
 
-public class TimeAcceleratorEntity extends Entity {
+public class TimeAcceleratorEntity extends Entity implements ITimeAcceleratorEntity {
     private static final EntityDataAccessor<Integer> timeRate = SynchedEntityData.defineId(TimeAcceleratorEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> timeRemaining = SynchedEntityData.defineId(TimeAcceleratorEntity.class, EntityDataSerializers.INT);
     private BlockPos pos;
@@ -110,28 +111,38 @@ public class TimeAcceleratorEntity extends Entity {
         return new ClientboundAddEntityPacket(this, serverEntity);
     }
 
+    @Override
     public void setBlockPos(BlockPos blockPos) {
         this.pos = blockPos.immutable();
         this.setPos(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
     }
 
+    @Override
+    public Entity asEntity() {
+        return this;
+    }
+
+    @Override
     public BlockPos getBlockPos() {
         return pos;
     }
 
+    @Override
     public int getTimeRate() {
         return entityData.get(timeRate);
     }
 
+    @Override
     public void setTimeRate(int rate) {
         entityData.set(timeRate, rate);
     }
 
+    @Override
     public int getRemainingTime() {
         return entityData.get(timeRemaining);
     }
 
-
+    @Override
     public void setRemainingTime(int remainingTime) {
         entityData.set(timeRemaining, remainingTime);
     }
