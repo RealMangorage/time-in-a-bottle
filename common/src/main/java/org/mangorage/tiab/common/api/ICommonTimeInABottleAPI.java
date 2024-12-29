@@ -1,10 +1,29 @@
 package org.mangorage.tiab.common.api;
 
-import org.mangorage.tiab.common.core.LoaderSide;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import org.mangorage.tiab.common.api.impl.IStoredTimeComponent;
+import org.mangorage.tiab.common.api.impl.ITimeAcceleratorEntity;
+
+import java.util.function.Supplier;
 
 public interface ICommonTimeInABottleAPI {
-    APIHolder<ICommonTimeInABottleAPI> COMMON_API = new APIHolder<>("Time in a bottle");
+
+    Supplier<ICommonTimeInABottleAPI> COMMON_API = Getter.GETTER.get();
     LoaderSide getLoaderSide();
+
     boolean isModLoaded(String modId);
     ITiabRegistration getRegistration();
+
+    void registerItemSearch(ITiabItemSearch search);
+    ItemStack findTiabItem(Player player);
+
+    TagKey<Block> getTagKey(); // get the un-acceleratable tag key
+    ITiabConfig getConfig();
+
+    IStoredTimeComponent createStoredTimeComponent(int stored, int total);
+    ITimeAcceleratorEntity createEntity(ServerLevel level);
 }

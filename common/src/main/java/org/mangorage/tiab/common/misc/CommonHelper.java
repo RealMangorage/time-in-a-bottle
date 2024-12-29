@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 public final class CommonHelper {
 
     public static Component getTotalTimeTranslated(ItemStack stack) {
-        int totalAccumulatedTime = stack.getOrDefault(ICommonTimeInABottleAPI.COMMON_API.getDirect().getRegistration().getStoredTime(), new StoredTimeComponent(0, 0)).total();
+        int totalAccumulatedTime = stack.getOrDefault(ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getStoredTime(), new StoredTimeComponent(0, 0)).total();
         int totalAccumulatedTimeSeconds = totalAccumulatedTime / 20;
         int totalAccumulatedHours = totalAccumulatedTimeSeconds / 3600;
         int totalAccumulatedMinutes = (totalAccumulatedTimeSeconds % 3600) / 60;
@@ -25,7 +25,7 @@ public final class CommonHelper {
     }
 
     public static Component getStoredTimeTranslated(ItemStack stack) {
-        int storedTime = stack.getOrDefault(ICommonTimeInABottleAPI.COMMON_API.getDirect().getRegistration().getStoredTime(), new StoredTimeComponent(0, 0)).stored();
+        int storedTime = stack.getOrDefault(ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getStoredTime(), new StoredTimeComponent(0, 0)).stored();
         int storedSeconds = storedTime / 20;
         int hours = storedSeconds / 3600;
         int minutes = (storedSeconds % 3600) / 60;

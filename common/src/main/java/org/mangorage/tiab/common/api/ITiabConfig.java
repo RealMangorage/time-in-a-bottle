@@ -1,4 +1,4 @@
-package org.mangorage.tiab.common.config;
+package org.mangorage.tiab.common.api;
 
 public interface ITiabConfig {
 

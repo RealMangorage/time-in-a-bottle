@@ -4,6 +4,7 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.CreativeModeTab;
@@ -13,6 +14,8 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.mangorage.tiab.common.api.ITiabRegistration;
+import org.mangorage.tiab.common.api.impl.IStoredTimeComponent;
+import org.mangorage.tiab.common.api.impl.ITiabItem;
 import org.mangorage.tiab.common.core.StoredTimeComponent;
 import org.mangorage.tiab.common.entities.TimeAcceleratorEntity;
 import org.mangorage.tiab.common.items.TiabItem;
@@ -25,8 +28,8 @@ public final class Registration {
     private static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
     private static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(Registries.ENTITY_TYPE, MODID);
 
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<StoredTimeComponent>> STORED_TIME_COMPONENT = DATA_COMPONENT_TYPES.register("stored_time",
-            () -> new DataComponentType.Builder<StoredTimeComponent>()
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<IStoredTimeComponent>> STORED_TIME_COMPONENT = DATA_COMPONENT_TYPES.register("stored_time",
+            () -> new DataComponentType.Builder<IStoredTimeComponent>()
                     .persistent(StoredTimeComponent.DIRECT_CODEC)
                     .networkSynchronized(StoredTimeComponent.DIRECT_STREAM_CODEC)
                     .build());
@@ -61,23 +64,23 @@ public final class Registration {
 
     public interface NeoForgeRegistration extends ITiabRegistration {
         @Override
+        default ITiabItem getTiabItem() {
+            return TIAB_ITEM.get();
+        }
+
+        @Override
         default CreativeModeTab getCreativeTab() {
-            return Registration.TIAB_CREATIVE_TAB.get();
+            return TIAB_CREATIVE_TAB.get();
         }
 
         @Override
-        default DataComponentType<StoredTimeComponent> getStoredTime() {
-            return Registration.STORED_TIME_COMPONENT.get();
+        default DataComponentType<IStoredTimeComponent> getStoredTime() {
+            return STORED_TIME_COMPONENT.get();
         }
 
         @Override
-        default TiabItem getTiabItem() {
-            return Registration.TIAB_ITEM.get();
-        }
-
-        @Override
-        default EntityType<TimeAcceleratorEntity> getAcceleratorEntity() {
-            return Registration.ACCELERATOR_ENTITY.get();
+        default EntityType<? extends Entity> getAcceleratorEntityType() {
+            return ACCELERATOR_ENTITY.get();
         }
     }
 }

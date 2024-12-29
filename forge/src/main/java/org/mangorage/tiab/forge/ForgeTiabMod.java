@@ -13,18 +13,20 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.commons.lang3.tuple.Pair;
+import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
+import org.mangorage.tiab.common.api.ITiabConfig;
 import org.mangorage.tiab.common.api.ITiabRegistration;
 import org.mangorage.tiab.common.CommonConstants;
 import org.mangorage.tiab.common.TiabMod;
+import org.mangorage.tiab.common.api.LoaderSide;
 import org.mangorage.tiab.common.client.renderer.TimeAcceleratorEntityRenderer;
-import org.mangorage.tiab.common.core.CommonRegistration;
-import org.mangorage.tiab.common.core.LoaderSide;
-import org.mangorage.tiab.common.items.TiabItem;
 import org.mangorage.tiab.forge.core.Registration;
 
 
 @Mod(CommonConstants.MODID)
 public class ForgeTiabMod extends TiabMod {
+    private final ITiabRegistration registration = new Registration.ForgeRegistration() {};
+    private final ITiabConfig config;
 
     public ForgeTiabMod() {
         super(LoaderSide.FORGE);
@@ -41,7 +43,7 @@ public class ForgeTiabMod extends TiabMod {
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, cfg.getRight());
 
-        CommonRegistration.SERVER_CONFIG.setConfig(cfg.getKey());
+        this.config = cfg.getKey();
     }
 
     public void onClient(FMLClientSetupEvent event) {
@@ -53,7 +55,7 @@ public class ForgeTiabMod extends TiabMod {
     }
 
     public void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        TiabItem.tickPlayer(event.player);
+        ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getTiabItem().tickPlayer(event.player);
     }
 
     @Override
@@ -63,6 +65,11 @@ public class ForgeTiabMod extends TiabMod {
 
     @Override
     public ITiabRegistration getRegistration() {
-        return new Registration.ForgeRegistration() {};
+        return registration;
+    }
+
+    @Override
+    public ITiabConfig getConfig() {
+        return config;
     }
 }

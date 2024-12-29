@@ -1,5 +1,7 @@
 package org.mangorage.tiab.common.config;
 
+import org.mangorage.tiab.common.api.ITiabConfig;
+
 import java.util.function.Supplier;
 
 public final class ConfigHolder implements Supplier<ITiabConfig> {

@@ -1,7 +1,7 @@
 package org.mangorage.tiab.neoforge;
 
 import net.neoforged.neoforge.common.ModConfigSpec;
-import org.mangorage.tiab.common.config.ITiabConfig;
+import org.mangorage.tiab.common.api.ITiabConfig;
 
 public class NeoForgeTiabConfig implements ITiabConfig {
     private final ModConfigSpec.ConfigValue<Integer> MAX_STORED_TIME;

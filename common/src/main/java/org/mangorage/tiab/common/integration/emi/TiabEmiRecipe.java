@@ -14,7 +14,7 @@ public class TiabEmiRecipe extends BasicEmiRecipe {
 
     public TiabEmiRecipe(TiabCategoryInfo info) {
         super(TiabEmiPlugin.CATEGORY, ResourceLocation.fromNamespaceAndPath("tiab", "page" + info.getId()), 160, 130);
-        this.catalysts.add(EmiIngredient.of(Ingredient.of(ICommonTimeInABottleAPI.COMMON_API.getDirect().getRegistration().getTiabItem())));
+        this.catalysts.add(EmiIngredient.of(Ingredient.of(ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getTiabItem().asItem())));
         this.info = info;
     }
 
@@ -24,7 +24,7 @@ public class TiabEmiRecipe extends BasicEmiRecipe {
         int startPosWidth = 0;
         int startPosHeight = 20;
 
-        widgets.addSlot(EmiIngredient.of(Ingredient.of(ICommonTimeInABottleAPI.COMMON_API.getDirect().getRegistration().getTiabItem())), xPos - 1, 1);
+        widgets.addSlot(EmiIngredient.of(Ingredient.of(ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getTiabItem().asItem())), xPos - 1, 1);
 
         for (Item item : info.getItems()) {
             widgets.addSlot(EmiIngredient.of(Ingredient.of(item)), startPosWidth - 1, startPosHeight);

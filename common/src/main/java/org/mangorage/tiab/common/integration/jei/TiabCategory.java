@@ -28,7 +28,7 @@ public class TiabCategory implements IRecipeCategory<TiabCategoryInfo> {
     public TiabCategory(IJeiHelpers helper) {
         var gui = helper.getGuiHelper();
         this.backrgound = gui.createBlankDrawable(160, 125);
-        this.icon = gui.createDrawableItemStack(ICommonTimeInABottleAPI.COMMON_API.getDirect().getRegistration().getTiabItem().getDefaultInstance());
+        this.icon = gui.createDrawableItemStack(ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getTiabItem().asItem().getDefaultInstance());
         this.slotBackground = gui.getSlotDrawable();
     }
 
@@ -60,7 +60,7 @@ public class TiabCategory implements IRecipeCategory<TiabCategoryInfo> {
         int startPosHeight = 20;
 
         IRecipeSlotBuilder inputSlotBuilder = builder.addSlot(RecipeIngredientRole.CATALYST, xPos, 1).setBackground(slotBackground, -1, -1);
-        addIngredient(VanillaTypes.ITEM_STACK, ICommonTimeInABottleAPI.COMMON_API.getDirect().getRegistration().getTiabItem().getDefaultInstance(), inputSlotBuilder);
+        addIngredient(VanillaTypes.ITEM_STACK, ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getTiabItem().asItem().getDefaultInstance(), inputSlotBuilder);
 
         for (Item item : recipe.getItems()) {
             builder.addSlot(RecipeIngredientRole.OUTPUT, startPosWidth, startPosHeight).setBackground(slotBackground, -1, -1).addIngredient(VanillaTypes.ITEM_STACK, new ItemStack(item));

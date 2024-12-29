@@ -2,7 +2,7 @@ package org.mangorage.tiab.common.integration;
 
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
-import org.mangorage.tiab.common.core.CommonRegistration;
+import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ public final class TiabCategoryInfo {
         final List<BlockItem> blackListedItems = items.stream()
                 .filter(item -> item instanceof BlockItem)
                 .map(item -> (BlockItem) item)
-                .filter(blockItem -> blockItem.getBlock().defaultBlockState().is(CommonRegistration.TIAB_UN_ACCELERATABLE))
+                .filter(blockItem -> blockItem.getBlock().defaultBlockState().is(ICommonTimeInABottleAPI.COMMON_API.get().getTagKey()))
                 .toList();
 
         ArrayList<TiabCategoryInfo> infos = new ArrayList<>();

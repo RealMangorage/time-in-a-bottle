@@ -7,11 +7,14 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import org.mangorage.tiab.common.api.ITiabRegistration;
+import org.mangorage.tiab.common.api.impl.IStoredTimeComponent;
+import org.mangorage.tiab.common.api.impl.ITiabItem;
 import org.mangorage.tiab.common.core.StoredTimeComponent;
 import org.mangorage.tiab.common.entities.TimeAcceleratorEntity;
 import org.mangorage.tiab.common.items.TiabItem;
@@ -24,7 +27,7 @@ public final class Registration {
         return Registry.register(registry, ResourceLocation.fromNamespaceAndPath(MODID, id), value);
     }
 
-    public static final DataComponentType<StoredTimeComponent> STORED_TIME_COMPONENT = register(BuiltInRegistries.DATA_COMPONENT_TYPE, "stored_time", new DataComponentType.Builder<StoredTimeComponent>()
+    public static final DataComponentType<IStoredTimeComponent> STORED_TIME_COMPONENT = register(BuiltInRegistries.DATA_COMPONENT_TYPE, "stored_time", new DataComponentType.Builder<IStoredTimeComponent>()
             .persistent(StoredTimeComponent.DIRECT_CODEC)
             .networkSynchronized(StoredTimeComponent.DIRECT_STREAM_CODEC)
             .build());
@@ -53,23 +56,23 @@ public final class Registration {
 
     public interface FabricRegistration extends ITiabRegistration {
         @Override
-        default DataComponentType<StoredTimeComponent> getStoredTime() {
-            return STORED_TIME_COMPONENT;
-        }
-
-        @Override
-        default EntityType<TimeAcceleratorEntity> getAcceleratorEntity() {
-            return ACCELERATOR_ENTITY;
-        }
-
-        @Override
-        default TiabItem getTiabItem() {
+        default ITiabItem getTiabItem() {
             return TIAB_ITEM;
         }
 
         @Override
         default CreativeModeTab getCreativeTab() {
             return TIAB_CREATIVE_TAB;
+        }
+
+        @Override
+        default DataComponentType<IStoredTimeComponent> getStoredTime() {
+            return STORED_TIME_COMPONENT;
+        }
+
+        @Override
+        default EntityType<? extends Entity> getAcceleratorEntityType() {
+            return ACCELERATOR_ENTITY;
         }
     }
 }
