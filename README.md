@@ -1,5 +1,7 @@
 <a href="https://discord.mangorage.org/" rel="nofollow"><img src="https://img.shields.io/discord/834300742864601088?label=Discord&amp;logo=discord&amp;logoColor=white&amp;style=for-the-badge" alt="Discord"></a>
 
+## Introduction
+
 A Minecraft mod that adds one simple game mechanic: small rooms inside of blocks. You can grab the latest build off
 [Curseforge] or on [Modrinth].
 
