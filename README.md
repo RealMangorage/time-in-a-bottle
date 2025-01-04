@@ -37,12 +37,12 @@ To use the API just add https://maven.minecraftforge.net/ as a maven repo
 ```
 repositories {
     maven {
-        url = https://maven.minecraftforge.net/
+        url = "https://maven.minecraftforge.net/"
     }
 }
 
 dependencies {
-    compileOnly("org.mangorage:tiab:<module>-api-<mc_version>-<api_version>
+    compileOnly("org.mangorage:tiab:<module>-api-<mc_version>-<api_version>")
 }
 ```
 
