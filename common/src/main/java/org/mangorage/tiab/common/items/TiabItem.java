@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
+import org.mangorage.tiab.common.api.ITiabItemSearch;
 import org.mangorage.tiab.common.api.impl.IStoredTimeComponent;
 import org.mangorage.tiab.common.api.impl.ITiabItem;
 import org.mangorage.tiab.common.core.StoredTimeComponent;
@@ -30,9 +31,10 @@ public class TiabItem extends Item implements ITiabItem {
     }
 
     public void tickPlayer(Player player) {
-        for (ItemStack item : player.getInventory().items) {
-            if (item.getItem() instanceof TiabItem tiabItem) {
-                tiabItem.tickBottle(item);
+        for (ITiabItemSearch handler : ICommonTimeInABottleAPI.COMMON_API.get().getSearchHandlers()) {
+            var item = handler.findItem(player);
+            if (item != null) {
+                tickBottle(item);
                 break;
             }
         }

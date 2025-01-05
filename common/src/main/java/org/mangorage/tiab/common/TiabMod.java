@@ -10,6 +10,9 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RedStoneWireBlock;
+import net.minecraft.world.level.block.RedstoneLampBlock;
+import net.minecraft.world.level.redstone.Redstone;
 import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
 import org.mangorage.tiab.common.api.ITiabConfig;
 import org.mangorage.tiab.common.api.ITiabItemSearch;
@@ -53,6 +56,16 @@ public abstract class TiabMod implements ICommonTimeInABottleAPI {
             }
             return null;
         });
+    }
+
+    @Override
+    public List<ITiabItemSearch> getSearchHandlers() {
+        return List.copyOf(itemSearchList); // Copy it!
+    }
+
+    @Override
+    public String getModId() {
+        return MODID;
     }
 
     public LoaderSide getLoaderSide() {
