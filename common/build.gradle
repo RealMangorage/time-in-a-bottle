@@ -51,18 +51,42 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             // Use project.tasks.getByName to reference the customJar task
-            groupId = 'org.mangorage.tiab'
-            artifactId = "common-$minecraft_version"
-            version = "$api_version"
+            groupId = 'org.mangorage'
+            artifactId = "tiab"
+            version = "common-api-$minecraft_version-$api_version"
             artifacts {
                 artifact jar {
-                    exclude  "org/mangorage/tiab/common/**"
+                    exclude  "org/mangorage/tiab/common/client/**"
+                    exclude  "org/mangorage/tiab/common/commands/**"
+                    exclude  "org/mangorage/tiab/common/core/**"
+                    exclude  "org/mangorage/tiab/common/entities/**"
+                    exclude  "org/mangorage/tiab/common/integration/**"
+                    exclude  "org/mangorage/tiab/common/items/**"
+                    exclude  "org/mangorage/tiab/common/lang/**"
+                    exclude  "org/mangorage/tiab/common/misc/**"
+                    exclude  "org/mangorage/tiab/common/*.class"
                 }
                 artifact sourcesJar {
-                    exclude  "org/mangorage/tiab/common/**"
+                    exclude  "org/mangorage/tiab/common/client/**"
+                    exclude  "org/mangorage/tiab/common/commands/**"
+                    exclude  "org/mangorage/tiab/common/core/**"
+                    exclude  "org/mangorage/tiab/common/entities/**"
+                    exclude  "org/mangorage/tiab/common/integration/**"
+                    exclude  "org/mangorage/tiab/common/items/**"
+                    exclude  "org/mangorage/tiab/common/lang/**"
+                    exclude  "org/mangorage/tiab/common/misc/**"
+                    exclude  "org/mangorage/tiab/common/*.class"
                 }
                 artifact javadocJar {
-                    exclude  "org/mangorage/tiab/common/**"
+                    exclude  "org/mangorage/tiab/common/client/**"
+                    exclude  "org/mangorage/tiab/common/commands/**"
+                    exclude  "org/mangorage/tiab/common/core/**"
+                    exclude  "org/mangorage/tiab/common/entities/**"
+                    exclude  "org/mangorage/tiab/common/integration/**"
+                    exclude  "org/mangorage/tiab/common/items/**"
+                    exclude  "org/mangorage/tiab/common/lang/**"
+                    exclude  "org/mangorage/tiab/common/misc/**"
+                    exclude  "org/mangorage/tiab/common/*.class"
                 }
             }
         }
@@ -71,6 +95,13 @@ publishing {
     repositories {
         maven {
             url = uri("$buildDir/repo")
+        }
+        maven {
+            url = "https://maven.minecraftforge.net/"
+            credentials {
+                username = "mango"
+                password = "$forge_token"
+            }
         }
     }
 }
