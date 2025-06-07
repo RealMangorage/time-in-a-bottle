@@ -24,39 +24,53 @@ import org.mangorage.tiab.common.misc.CommonSoundHelper;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class TiabItem extends Item implements ITiabItem {
+    private final Supplier<IStoredTimeComponent> storedTimeComponentSupplier = () -> new StoredTimeComponent(0, 0);
     public TiabItem(Properties properties) {
         super(properties);
     }
 
     public void tickPlayer(Player player) {
+        tickPlayer(player, 1);
+    }
+
+    @Override
+    public void tickPlayer(Player player, int ticks) {
         for (ITiabItemSearch handler : ICommonTimeInABottleAPI.COMMON_API.get().getSearchHandlers()) {
             var item = handler.findItem(player);
             if (item != null) {
-                tickBottle(item);
+                tickBottle(item, ticks);
                 break;
             }
         }
     }
 
+    @Override
     public void tickBottle(ItemStack stack) {
-        if (stack.getItem() != this) return;
-        var cfg = ICommonTimeInABottleAPI.COMMON_API.get().getConfig();
+        tickBottle(stack, 1);
+    }
+
+    public void tickBottle(ItemStack stack, int ticks) {
+        if (stack.getItem() != this || ticks <= 0) return;
+
         var comp = ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getStoredTime();
 
-        CommonHelper.modify(stack, comp, () -> new StoredTimeComponent(0, 0), old -> {
-            if (CommonHelper.isPositive(old.stored() + 1) && CommonHelper.isPositive(old.total() + 1)) {
-                return new StoredTimeComponent(Math.min(old.stored() + 1, cfg.MAX_STORED_TIME()), old.total() + 1);
+        var compInst = CommonHelper.modify(stack, comp, storedTimeComponentSupplier, old -> {
+            if (CommonHelper.isPositive(old.stored() + ticks) && CommonHelper.isPositive(old.total() + ticks)) {
+                var cfg = ICommonTimeInABottleAPI.COMMON_API.get().getConfig();
+                return new StoredTimeComponent(Math.min(old.stored() + ticks, cfg.MAX_STORED_TIME()), old.total() + ticks);
             } else {
                 return old;
             }
         });
 
+
         ItemLore lore = new ItemLore(
                 List.of(
-                        CommonHelper.getStoredTimeTranslated(stack),
-                        CommonHelper.getTotalTimeTranslated(stack)
+                        CommonHelper.getStoredTimeTranslated(compInst.stored()),
+                        CommonHelper.getTotalTimeTranslated(compInst.total())
                 )
         );
 

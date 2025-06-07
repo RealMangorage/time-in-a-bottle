@@ -13,7 +13,7 @@ import org.mangorage.tiab.common.api.LoaderSide;
 import org.mangorage.tiab.common.client.renderer.TimeAcceleratorEntityRenderer;
 import org.mangorage.tiab.fabric.core.Registration;
 
-public class FabricTiabMod extends TiabMod implements ModInitializer {
+public final class FabricTiabMod extends TiabMod implements ModInitializer {
     private final ITiabRegistration registration = new Registration.FabricRegistration() {};
     private final ITiabConfig config;
 
@@ -23,7 +23,7 @@ public class FabricTiabMod extends TiabMod implements ModInitializer {
         Registration.register();
         this.config = FabricTiabConfig.get();
 
-        FabricLoader.getInstance().getObjectShare().put(CommonConstants.MODID, this);
+        FabricLoader.getInstance().getObjectShare().put(CommonConstants.MODID + ":api", this);
     }
 
     @Override

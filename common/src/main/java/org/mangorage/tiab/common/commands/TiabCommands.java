@@ -15,7 +15,7 @@ import org.mangorage.tiab.common.core.StoredTimeComponent;
 import org.mangorage.tiab.common.items.TiabItem;
 import org.mangorage.tiab.common.misc.CommonHelper;
 
-public class TiabCommands {
+public final class TiabCommands {
     private static final String ADD_TIME_COMMAND = "addTime";
     private static final String REMOVE_TIME_COMMAND = "removeTime";
     private static final String TIME_PARAM = "seconds";

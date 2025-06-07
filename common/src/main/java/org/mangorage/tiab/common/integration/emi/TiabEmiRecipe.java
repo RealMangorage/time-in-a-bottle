@@ -9,7 +9,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
 import org.mangorage.tiab.common.integration.TiabCategoryInfo;
 
-public class TiabEmiRecipe extends BasicEmiRecipe {
+public final class TiabEmiRecipe extends BasicEmiRecipe {
     private final TiabCategoryInfo info;
 
     public TiabEmiRecipe(TiabCategoryInfo info) {

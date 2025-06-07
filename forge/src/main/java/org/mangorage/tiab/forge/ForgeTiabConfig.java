@@ -3,7 +3,7 @@ package org.mangorage.tiab.forge;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.mangorage.tiab.common.api.ITiabConfig;
 
-public class ForgeTiabConfig implements ITiabConfig {
+public final class ForgeTiabConfig implements ITiabConfig {
     private final ForgeConfigSpec.ConfigValue<Integer> MAX_STORED_TIME;
     private final ForgeConfigSpec.ConfigValue<Integer> TICKS_CONST;
     private final ForgeConfigSpec.ConfigValue<Integer> EACH_USE_DURATION;

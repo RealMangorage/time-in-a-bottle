@@ -12,7 +12,7 @@ import org.mangorage.tiab.common.CommonConstants;
 import org.mangorage.tiab.common.integration.TiabCategoryInfo;
 
 @JeiPlugin
-public class TiabJeiPlugin implements IModPlugin {
+public final class TiabJeiPlugin implements IModPlugin {
     private TiabCategory tiabCategory;
 
     @Override

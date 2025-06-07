@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.mangorage.tiab.common.entities.TimeAcceleratorEntity;
 
-public class TimeAcceleratorEntityRenderer extends EntityRenderer<TimeAcceleratorEntity> {
+public final class TimeAcceleratorEntityRenderer extends EntityRenderer<TimeAcceleratorEntity> {
     private static final BlockFaceTextRenderer textRenderer = BlockFaceTextRenderer.create();
 
     public TimeAcceleratorEntityRenderer(EntityRendererProvider.Context erp) {

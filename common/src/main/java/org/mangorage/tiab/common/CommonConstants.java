@@ -1,6 +1,6 @@
 package org.mangorage.tiab.common;
 
-public class CommonConstants {
+public final class CommonConstants {
     public static final String MODID = "tiab";
 
     public static class NBTKeys {

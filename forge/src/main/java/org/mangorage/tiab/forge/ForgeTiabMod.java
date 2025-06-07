@@ -24,9 +24,11 @@ import org.mangorage.tiab.forge.core.Registration;
 
 
 @Mod(CommonConstants.MODID)
-public class ForgeTiabMod extends TiabMod {
+public final class ForgeTiabMod extends TiabMod {
     private final ITiabRegistration registration = new Registration.ForgeRegistration() {};
     private final ITiabConfig config;
+
+    private int ticks = 0;
 
     public ForgeTiabMod() {
         super(LoaderSide.FORGE);
@@ -55,7 +57,11 @@ public class ForgeTiabMod extends TiabMod {
     }
 
     public void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getTiabItem().tickPlayer(event.player);
+        if (event.player.level().isClientSide) return;
+        if (ticks % 20 == 0) {
+            ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getTiabItem().tickPlayer(event.player, 20);
+        }
+        ticks++;
     }
 
     @Override

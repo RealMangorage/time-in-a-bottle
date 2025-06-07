@@ -18,7 +18,7 @@ import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
 import org.mangorage.tiab.common.CommonConstants;
 import org.mangorage.tiab.common.integration.TiabCategoryInfo;
 
-public class TiabCategory implements IRecipeCategory<TiabCategoryInfo> {
+public final class TiabCategory implements IRecipeCategory<TiabCategoryInfo> {
     public static final RecipeType<TiabCategoryInfo> RECIPE_TYPE = RecipeType.create(CommonConstants.MODID, "resource_generator", TiabCategoryInfo.class);
 
     private final IDrawable backrgound;

@@ -1,6 +1,8 @@
 package org.mangorage.tiab.common;
 
 import com.mojang.brigadier.CommandDispatcher;
+import it.unimi.dsi.fastutil.io.FastByteArrayInputStream;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.registries.Registries;
@@ -38,7 +40,7 @@ public abstract class TiabMod implements ICommonTimeInABottleAPI {
 
     private static final TagKey<Block> TIAB_UN_ACCELERATABLE = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MODID, "un_acceleratable"));
 
-    private final List<ITiabItemSearch> itemSearchList = new CopyOnWriteArrayList<>(); // To handle Concurrency
+    private final List<ITiabItemSearch> itemSearchList = new ObjectArrayList<>();
     private final LoaderSide loaderSide;
     private final ITiabConfig defaultConfig = new ITiabConfig() {};
 
