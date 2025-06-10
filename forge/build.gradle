@@ -1,9 +1,10 @@
 plugins {
     id 'multiloader-loader'
-    id 'net.minecraftforge.gradle' version  '+'
-    id 'org.spongepowered.mixin' version '0.+'
+    id 'net.minecraftforge.gradle' version '7.0.0-beta.6'
+//    id 'org.spongepowered.mixin' version '0.+'
     id "com.modrinth.minotaur" version "2.+"
 }
+
 base {
     archivesName = "${mod_id}-forge-${minecraft_version}"
 }
@@ -11,61 +12,19 @@ base {
 minecraft {
     mappings channel: 'official', version: minecraft_version
 
-    copyIdeResources = true //Calls processResources when in dev
-
-    // Dont obfuscate!
-    reobf = false
-
-    // Automatically enable forge AccessTransformers if the file exists
-    // This location is hardcoded in Forge and can not be changed.
-    // https://github.com/MinecraftForge/MinecraftForge/blob/be1698bb1554f9c8fa2f58e32b9ab70bc4385e60/fmlloader/src/main/java/net/minecraftforge/fml/loading/moddiscovery/ModFile.java#L123
-    def at = file('src/main/resources/META-INF/accesstransformer.cfg')
-    if (at.exists()) {
-        accessTransformer = at
-    }
-
-    runs {
-        client {
-            property("bsl.debug", "true")
-            workingDirectory file('runs/client')
-            ideaModule "${rootProject.name}.${project.name}.main"
-            taskName 'runClient'
-            mods {
-                modClientRun {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        server {
-            workingDirectory file('runs/server')
-            ideaModule "${rootProject.name}.${project.name}.main"
-            taskName 'runServer'
-            mods {
-                modServerRun {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        data {
-            workingDirectory file('runs/data')
-            ideaModule "${rootProject.name}.${project.name}.main"
-            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-            taskName 'runData'
-            mods {
-                modDataRun {
-                    source sourceSets.main
-                }
-            }
-        }
-    }
+    runs.register("client")
+    runs.register("server")
+    runs.register("data")
 }
 
 sourceSets.main.resources.srcDir 'src/generated/resources'
 
 repositories {
     mavenLocal()
+    maven minecraft.maven
+    maven fg.forgeMaven
+    maven fg.minecraftLibsMaven
+    mavenCentral()
     maven {
         url = uri("https://maven.terraformersmc.com/")
     }
@@ -73,7 +32,7 @@ repositories {
 
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    implementation minecraft.dep("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
 
     // JEI
     compileOnly("mezz.jei:jei-${minecraft_version}-common-api:$jei_version")
@@ -84,7 +43,6 @@ dependencies {
     // EMI
     compileOnly "dev.emi:emi-xplat-mojmap:$emi_version+$minecraft_version:api"
 
-    annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
     implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
 }
 
