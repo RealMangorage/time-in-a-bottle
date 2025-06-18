@@ -1,8 +1,6 @@
 package org.mangorage.tiab.neoforge;
 
 import net.minecraft.client.renderer.entity.EntityRenderers;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.ModLoadingContext;
@@ -55,11 +53,7 @@ public final class NeoForgeTiabMod extends TiabMod {
     }
 
     public void onPlayerTick(PlayerTickEvent.Post event) {
-        if (event.getEntity().level().isClientSide) return;
-        if (ticks % 20 == 0) {
-            ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getTiabItem().tickPlayer(event.getEntity(), 20);
-        }
-        ticks++;
+        tickPlayer(event.getEntity());
     }
 
     @Override

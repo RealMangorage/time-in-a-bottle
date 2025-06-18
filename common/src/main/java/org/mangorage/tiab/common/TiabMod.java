@@ -9,20 +9,25 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RedStoneWireBlock;
 import net.minecraft.world.level.block.RedstoneLampBlock;
 import net.minecraft.world.level.redstone.Redstone;
+import net.minecraft.world.phys.AABB;
 import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
 import org.mangorage.tiab.common.api.ITiabConfig;
 import org.mangorage.tiab.common.api.ITiabItemSearch;
 import org.mangorage.tiab.common.api.LoaderSide;
 import org.mangorage.tiab.common.api.impl.IStoredTimeComponent;
+import org.mangorage.tiab.common.api.impl.ITiabItem;
 import org.mangorage.tiab.common.api.impl.ITimeAcceleratorEntity;
 import org.mangorage.tiab.common.commands.TiabCommands;
 import org.mangorage.tiab.common.core.StoredTimeComponent;
+import org.mangorage.tiab.common.entities.TimeAcceleratorEntity;
 import org.mangorage.tiab.common.items.TiabItem;
 
 import java.util.List;
@@ -40,6 +45,8 @@ public abstract class TiabMod implements ICommonTimeInABottleAPI {
 
     private static final TagKey<Block> TIAB_UN_ACCELERATABLE = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MODID, "un_acceleratable"));
 
+    private int ticks = 0;
+
     private final List<ITiabItemSearch> itemSearchList = new ObjectArrayList<>();
     private final LoaderSide loaderSide;
     private final ITiabConfig defaultConfig = new ITiabConfig() {};
@@ -51,7 +58,7 @@ public abstract class TiabMod implements ICommonTimeInABottleAPI {
         // Default Search
         registerItemSearch(p -> {
             for (ItemStack item : p.getInventory().items) {
-                if (item.getItem() instanceof TiabItem tiabItem) {
+                if (item.getItem() instanceof ITiabItem) {
                     return item;
                 }
             }
@@ -108,6 +115,18 @@ public abstract class TiabMod implements ICommonTimeInABottleAPI {
 
     @Override
     public ITimeAcceleratorEntity createEntity(ServerLevel level) {
-        return (ITimeAcceleratorEntity) ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getAcceleratorEntityType().create(level);
+        return (ITimeAcceleratorEntity) getRegistration().getAcceleratorEntityType().create(level);
+    }
+
+    @Override
+    public List<? extends ITimeAcceleratorEntity> getEntities(Level level, AABB aabb) {
+        return level.getEntitiesOfClass(TimeAcceleratorEntity.class, aabb);
+    }
+
+    protected void tickPlayer(Player player) {
+        if (player.level().isClientSide) return;
+        ticks++;
+        if (ticks % 20 == 0)
+            ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getTiabItem().tickPlayer(player, 20);
     }
 }

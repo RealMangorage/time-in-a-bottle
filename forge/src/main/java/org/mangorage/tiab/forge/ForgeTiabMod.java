@@ -28,8 +28,6 @@ public final class ForgeTiabMod extends TiabMod {
     private final ITiabRegistration registration = new Registration.ForgeRegistration() {};
     private final ITiabConfig config;
 
-    private int ticks = 0;
-
     public ForgeTiabMod() {
         super(LoaderSide.FORGE);
         var modBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -57,11 +55,7 @@ public final class ForgeTiabMod extends TiabMod {
     }
 
     public void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        if (event.player.level().isClientSide) return;
-        if (ticks % 20 == 0) {
-            ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getTiabItem().tickPlayer(event.player, 20);
-        }
-        ticks++;
+        tickPlayer(event.player);
     }
 
     @Override

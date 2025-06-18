@@ -2,6 +2,7 @@ package org.mangorage.tiab.common.items;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -17,6 +18,7 @@ import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
 import org.mangorage.tiab.common.api.ITiabItemSearch;
 import org.mangorage.tiab.common.api.impl.IStoredTimeComponent;
 import org.mangorage.tiab.common.api.impl.ITiabItem;
+import org.mangorage.tiab.common.api.impl.ITimeAcceleratorEntity;
 import org.mangorage.tiab.common.core.StoredTimeComponent;
 import org.mangorage.tiab.common.entities.TimeAcceleratorEntity;
 import org.mangorage.tiab.common.misc.CommonHelper;
@@ -100,10 +102,10 @@ public class TiabItem extends Item implements ITiabItem {
         int energyRequired = getEnergyCost(nextRate);
         boolean isCreativeMode = player != null && player.isCreative();
 
-        Optional<TimeAcceleratorEntity> o = level.getEntitiesOfClass(TimeAcceleratorEntity.class, new AABB(pos)).stream().findFirst();
+        Optional<? extends ITimeAcceleratorEntity> o = ICommonTimeInABottleAPI.COMMON_API.get().getEntities(level, new AABB(pos)).stream().findFirst();
 
         if (o.isPresent()) {
-            TimeAcceleratorEntity entityTA = o.get();
+            ITimeAcceleratorEntity entityTA = o.get();
             int currentRate = entityTA.getTimeRate();
             int usedUpTime = getEachUseDuration() - entityTA.getRemainingTime();
 
@@ -127,10 +129,10 @@ public class TiabItem extends Item implements ITiabItem {
                 return InteractionResult.SUCCESS;
             }
 
-            TimeAcceleratorEntity entityTA = new TimeAcceleratorEntity(level);
+            ITimeAcceleratorEntity entityTA = ICommonTimeInABottleAPI.COMMON_API.get().createEntity((ServerLevel) level);
             entityTA.setBlockPos(pos);
             entityTA.setRemainingTime(getEachUseDuration());
-            level.addFreshEntity(entityTA);
+            level.addFreshEntity(entityTA.asEntity());
         }
 
         if (!isCreativeMode) {

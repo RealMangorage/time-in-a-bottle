@@ -2,9 +2,12 @@ package org.mangorage.tiab.common.api;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.phys.AABB;
 import org.mangorage.tiab.common.api.impl.IStoredTimeComponent;
 import org.mangorage.tiab.common.api.impl.ITimeAcceleratorEntity;
 
@@ -48,4 +51,6 @@ public interface ICommonTimeInABottleAPI {
      */
     List<ITiabItemSearch> getSearchHandlers();
     String getModId();
+
+    List<? extends ITimeAcceleratorEntity> getEntities(Level level, AABB aabb);
 }
