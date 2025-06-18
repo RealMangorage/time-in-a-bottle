@@ -13,12 +13,14 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import org.mangorage.tiab.common.CommonConstants;
 import org.mangorage.tiab.common.api.ITiabRegistration;
 import org.mangorage.tiab.common.api.impl.IStoredTimeComponent;
 import org.mangorage.tiab.common.api.impl.ITiabItem;
 import org.mangorage.tiab.common.core.StoredTimeComponent;
 import org.mangorage.tiab.common.entities.TimeAcceleratorEntity;
 import org.mangorage.tiab.common.items.TiabItem;
+import org.mangorage.tiab.common.lang.Translation;
 
 import static org.mangorage.tiab.common.CommonConstants.MODID;
 
@@ -49,7 +51,7 @@ public final class Registration {
 
     public static final RegistryObject<CreativeModeTab> TIAB_CREATIVE_TAB = TABS.register("tiab", () -> CreativeModeTab.builder()
             .icon(() -> TIAB_ITEM.get().getDefaultInstance())
-            .title(Component.literal("Time in a bottle"))
+            .title(Translation.ITEM.componentTranslation())
             .displayItems((parameters, output) -> {
                 output.accept(TIAB_ITEM.get());
             })

@@ -18,6 +18,7 @@ import org.mangorage.tiab.common.api.impl.ITiabItem;
 import org.mangorage.tiab.common.core.StoredTimeComponent;
 import org.mangorage.tiab.common.entities.TimeAcceleratorEntity;
 import org.mangorage.tiab.common.items.TiabItem;
+import org.mangorage.tiab.common.lang.Translation;
 
 import static org.mangorage.tiab.common.CommonConstants.MODID;
 
@@ -45,7 +46,7 @@ public final class Registration {
 
     public static final CreativeModeTab TIAB_CREATIVE_TAB = register(BuiltInRegistries.CREATIVE_MODE_TAB, "tiab", CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
             .icon(TIAB_ITEM::getDefaultInstance)
-            .title(Component.literal("Time in a bottle"))
+            .title(Translation.ITEM.componentTranslation())
             .displayItems((parameters, output) -> {
                 output.accept(TIAB_ITEM);
             })
