@@ -1,0 +1,7 @@
+{
+  "item.tiab.time_in_a_bottle": "Час у плашці",
+  "item.tiab.time_in_a_bottle.tooltip.stored_time": "Накопичений час %s:%s:%s",
+  "item.tiab.time_in_a_bottle.tooltip.total_accumulated_time": "Загальний накопичений час %s:%s:%s",
+  "emi.category.tiab.test": "Чорний список блоків часу у пляшці",
+  "modmenu.descriptionTranslation.tiab": "Час у пляшці\nДозволяє прискорювати блоки!"
+}
