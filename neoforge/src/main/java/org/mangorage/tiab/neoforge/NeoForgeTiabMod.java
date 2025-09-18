@@ -27,8 +27,6 @@ public final class NeoForgeTiabMod extends TiabMod {
     private final ITiabRegistration registration = new Registration.NeoForgeRegistration() {};
     private final ITiabConfig config;
 
-    private int ticks = 0 ;
-
     public NeoForgeTiabMod(IEventBus bus) {
         super(LoaderSide.NEOFORGE);
 

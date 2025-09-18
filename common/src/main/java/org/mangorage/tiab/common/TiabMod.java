@@ -8,6 +8,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -44,8 +45,6 @@ public abstract class TiabMod implements ICommonTimeInABottleAPI {
     }
 
     private static final TagKey<Block> TIAB_UN_ACCELERATABLE = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MODID, "un_acceleratable"));
-
-    private int ticks = 0;
 
     private final List<ITiabItemSearch> itemSearchList = new ObjectArrayList<>();
     private final LoaderSide loaderSide;
@@ -125,8 +124,12 @@ public abstract class TiabMod implements ICommonTimeInABottleAPI {
 
     protected void tickPlayer(Player player) {
         if (player.level().isClientSide) return;
-        ticks++;
-        if (ticks % 20 == 0)
-            ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getTiabItem().tickPlayer(player, 20);
+
+        if (player instanceof ServerPlayer serverPlayer) {
+            var server = serverPlayer.getServer();
+            if (server != null && server.getTickCount() % 20 == 0) {
+                ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getTiabItem().tickPlayer(player, 20);
+            }
+        }
     }
 }
