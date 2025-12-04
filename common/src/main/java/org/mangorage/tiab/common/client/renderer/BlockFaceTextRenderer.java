@@ -5,6 +5,7 @@ import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.LightTexture;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
@@ -40,7 +41,7 @@ public record BlockFaceTextRenderer(Font font, Vector3f vector3f) {
                 source, // MultiBufferSource
                 Font.DisplayMode.NORMAL, // DisplayMode
                 backgroundColor, // Background Color
-                pPackedLightCoords // pPackedLightsCoords
+                LightTexture.FULL_BRIGHT // pPackedLightsCoords
         );
         matrixStack.popPose();
     }
@@ -59,10 +60,10 @@ public record BlockFaceTextRenderer(Font font, Vector3f vector3f) {
             return v.set(-z, y, -x);
         }, Axis.YP.rotationDegrees(-90F)),
         TOP((v, x, y, z) -> {
-            return v.set(-x, z, -y);
+            return v.set(-x, z + 0.5F, -y + 0.5F);
         }, Axis.XP.rotationDegrees(90F)),
-        BOTTON((v, x, y, z) -> {
-            return v.set(-x, -z, y);
+        BOTTOM((v, x, y, z) -> {
+            return v.set(-x, -z + 0.5F, y - 0.5F);
         }, Axis.XP.rotationDegrees(-90F));
 
         private static final List<Face> FACES = List.of(values());

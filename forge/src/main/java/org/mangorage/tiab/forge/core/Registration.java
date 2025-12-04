@@ -47,7 +47,7 @@ public final class Registration {
             () -> EntityType.Builder.<TimeAcceleratorEntity>of(
                     (entityType, level) -> new TimeAcceleratorEntity(level),
                     MobCategory.MISC
-            ).build("accelerator"));
+            ).sized​(1.0f, 1.0f).build("accelerator"));
 
     public static final RegistryObject<CreativeModeTab> TIAB_CREATIVE_TAB = TABS.register("tiab", () -> CreativeModeTab.builder()
             .icon(() -> TIAB_ITEM.get().getDefaultInstance())
