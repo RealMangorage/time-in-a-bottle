@@ -114,7 +114,7 @@ public class TimeAcceleratorEntity extends Entity implements ITimeAcceleratorEnt
     @Override
     public void setBlockPos(BlockPos blockPos) {
         this.pos = blockPos.immutable();
-        this.setPos(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+        this.setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
     }
 
     @Override
