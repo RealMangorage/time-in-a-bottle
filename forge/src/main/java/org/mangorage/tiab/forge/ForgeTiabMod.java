@@ -22,7 +22,6 @@ import org.mangorage.tiab.common.api.LoaderSide;
 import org.mangorage.tiab.common.client.renderer.TimeAcceleratorEntityRenderer;
 import org.mangorage.tiab.forge.core.Registration;
 
-
 @Mod(CommonConstants.MODID)
 public final class ForgeTiabMod extends TiabMod {
     private final ITiabRegistration registration = new Registration.ForgeRegistration() {};

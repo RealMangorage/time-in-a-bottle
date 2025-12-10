@@ -4,6 +4,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import org.mangorage.tiab.common.CommonConstants;
 import org.mangorage.tiab.common.TiabMod;
@@ -19,7 +20,10 @@ public final class FabricTiabMod extends TiabMod implements ModInitializer {
 
     public FabricTiabMod() {
         super(LoaderSide.FABRIC);
+
         CommandRegistrationCallback.EVENT.register((dispatcher, context, commandSelection) -> registerCommand(dispatcher));
+        ServerTickEvents.START_SERVER_TICK.register(e -> e.getPlayerList().getPlayers().forEach(this::tickPlayer));
+
         Registration.register();
         this.config = FabricTiabConfig.get();
 

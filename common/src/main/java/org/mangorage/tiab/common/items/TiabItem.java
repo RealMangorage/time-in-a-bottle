@@ -14,6 +14,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import org.jetbrains.annotations.NotNull;
 import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
 import org.mangorage.tiab.common.api.ITiabItemSearch;
 import org.mangorage.tiab.common.api.impl.IStoredTimeComponent;
@@ -80,7 +81,7 @@ public class TiabItem extends Item implements ITiabItem {
     }
 
     @Override
-    public InteractionResult useOn(UseOnContext context) {
+    public @NotNull InteractionResult useOn(UseOnContext context) {
         Level level = context.getLevel();
         var cfg = ICommonTimeInABottleAPI.COMMON_API.get().getConfig();
 

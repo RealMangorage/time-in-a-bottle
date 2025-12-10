@@ -27,9 +27,6 @@
             "org.mangorage.tiab.common.integration.emi.TiabEmiPlugin"
         ]
     },
-    "mixins": [
-        "tiab.mixins.json"
-    ],
     "depends": {
         "fabricloader": ">=${fabric_loader_version}",
         "fabric-api": "*",
