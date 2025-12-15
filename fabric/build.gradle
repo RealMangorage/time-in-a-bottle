@@ -65,8 +65,11 @@ task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge)
     mainFile.changelog = changelog
     mainFile.addOptional("jei") // JEI
     mainFile.addOptional("emi") // EMI
-    mainFile.releaseType = "release"
+    mainFile.releaseType = "$build_type"
     mainFile.displayName = "Time in a bottle Fabric " + project.version
+    for (final def gameVersion in game_versions.split(":")) {
+        mainFile.addGameVersion(gameVersion)
+    }
 }
 
 tasks.getByName("modrinth").setGroup("modpublishing")
@@ -77,9 +80,9 @@ modrinth {
     projectId = "time-in-a-bottle-universal" // This can be the project ID or the slug. Either will work!
     versionNumber = project.version // You don't need to set this manually. Will fail if Modrinth has this version already
     versionName = "Time in a bottle Fabric " + project.version
-    versionType = "release" // This is the default -- can also be `beta` or `alpha`
+    versionType = "$build_type" // This is the default -- can also be `beta` or `alpha`
     uploadFile = tasks.remapJar.archiveFile // With Loom, this MUST be set to `remapJar` instead of `jar`!
-    gameVersions = ["$minecraft_version"] // Must be an array, even with only one version
+    gameVersions = "$game_versions".split(":").toList() // Must be an array, even with only one version
     loaders = ["fabric"]
     changelog = project.changelog
     dependencies {
