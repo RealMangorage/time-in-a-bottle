@@ -7,7 +7,7 @@ import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class TiabCategoryInfo {
+public record TiabCategoryInfo(List<Item> items, int id) {
 
     public static List<TiabCategoryInfo> create(final List<Item> items) {
         final List<BlockItem> blackListedItems = items.stream()
@@ -32,14 +32,6 @@ public final class TiabCategoryInfo {
             infos.add(new TiabCategoryInfo(List.copyOf(currentList), id));
 
         return infos;
-    }
-
-    private final List<Item> items;
-    private final int id;
-
-    public TiabCategoryInfo(List<Item> items, int id) {
-        this.items = items;
-        this.id = id;
     }
 
     public List<Item> getItems() {

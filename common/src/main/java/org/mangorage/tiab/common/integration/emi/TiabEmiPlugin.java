@@ -1,6 +1,5 @@
 package org.mangorage.tiab.common.integration.emi;
 
-
 import dev.emi.emi.api.EmiApi;
 import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiInitRegistry;
@@ -13,7 +12,7 @@ import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
 import org.mangorage.tiab.common.integration.TiabCategoryInfo;
 
 @EmiEntrypoint
-public final class TiabEmiPlugin implements EmiPlugin {
+public record TiabEmiPlugin() implements EmiPlugin {
     public static EmiRecipeCategory CATEGORY = new EmiRecipeCategory(ResourceLocation.fromNamespaceAndPath("tiab", "test"), EmiStack.of(ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getTiabItem().asItem()));
 
     @Override
@@ -21,6 +20,7 @@ public final class TiabEmiPlugin implements EmiPlugin {
         var list = EmiApi.getIndexStacks().stream()
                 .map(es -> es.getItemStack().getItem())
                 .toList();
+
         var listInfo = TiabCategoryInfo.create(list);
 
         emiRegistry.addCategory(CATEGORY);

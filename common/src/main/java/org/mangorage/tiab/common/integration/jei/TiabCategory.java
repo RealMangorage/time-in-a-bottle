@@ -18,20 +18,17 @@ import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
 import org.mangorage.tiab.common.CommonConstants;
 import org.mangorage.tiab.common.integration.TiabCategoryInfo;
 
-public final class TiabCategory implements IRecipeCategory<TiabCategoryInfo> {
+public record TiabCategory(IDrawable background, IDrawable icon, IDrawable slotBackground) implements IRecipeCategory<TiabCategoryInfo> {
     public static final RecipeType<TiabCategoryInfo> RECIPE_TYPE = RecipeType.create(CommonConstants.MODID, "resource_generator", TiabCategoryInfo.class);
 
-    private final IDrawable backrgound;
-    private final IDrawable icon;
-    private final IDrawable slotBackground;
-
-    public TiabCategory(IJeiHelpers helper) {
+    public static TiabCategory create(IJeiHelpers helper) {
         var gui = helper.getGuiHelper();
-        this.backrgound = gui.createBlankDrawable(160, 125);
-        this.icon = gui.createDrawableItemStack(ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getTiabItem().asItem().getDefaultInstance());
-        this.slotBackground = gui.getSlotDrawable();
+        return new TiabCategory(
+                gui.createBlankDrawable(160, 125),
+                gui.createDrawableItemStack(ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getTiabItem().asItem().getDefaultInstance()),
+                gui.getSlotDrawable()
+        );
     }
-
 
     @Override
     public RecipeType<TiabCategoryInfo> getRecipeType() {
@@ -45,7 +42,7 @@ public final class TiabCategory implements IRecipeCategory<TiabCategoryInfo> {
 
     @Override
     public IDrawable getBackground() {
-        return backrgound;
+        return background;
     }
 
     @Override

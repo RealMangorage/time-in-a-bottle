@@ -22,7 +22,7 @@ public final class TiabJeiPlugin implements IModPlugin {
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration reg) {
-        tiabCategory = new TiabCategory(reg.getJeiHelpers());
+        tiabCategory = TiabCategory.create(reg.getJeiHelpers());
         reg.addRecipeCategories(tiabCategory);
     }
 

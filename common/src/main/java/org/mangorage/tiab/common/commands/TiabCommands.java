@@ -15,6 +15,7 @@ import org.mangorage.tiab.common.core.StoredTimeComponent;
 import org.mangorage.tiab.common.items.TiabItem;
 import org.mangorage.tiab.common.misc.CommonHelper;
 
+// TODO: Clean this up alot...
 public final class TiabCommands {
     private static final String ADD_TIME_COMMAND = "addTime";
     private static final String REMOVE_TIME_COMMAND = "removeTime";
@@ -54,7 +55,7 @@ public final class TiabCommands {
                 }
 
                 if (timeToAdd > cfg.MAX_STORED_TIME() / cfg.TICKS_CONST()) {
-                    timeToAdd = cfg.MAX_STORED_TIME() /cfg.TICKS_CONST();
+                    timeToAdd = cfg.MAX_STORED_TIME() / cfg.TICKS_CONST();
                 }
 
                 boolean success = false;
@@ -76,7 +77,7 @@ public final class TiabCommands {
 
                         // Check if the number becomes negative
                         if (CommonHelper.isPositive(currentStoredEnergy + timeToAddFinal * cfg.TICKS_CONST())) {
-                            CommonHelper.modify(invStack, ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getStoredTime(), () -> new StoredTimeComponent(0, 0), old -> {
+                            CommonHelper.modify(invStack, ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getStoredTime(), new StoredTimeComponent(0, 0), old -> {
                                 return new StoredTimeComponent(currentStoredEnergy + timeToAddFinal * cfg.TICKS_CONST(), old.total());
                             });
 
@@ -101,4 +102,5 @@ public final class TiabCommands {
         return 0;
     }
 
+    TiabCommands() {}
 }

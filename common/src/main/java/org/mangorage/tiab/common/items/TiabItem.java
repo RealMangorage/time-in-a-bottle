@@ -21,16 +21,12 @@ import org.mangorage.tiab.common.api.impl.IStoredTimeComponent;
 import org.mangorage.tiab.common.api.impl.ITiabItem;
 import org.mangorage.tiab.common.api.impl.ITimeAcceleratorEntity;
 import org.mangorage.tiab.common.core.StoredTimeComponent;
-import org.mangorage.tiab.common.entities.TimeAcceleratorEntity;
 import org.mangorage.tiab.common.misc.CommonHelper;
 import org.mangorage.tiab.common.misc.CommonSoundHelper;
-
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 public class TiabItem extends Item implements ITiabItem {
-    private final Supplier<IStoredTimeComponent> storedTimeComponentSupplier = () -> new StoredTimeComponent(0, 0);
     public TiabItem(Properties properties) {
         super(properties);
     }
@@ -60,7 +56,7 @@ public class TiabItem extends Item implements ITiabItem {
 
         var comp = ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getStoredTime();
 
-        var compInst = CommonHelper.modify(stack, comp, storedTimeComponentSupplier, old -> {
+        var compInst = CommonHelper.modify(stack, comp, new StoredTimeComponent(0, 0), old -> {
             if (CommonHelper.isPositive(old.stored() + ticks) && CommonHelper.isPositive(old.total() + ticks)) {
                 var cfg = ICommonTimeInABottleAPI.COMMON_API.get().getConfig();
                 return new StoredTimeComponent(Math.min(old.stored() + ticks, cfg.MAX_STORED_TIME()), old.total() + ticks);
@@ -138,7 +134,7 @@ public class TiabItem extends Item implements ITiabItem {
 
         if (!isCreativeMode) {
             final int required = energyRequired;
-            CommonHelper.modify(stack, ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getStoredTime(), () -> new StoredTimeComponent(0, 0), old -> {
+            CommonHelper.modify(stack, ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getStoredTime(), new StoredTimeComponent(0, 0), old -> {
                 var newStoredTime = Math.min(old.stored() - required, cfg.MAX_STORED_TIME());
                 return new StoredTimeComponent(newStoredTime, old.total());
             });

@@ -33,17 +33,19 @@ public final class CommonHelper {
         return Translation.TOOLTIP_STORED_TIME.componentTranslation(String.format("%02d", hours), String.format("%02d", minutes), String.format("%02d", seconds)).setStyle(Styles.GREEN);
     }
 
-    public static <T> T modify(ItemStack stack, DataComponentType<T> dataComponentType, Supplier<T> defaultComponent, Function<T, T> function) {
-        var comp = stack.getOrDefault(dataComponentType, defaultComponent.get());
+    public static <T> T modify(ItemStack stack, DataComponentType<T> dataComponentType, T defaultComponent, Function<T, T> function) {
+        var comp = stack.getOrDefault(dataComponentType, defaultComponent);
         stack.set(dataComponentType, function.apply(comp));
         return stack.get(dataComponentType);
     }
 
     public static boolean isPositive(int number) {
-        return !(number < 0);
+        return number >= 0;
     }
 
     public static void sendStatusMessage(ServerPlayer serverPlayer, String message) {
         serverPlayer.displayClientMessage(Component.literal(message), true);
     }
+
+    CommonHelper() {}
 }
