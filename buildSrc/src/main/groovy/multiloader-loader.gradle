@@ -21,8 +21,15 @@ dependencies {
             requireCapability "$group:$mod_id"
         }
     }
+    compileOnly(project(':common-api')) {
+        capabilities {
+            requireCapability "$group:$mod_id-api"
+        }
+    }
     commonJava project(path: ':common', configuration: 'commonJava')
     commonResources project(path: ':common', configuration: 'commonResources')
+    commonJava project(path: ':common-api', configuration: 'commonJava')
+    commonResources project(path: ':common-api', configuration: 'commonResources')
 }
 
 tasks.named('compileJava', JavaCompile) {

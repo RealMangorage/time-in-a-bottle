@@ -1,5 +1,6 @@
 plugins {
-    id 'multiloader-common'
+    id 'maven-publish'
+    id 'multiloader-common-api'
     id 'org.spongepowered.gradle.vanilla' version '0.2.1-SNAPSHOT'
 }
 
@@ -18,16 +19,9 @@ repositories {
     }
 }
 
-
 dependencies {
     compileOnly("mezz.jei:jei-$minecraft_version-common-api:$jei_version")
     compileOnly "dev.emi:emi-xplat-mojmap:$emi_version+$minecraft_version:api"
-
-    compileOnly(project(':common-api')) {
-        capabilities {
-            requireCapability "$group:$mod_id-api"
-        }
-    }
 
     compileOnly group:'org.spongepowered', name:'mixin', version:'0.8.5'
 }
@@ -51,4 +45,33 @@ artifacts {
 
 task sourceJar(type: Jar) {
     from sourceSets.main.allSource
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            // Use project.tasks.getByName to reference the customJar task
+            groupId = 'org.mangorage'
+            artifactId = "tiab-common-api"
+            version = "$version-$api_version"
+            artifacts {
+                artifact jar
+                artifact sourcesJar
+                artifact javadocJar
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            url = uri("$buildDir/repo")
+        }
+        maven {
+            url = "https://maven.minecraftforge.net/"
+            credentials {
+                username = "mango"
+                password = "$forge_token"
+            }
+        }
+    }
 }
