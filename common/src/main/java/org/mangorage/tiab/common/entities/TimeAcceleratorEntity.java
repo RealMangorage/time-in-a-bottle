@@ -23,7 +23,7 @@ import org.mangorage.tiab.common.TiabMod;
 import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
 import org.mangorage.tiab.common.api.impl.ITimeAcceleratorEntity;
 
-public class TimeAcceleratorEntity extends Entity implements ITimeAcceleratorEntity {
+public final class TimeAcceleratorEntity extends Entity implements ITimeAcceleratorEntity {
     private static final EntityDataAccessor<Integer> timeRate = SynchedEntityData.defineId(TimeAcceleratorEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> timeRemaining = SynchedEntityData.defineId(TimeAcceleratorEntity.class, EntityDataSerializers.INT);
     private BlockPos pos;

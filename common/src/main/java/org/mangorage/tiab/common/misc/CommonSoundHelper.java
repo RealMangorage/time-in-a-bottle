@@ -57,4 +57,6 @@ public final class CommonSoundHelper {
             default -> playNoteBlockHarpSound(level, pos, NOTES[10]);
         }
     }
+
+    CommonSoundHelper() {}
 }

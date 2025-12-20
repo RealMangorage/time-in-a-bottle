@@ -107,4 +107,6 @@ public final class TiabCommand {
                 COMMAND
         );
     }
+
+    TiabCommand() {}
 }

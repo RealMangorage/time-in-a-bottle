@@ -37,7 +37,7 @@ public class TiabItem extends Item implements ITiabItem {
     @Override
     public void tickPlayer(Player player, int ticks) {
         final var item = ICommonTimeInABottleAPI.COMMON_API.get().findTiabItem(player);
-        if (item == null) return;
+        if (item == null || item.isEmpty()) return;
         tickBottle(item, ticks);
     }
 
