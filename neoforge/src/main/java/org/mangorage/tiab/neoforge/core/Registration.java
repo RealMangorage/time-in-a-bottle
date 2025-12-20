@@ -25,7 +25,7 @@ import static org.mangorage.tiab.common.CommonConstants.MODID;
 
 public final class Registration {
     private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
-    private static final DeferredRegister.DataComponents DATA_COMPONENT_TYPES = DeferredRegister.createDataComponents(MODID);
+    private static final DeferredRegister.DataComponents DATA_COMPONENT_TYPES = DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, MODID);
     private static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
     private static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(Registries.ENTITY_TYPE, MODID);
 
@@ -84,4 +84,6 @@ public final class Registration {
             return ACCELERATOR_ENTITY.get();
         }
     }
+
+    Registration() {}
 }

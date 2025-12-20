@@ -52,8 +52,7 @@ public final class Registration {
             })
             .build());
 
-    public static void register() {
-    }
+    public static void register() {}
 
     public interface FabricRegistration extends ITiabRegistration {
         @Override
@@ -76,4 +75,6 @@ public final class Registration {
             return ACCELERATOR_ENTITY;
         }
     }
+
+    Registration() {}
 }

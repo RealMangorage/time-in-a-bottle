@@ -27,9 +27,9 @@ public final class ForgeTiabMod extends TiabMod {
     private final ITiabRegistration registration = new Registration.ForgeRegistration() {};
     private final ITiabConfig config;
 
-    public ForgeTiabMod() {
+    public ForgeTiabMod(FMLJavaModLoadingContext context) {
         super(LoaderSide.FORGE);
-        var modBus = FMLJavaModLoadingContext.get().getModEventBus();
+        var modBus = context.getModEventBus();
 
         Registration.register(modBus);
         modBus.addListener(this::onClient);
@@ -40,7 +40,7 @@ public final class ForgeTiabMod extends TiabMod {
         Pair<ForgeTiabConfig, ForgeConfigSpec> cfg = new ForgeConfigSpec.Builder()
                 .configure(ForgeTiabConfig::new);
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, cfg.getRight());
+        context.registerConfig(ModConfig.Type.SERVER, cfg.getRight());
 
         this.config = cfg.getKey();
     }

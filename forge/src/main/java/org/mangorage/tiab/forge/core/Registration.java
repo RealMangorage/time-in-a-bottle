@@ -85,4 +85,6 @@ public final class Registration {
             return ACCELERATOR_ENTITY.get();
         }
     }
+
+    Registration() {}
 }
