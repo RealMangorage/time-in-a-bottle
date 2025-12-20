@@ -47,13 +47,15 @@ task sourceJar(type: Jar) {
     from sourceSets.main.allSource
 }
 
+tasks.getByName("publish").setGroup("modpublishing")
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
             // Use project.tasks.getByName to reference the customJar task
             groupId = 'org.mangorage'
             artifactId = "tiab-common-api"
-            version = "$version-$api_version"
+            version = "$version"
             artifacts {
                 artifact jar
                 artifact sourcesJar
@@ -67,10 +69,10 @@ publishing {
             url = uri("$buildDir/repo")
         }
         maven {
-            url = "https://maven.minecraftforge.net/"
+            url = "https://maven.mangorage.org/"
             credentials {
                 username = "mango"
-                password = "$forge_token"
+                password = "$MAVEN_PASSWORD"
             }
         }
     }
