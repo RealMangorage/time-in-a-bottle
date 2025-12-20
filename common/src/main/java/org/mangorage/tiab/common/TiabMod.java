@@ -3,7 +3,6 @@ package org.mangorage.tiab.common;
 import com.mojang.brigadier.CommandDispatcher;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -14,6 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.AABB;
+import org.jetbrains.annotations.NotNull;
 import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
 import org.mangorage.tiab.common.api.ITiabConfig;
 import org.mangorage.tiab.common.api.ITiabItemSearch;
@@ -21,7 +21,7 @@ import org.mangorage.tiab.common.api.LoaderSide;
 import org.mangorage.tiab.common.api.impl.IStoredTimeComponent;
 import org.mangorage.tiab.common.api.impl.ITiabItem;
 import org.mangorage.tiab.common.api.impl.ITimeAcceleratorEntity;
-import org.mangorage.tiab.common.commands.TiabCommands;
+import org.mangorage.tiab.common.commands.TiabCommand;
 import org.mangorage.tiab.common.core.StoredTimeComponent;
 import org.mangorage.tiab.common.entities.TimeAcceleratorEntity;
 import java.util.List;
@@ -72,7 +72,7 @@ public abstract class TiabMod implements ICommonTimeInABottleAPI {
     }
 
     protected void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal(MODID).then(TiabCommands.addTimeCommand).then(TiabCommands.removeTimeCommand));
+        TiabCommand.register(dispatcher);
     }
 
     @Override
@@ -81,12 +81,14 @@ public abstract class TiabMod implements ICommonTimeInABottleAPI {
     }
 
     @Override
-    public ItemStack findTiabItem(Player player) {
+    @SuppressWarnings("all")
+    public @NotNull ItemStack findTiabItem(Player player) {
         for (ITiabItemSearch search : itemSearchList) {
             var item = search.findItem(player);
-            if (item != null) return item;
+            if (item == null) continue; // TODO: Remove in next major version. 26.1
+            if (!item.isEmpty()) return item;
         }
-        return null;
+        return ItemStack.EMPTY;
     }
 
     @Override
@@ -115,8 +117,6 @@ public abstract class TiabMod implements ICommonTimeInABottleAPI {
     }
 
     protected void tickPlayer(Player player) {
-        if (player.level().isClientSide) return;
-
         if (player instanceof ServerPlayer serverPlayer) {
             var server = serverPlayer.getServer();
             if (server != null && server.getTickCount() % 20 == 0) {

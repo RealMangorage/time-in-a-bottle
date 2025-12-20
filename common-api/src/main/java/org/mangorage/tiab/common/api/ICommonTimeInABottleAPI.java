@@ -7,6 +7,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.AABB;
+import org.jetbrains.annotations.NotNull;
 import org.mangorage.tiab.common.api.impl.IStoredTimeComponent;
 import org.mangorage.tiab.common.api.impl.ITimeAcceleratorEntity;
 
@@ -36,8 +37,10 @@ public interface ICommonTimeInABottleAPI {
      * Mods need to register an {@link ITiabItemSearch}
      * if they have a custom system for allowing
      * players to hold additional items (E.G Curios)
+     *
+     * @return ItemStack of the bottle. Or {@link ItemStack#EMPTY}
      */
-    ItemStack findTiabItem(Player player);
+    @NotNull ItemStack findTiabItem(Player player);
 
     TagKey<Block> getTagKey(); // get the un-acceleratable tag key
     ITiabConfig getConfig();
