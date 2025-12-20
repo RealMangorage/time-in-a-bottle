@@ -45,7 +45,7 @@ To use the API just add https://maven.mangorage.org/ as a maven repo
 ```
 repositories {
     maven {
-        url = "https://maven.mangorage.org/"
+        url = "https://maven.mangorage.org/releases"
     }
 }
 

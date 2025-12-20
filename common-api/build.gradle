@@ -69,7 +69,7 @@ publishing {
             url = uri("$buildDir/repo")
         }
         maven {
-            url = "https://maven.mangorage.org/"
+            url = "https://maven.mangorage.org/releases"
             credentials {
                 username = "mango"
                 password = "$MAVEN_PASSWORD"
