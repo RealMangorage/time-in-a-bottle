@@ -2,6 +2,7 @@ package org.mangorage.tiab.common.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.CowRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.state.CameraRenderState;
@@ -41,17 +42,19 @@ public final class TimeAcceleratorEntityRenderer extends EntityRenderer<TimeAcce
 //
 //        rendererText.render(BlockFaceTextRenderer.Face.valuesList(), timeRate,  packedLightIn, ChatFormatting.WHITE.getColor(), paddingLeftRightMult, TEXT_1PX_BELOW_MIDDLE, 0.51F); // Render Time Rate
 //        rendererText.render(BlockFaceTextRenderer.Face.valuesList(), timeRemaining, packedLightIn, remainingTimeSeconds > 10 ? ChatFormatting.WHITE.getColor() : ChatFormatting.RED.getColor(), paddingLeftRightTime, TEXT_1PX_ABOVE_MIDDLE, 0.51F); // Render Time Remaining, goes reed when < 10 seconds, otherwise white text.
+        super.submit(state, stack, collector, cameraRenderState);
     }
 
     @Override
     public void extractRenderState(TimeAcceleratorEntity entity, TiabRenderState state, float randomFloat) {
+        super.extractRenderState(entity, state, randomFloat);
         state.timeRate = entity.getTimeRate();
         state.timeRemaining = entity.getRemainingTime();
     }
 
     @Override
-    protected void finalizeRenderState(TimeAcceleratorEntity $$0, TiabRenderState $$1) {
-
+    protected void finalizeRenderState(TimeAcceleratorEntity entity, TiabRenderState state) {
+        super.finalizeRenderState(entity, state);
     }
 
 

@@ -38,6 +38,4 @@ public final class TiabJeiPlugin implements IModPlugin {
     public void registerRecipes(IRecipeRegistration reg) {
         reg.addRecipes(tiabCategory.getRecipeType(), TiabCategoryInfo.create(reg.getJeiHelpers().getIngredientManager().getAllItemStacks().stream().map(ItemStack::getItem).toList()));
     }
-
-
 }
