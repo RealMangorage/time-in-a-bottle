@@ -61,8 +61,10 @@ public record TiabCategory(IDrawable background, IDrawable icon, IDrawable slotB
         int startPosWidth = 0;
         int startPosHeight = 20;
 
-        IRecipeSlotBuilder inputSlotBuilder = builder.addSlot(RecipeIngredientRole.CRAFTING_STATION, xPos, 1).setBackground(slotBackground, -1, -1);
-        addIngredient(VanillaTypes.ITEM_STACK, ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getTiabItem().asItem().getDefaultInstance(), inputSlotBuilder);
+        IRecipeSlotBuilder inputSlotBuilder = builder
+                .addSlot(RecipeIngredientRole.CRAFTING_STATION, xPos, 1)
+                .setBackground(slotBackground, -1, -1)
+                .add(VanillaTypes.ITEM_STACK, ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getTiabItem().asItem().getDefaultInstance());
 
         for (Item item : recipe.getItems()) {
             builder.addSlot(RecipeIngredientRole.OUTPUT, startPosWidth, startPosHeight).setBackground(slotBackground, -1, -1).add(VanillaTypes.ITEM_STACK, new ItemStack(item));
@@ -72,9 +74,5 @@ public record TiabCategory(IDrawable background, IDrawable icon, IDrawable slotB
                 startPosWidth = 0;
             }
         }
-    }
-
-    private static <T> void addIngredient(IIngredientType<T> type, T ingredient, IIngredientAcceptor<?> slotBuilder) {
-        slotBuilder.add(type, ingredient);
     }
 }
