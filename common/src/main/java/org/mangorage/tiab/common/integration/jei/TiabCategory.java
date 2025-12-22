@@ -9,8 +9,8 @@ import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import mezz.jei.api.recipe.types.IRecipeType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -19,7 +19,7 @@ import org.mangorage.tiab.common.CommonConstants;
 import org.mangorage.tiab.common.integration.TiabCategoryInfo;
 
 public record TiabCategory(IDrawable background, IDrawable icon, IDrawable slotBackground) implements IRecipeCategory<TiabCategoryInfo> {
-    public static final RecipeType<TiabCategoryInfo> RECIPE_TYPE = RecipeType.create(CommonConstants.MODID, "resource_generator", TiabCategoryInfo.class);
+    public static final IRecipeType<TiabCategoryInfo> RECIPE_TYPE = IRecipeType.create(CommonConstants.MODID, "tiab_category", TiabCategoryInfo.class);
 
     public static TiabCategory create(IJeiHelpers helper) {
         var gui = helper.getGuiHelper();
@@ -31,7 +31,7 @@ public record TiabCategory(IDrawable background, IDrawable icon, IDrawable slotB
     }
 
     @Override
-    public RecipeType<TiabCategoryInfo> getRecipeType() {
+    public IRecipeType<TiabCategoryInfo> getRecipeType() {
         return RECIPE_TYPE;
     }
 
@@ -41,8 +41,13 @@ public record TiabCategory(IDrawable background, IDrawable icon, IDrawable slotB
     }
 
     @Override
-    public IDrawable getBackground() {
-        return background;
+    public int getWidth() {
+        return background.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return background.getHeight();
     }
 
     @Override
@@ -56,11 +61,11 @@ public record TiabCategory(IDrawable background, IDrawable icon, IDrawable slotB
         int startPosWidth = 0;
         int startPosHeight = 20;
 
-        IRecipeSlotBuilder inputSlotBuilder = builder.addSlot(RecipeIngredientRole.CATALYST, xPos, 1).setBackground(slotBackground, -1, -1);
+        IRecipeSlotBuilder inputSlotBuilder = builder.addSlot(RecipeIngredientRole.RENDER_ONLY, xPos, 1).setBackground(slotBackground, -1, -1);
         addIngredient(VanillaTypes.ITEM_STACK, ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getTiabItem().asItem().getDefaultInstance(), inputSlotBuilder);
 
         for (Item item : recipe.getItems()) {
-            builder.addSlot(RecipeIngredientRole.OUTPUT, startPosWidth, startPosHeight).setBackground(slotBackground, -1, -1).addIngredient(VanillaTypes.ITEM_STACK, new ItemStack(item));
+            builder.addSlot(RecipeIngredientRole.OUTPUT, startPosWidth, startPosHeight).setBackground(slotBackground, -1, -1).add(VanillaTypes.ITEM_STACK, new ItemStack(item));
             startPosWidth += 18;
             if (startPosWidth > 161) {
                 startPosHeight += 18;
@@ -70,6 +75,6 @@ public record TiabCategory(IDrawable background, IDrawable icon, IDrawable slotB
     }
 
     private static <T> void addIngredient(IIngredientType<T> type, T ingredient, IIngredientAcceptor<?> slotBuilder) {
-        slotBuilder.addIngredient(type, ingredient);
+        slotBuilder.add(type, ingredient);
     }
 }

@@ -1,17 +1,18 @@
 package org.mangorage.tiab.common.misc;
 
+import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
-import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
-import org.mangorage.tiab.common.api.impl.IStoredTimeComponent;
-import org.mangorage.tiab.common.core.StoredTimeComponent;
+import org.mangorage.tiab.common.CommonConstants;
 import org.mangorage.tiab.common.lang.Styles;
 import org.mangorage.tiab.common.lang.Translation;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public final class CommonHelper {
 
@@ -45,6 +46,16 @@ public final class CommonHelper {
 
     public static void sendStatusMessage(ServerPlayer serverPlayer, String message) {
         serverPlayer.displayClientMessage(Component.literal(message), true);
+    }
+
+    public static <T> ResourceKey<T> getResourceKey(ResourceKey<? extends Registry<T>> registry, String id) {
+        return ResourceKey.create(
+                registry,
+                Identifier.fromNamespaceAndPath(
+                        CommonConstants.MODID,
+                        id
+                )
+        );
     }
 
     CommonHelper() {}

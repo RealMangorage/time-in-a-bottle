@@ -76,7 +76,7 @@ public class TiabItem extends Item implements ITiabItem {
         Level level = context.getLevel();
         var cfg = ICommonTimeInABottleAPI.COMMON_API.get().getConfig();
 
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return InteractionResult.PASS;
         }
 

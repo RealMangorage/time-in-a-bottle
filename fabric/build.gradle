@@ -1,6 +1,6 @@
 plugins {
     id 'multiloader-loader'
-    id 'fabric-loom' version '1.10-SNAPSHOT'
+    id 'fabric-loom' version '1.13-SNAPSHOT'
     id "com.modrinth.minotaur" version "2.+"
 }
 
@@ -21,10 +21,10 @@ dependencies {
     }
 
     // EMI
-    modCompileOnlyApi "dev.emi:emi-fabric:$emi_version+$minecraft_version:api"
-    if (RUN_EMI == "true") {
-        modRuntimeOnly "dev.emi:emi-fabric:$emi_version+$minecraft_version"
-    }
+//    modCompileOnlyApi "dev.emi:emi-fabric:$emi_version+$minecraft_version:api"
+//    if (RUN_EMI == "true") {
+//        modRuntimeOnly "dev.emi:emi-fabric:$emi_version+$minecraft_version"
+//    }
 
     mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
@@ -36,9 +36,7 @@ loom {
     if (aw.exists()) {
         accessWidenerPath.set(aw)
     }
-    mixin {
-        defaultRefmapName.set("${mod_id}.refmap.json")
-    }
+
     runs {
         client {
             client()

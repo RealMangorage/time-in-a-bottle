@@ -29,13 +29,14 @@ public final class ForgeTiabMod extends TiabMod {
 
     public ForgeTiabMod(FMLJavaModLoadingContext context) {
         super(LoaderSide.FORGE);
-        var modBus = context.getModEventBus();
+        var modGroup = context.getModBusGroup();
 
-        Registration.register(modBus);
-        modBus.addListener(this::onClient);
+        Registration.register(modGroup);
 
-        MinecraftForge.EVENT_BUS.addListener(this::onRegisterCommands);
-        MinecraftForge.EVENT_BUS.addListener(this::onPlayerTick);
+        FMLClientSetupEvent.getBus(modGroup).addListener(this::onClient);
+
+        TickEvent.PlayerTickEvent.Post.BUS.addListener(this::onPlayerTick);
+        RegisterCommandsEvent.BUS.addListener(this::onRegisterCommands);
 
         Pair<ForgeTiabConfig, ForgeConfigSpec> cfg = new ForgeConfigSpec.Builder()
                 .configure(ForgeTiabConfig::new);
@@ -53,8 +54,8 @@ public final class ForgeTiabMod extends TiabMod {
         registerCommand(event.getDispatcher());
     }
 
-    public void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        tickPlayer(event.player);
+    public void onPlayerTick(TickEvent.PlayerTickEvent.Post event) {
+        tickPlayer(event.player());
     }
 
     @Override

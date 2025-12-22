@@ -21,7 +21,7 @@ repositories {
 
 dependencies {
     compileOnly("mezz.jei:jei-$minecraft_version-common-api:$jei_version")
-    compileOnly "dev.emi:emi-xplat-mojmap:$emi_version+$minecraft_version:api"
+//    compileOnly "dev.emi:emi-xplat-mojmap:$emi_version+$minecraft_version:api"
 
     compileOnly(project(':common-api')) {
         capabilities {

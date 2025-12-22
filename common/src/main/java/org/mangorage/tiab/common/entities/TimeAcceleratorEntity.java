@@ -11,12 +11,15 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.mangorage.tiab.common.CommonConstants;
 import org.mangorage.tiab.common.TiabMod;
@@ -93,17 +96,22 @@ public final class TimeAcceleratorEntity extends Entity implements ITimeAccelera
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag compound) {
-        entityData.set(timeRate, compound.getInt(CommonConstants.NBTKeys.ENTITY_TIME_RATE));
-        setRemainingTime(compound.getInt(CommonConstants.NBTKeys.ENTITY_REMAINING_TIME));
-        this.pos = NbtUtils.readBlockPos(compound, CommonConstants.NBTKeys.ENTITY_POS).orElse(new BlockPos(0,0,0));
+    public boolean hurtServer(ServerLevel serverLevel, DamageSource damageSource, float v) {
+        return false;
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compound) {
-        compound.putInt(CommonConstants.NBTKeys.ENTITY_TIME_RATE, getTimeRate());
-        compound.putInt(CommonConstants.NBTKeys.ENTITY_REMAINING_TIME, getRemainingTime());
-        compound.put(CommonConstants.NBTKeys.ENTITY_POS, NbtUtils.writeBlockPos(this.pos));
+    protected void readAdditionalSaveData(ValueInput valueInput) {
+        entityData.set(timeRate, valueInput.getIntOr(CommonConstants.NBTKeys.ENTITY_TIME_RATE, 1));
+        setRemainingTime(valueInput.getIntOr(CommonConstants.NBTKeys.ENTITY_REMAINING_TIME, 10));
+        setBlockPos(valueInput.read(CommonConstants.NBTKeys.ENTITY_POS, BlockPos.CODEC).orElseGet(() -> new BlockPos(0, 0, 0)));
+    }
+
+    @Override
+    protected void addAdditionalSaveData(ValueOutput valueOutput) {
+        valueOutput.putInt(CommonConstants.NBTKeys.ENTITY_TIME_RATE, getTimeRate());
+        valueOutput.putInt(CommonConstants.NBTKeys.ENTITY_REMAINING_TIME, getRemainingTime());
+        valueOutput.store(CommonConstants.NBTKeys.ENTITY_POS, BlockPos.CODEC, this.pos);
     }
 
     @Override

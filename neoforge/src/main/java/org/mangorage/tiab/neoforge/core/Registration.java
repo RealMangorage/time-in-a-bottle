@@ -4,6 +4,8 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -13,6 +15,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
 import org.mangorage.tiab.common.api.ITiabRegistration;
 import org.mangorage.tiab.common.api.impl.IStoredTimeComponent;
 import org.mangorage.tiab.common.api.impl.ITiabItem;
@@ -20,6 +23,7 @@ import org.mangorage.tiab.common.core.StoredTimeComponent;
 import org.mangorage.tiab.common.entities.TimeAcceleratorEntity;
 import org.mangorage.tiab.common.items.TiabItem;
 import org.mangorage.tiab.common.lang.Translation;
+import org.mangorage.tiab.common.misc.CommonHelper;
 
 import static org.mangorage.tiab.common.CommonConstants.MODID;
 
@@ -40,13 +44,14 @@ public final class Registration {
                     new Item.Properties()
                             .component(STORED_TIME_COMPONENT.get(), new StoredTimeComponent(0, 0))
                             .component(DataComponents.MAX_STACK_SIZE, 1)
+                            .setId(CommonHelper.getResourceKey(Registries.ITEM, "time_in_a_bottle"))
             ));
 
     public static final DeferredHolder<EntityType<?>, EntityType<TimeAcceleratorEntity>> ACCELERATOR_ENTITY = ENTITY_TYPES.register("accelerator",
             () -> EntityType.Builder.<TimeAcceleratorEntity>of(
                     (entityType, level) -> new TimeAcceleratorEntity(level),
                     MobCategory.MISC
-            ).sized(1.0f, 1.0f).build("accelerator"));
+            ).sized(1.0f, 1.0f).build(CommonHelper.getResourceKey(Registries.ENTITY_TYPE, "accelerator")));
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> TIAB_CREATIVE_TAB = TABS.register("tiab", () -> CreativeModeTab.builder()
             .icon(() -> TIAB_ITEM.get().getDefaultInstance())

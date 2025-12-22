@@ -8,6 +8,8 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.PermissionSet;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.item.Item;
 import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
 import org.mangorage.tiab.common.api.impl.ITiabItem;
@@ -19,7 +21,7 @@ public final class TiabCommand {
     public static LiteralArgumentBuilder<CommandSourceStack> COMMAND = Commands.literal("tiab")
             .then(
                     Commands.literal("time")
-                            .requires(commandSourceStack -> commandSourceStack.hasPermission(2))
+                            .requires(commandSourceStack -> commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_ADMIN))
                             .then(
                                     Commands.literal("add")
                                             .then(

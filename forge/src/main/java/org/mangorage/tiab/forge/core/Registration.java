@@ -3,17 +3,18 @@ package org.mangorage.tiab.forge.core;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.bus.BusGroup;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import org.mangorage.tiab.common.CommonConstants;
+import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
 import org.mangorage.tiab.common.api.ITiabRegistration;
 import org.mangorage.tiab.common.api.impl.IStoredTimeComponent;
 import org.mangorage.tiab.common.api.impl.ITiabItem;
@@ -21,6 +22,7 @@ import org.mangorage.tiab.common.core.StoredTimeComponent;
 import org.mangorage.tiab.common.entities.TimeAcceleratorEntity;
 import org.mangorage.tiab.common.items.TiabItem;
 import org.mangorage.tiab.common.lang.Translation;
+import org.mangorage.tiab.common.misc.CommonHelper;
 
 import static org.mangorage.tiab.common.CommonConstants.MODID;
 
@@ -41,13 +43,14 @@ public final class Registration {
                     new Item.Properties()
                             .component(STORED_TIME_COMPONENT.get(), new StoredTimeComponent(0, 0))
                             .component(DataComponents.MAX_STACK_SIZE, 1)
+                            .setId(CommonHelper.getResourceKey(Registries.ITEM, "time_in_a_bottle"))
             ));
 
     public static final RegistryObject<EntityType<TimeAcceleratorEntity>> ACCELERATOR_ENTITY = ENTITY_TYPES.register("accelerator",
             () -> EntityType.Builder.<TimeAcceleratorEntity>of(
                     (entityType, level) -> new TimeAcceleratorEntity(level),
                     MobCategory.MISC
-            ).sized(1.0f, 1.0f).build("accelerator"));
+            ).sized(1.0f, 1.0f).build(CommonHelper.getResourceKey(Registries.ENTITY_TYPE, "accelerator")));
 
     public static final RegistryObject<CreativeModeTab> TIAB_CREATIVE_TAB = TABS.register("tiab", () -> CreativeModeTab.builder()
             .icon(() -> TIAB_ITEM.get().getDefaultInstance())
@@ -57,11 +60,11 @@ public final class Registration {
             })
             .build());
 
-    public static void register(IEventBus modBus) {
-        ITEMS.register(modBus);
-        ENTITY_TYPES.register(modBus);
-        DATA_COMPONENT_TYPES.register(modBus);
-        TABS.register(modBus);
+    public static void register(BusGroup modGroup) {
+        ITEMS.register(modGroup);
+        ENTITY_TYPES.register(modGroup);
+        DATA_COMPONENT_TYPES.register(modGroup);
+        TABS.register(modGroup);
     }
 
     public interface ForgeRegistration extends ITiabRegistration {
