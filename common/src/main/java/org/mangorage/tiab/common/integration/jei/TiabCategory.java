@@ -61,7 +61,7 @@ public record TiabCategory(IDrawable background, IDrawable icon, IDrawable slotB
         int startPosWidth = 0;
         int startPosHeight = 20;
 
-        IRecipeSlotBuilder inputSlotBuilder = builder.addSlot(RecipeIngredientRole.RENDER_ONLY, xPos, 1).setBackground(slotBackground, -1, -1);
+        IRecipeSlotBuilder inputSlotBuilder = builder.addSlot(RecipeIngredientRole.CRAFTING_STATION, xPos, 1).setBackground(slotBackground, -1, -1);
         addIngredient(VanillaTypes.ITEM_STACK, ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getTiabItem().asItem().getDefaultInstance(), inputSlotBuilder);
 
         for (Item item : recipe.getItems()) {
