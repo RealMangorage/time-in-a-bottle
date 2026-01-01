@@ -3,7 +3,7 @@ import me.modmuss50.mpp.ReleaseType
 plugins {
     // Required for NeoGradle
     id "org.jetbrains.gradle.plugin.idea-ext" version "1.3"
-    id "me.modmuss50.mod-publish-plugin" version "1.1.0"
+    id "me.modmuss50.mod-publish-plugin" version "+"
 }
 
 def changelogText = file("changelog.md").text
@@ -20,6 +20,12 @@ println(changelogText)
 println("-------------------------------------------")
 
 publishMods {
+    evaluationDependsOn(":fabric")
+    evaluationDependsOn(":forge")
+    evaluationDependsOn(":neoforge")
+
+    //file files("changelog.md").singleFile
+
     changelog = changelogText
     type = ReleaseType.STABLE
     dryRun = true
@@ -45,7 +51,7 @@ publishMods {
     // Fabric specific options for CurseForge
     curseforge("curseforgeFabric") {
         from cfOptions
-        file project(":fabric")
+        file = project(":fabric").tasks.remapJar.archiveFile
         modLoaders.add("fabric")
         requires {
             slug = "fabric-api"
@@ -55,21 +61,21 @@ publishMods {
     // Forge specific options for CurseForge
     curseforge("curseforgeForge") {
         from cfOptions
-        file project(":forge")
+        file = project(":forge").tasks.jar.archiveFile
         modLoaders.add("forge")
     }
 
     // NeoForge specific options for CurseForge
-    curseforge("curseforgeForge") {
+    curseforge("curseforgeNeoForge") { nf ->
         from cfOptions
-        file project(":neoforge")
+        file = project(":neoforge").tasks.jar.archiveFile
         modLoaders.add("neoforge")
     }
 
     // Fabric specific options for Modrinth
     modrinth("modrinthFabric") {
         from mrOptions
-        file project(":fabric")
+        file = project(":fabric").tasks.remapJar.archiveFile
         modLoaders.add("fabric")
         requires {
             slug = "fabric-api"
@@ -79,14 +85,15 @@ publishMods {
     // Forge specific options for Modrinth
     modrinth("modrinthForge") {
         from mrOptions
-        file project(":forge")
+        file = project(":forge").tasks.jar.archiveFile
         modLoaders.add("forge")
     }
 
     // NeoForge specific options for Modrinth
     modrinth("modrinthNeoForge") {
         from mrOptions
-        file project(":neoforge")
+        file = project(":neoforge").tasks.jar.archiveFile
         modLoaders.add("neoforge")
     }
 }
+
