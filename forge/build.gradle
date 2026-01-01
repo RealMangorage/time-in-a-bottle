@@ -1,7 +1,6 @@
 plugins {
     id 'multiloader-loader'
     id 'net.minecraftforge.gradle' version '7.0.0-beta.6'
-    id "com.modrinth.minotaur" version "2.+"
 }
 
 base {
@@ -40,43 +39,6 @@ dependencies {
     }
 
     implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
-}
-
-task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
-    group "modpublishing"
-
-    apiToken = findProperty('curseforge_token')
-
-    def projectId = 895919
-    def mainFile = upload(projectId, jar)
-
-    mainFile.changelog = changelog
-    mainFile.addOptional("jei") // JEI
-    mainFile.addOptional("emi") // EMI
-    mainFile.releaseType = "$build_type"
-    mainFile.displayName = "Time in a bottle Forge " + project.version
-    for (final def gameVersion in game_versions.split(":")) {
-        mainFile.addGameVersion(gameVersion)
-    }
-}
-
-tasks.getByName("modrinth").setGroup("modpublishing")
-
-modrinth {
-    token = findProperty("modrinth_token") // Remember to have the MODRINTH_TOKEN environment variable set or else this will fail - just make sure it stays private!
-
-    projectId = "time-in-a-bottle-universal" // This can be the project ID or the slug. Either will work!
-    versionNumber = project.version // You don't need to set this manually. Will fail if Modrinth has this version already
-    versionName = "Time in a bottle Forge " + project.version
-    versionType = "$build_type" // This is the default -- can also be `beta` or `alpha`
-    uploadFile = jar // With Loom, this MUST be set to `remapJar` instead of `jar`!
-    gameVersions = "$game_versions".split(":").toList() // Must be an array, even with only one version
-    loaders = ["forge"]
-    changelog = project.changelog
-    dependencies {
-        optional.project "jei"
-        optional.project 'emi'
-    }
 }
 
 sourceSets.each {

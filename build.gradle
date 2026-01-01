@@ -1,14 +1,92 @@
+import me.modmuss50.mpp.ReleaseType
+
 plugins {
     // Required for NeoGradle
     id "org.jetbrains.gradle.plugin.idea-ext" version "1.3"
-    id 'net.darkhax.curseforgegradle' version '1.1.24'
+    id "me.modmuss50.mod-publish-plugin" version "1.1.0"
 }
 
-if (!"$changelog".contains("$version")) {
+def changelogText = file("changelog.md").text
+
+if (!changelogText.contains("$version")) {
     throw new IllegalStateException("Update the changelog!")
 }
 
+println("-------------------------------------------")
 println("Version -> $version")
 println("Version Type -> $build_type")
 println("Changelog:")
-println("$changelog")
+println(changelogText)
+println("-------------------------------------------")
+
+publishMods {
+    changelog = changelogText
+    type = ReleaseType.STABLE
+    dryRun = true
+
+    // CurseForge options used by both Fabric and Forge
+    def cfOptions = curseforgeOptions {
+        accessToken = providers.environmentVariable("CURSEFORGE_TOKEN").orElse(findProperty("curseforge_token"))
+        projectId = "895919"
+        game_versions.split(":").toList().forEach {
+            minecraftVersions.add(it)
+        }
+    }
+
+    // Modrinth options used by both Fabric and Forge
+    def mrOptions = modrinthOptions {
+        accessToken = providers.environmentVariable("MODRINTH_TOKEN").orElse(findProperty("modrinth_token"))
+        projectId = "12345678"
+        game_versions.split(":").toList().forEach {
+            minecraftVersions.add(it)
+        }
+    }
+
+    // Fabric specific options for CurseForge
+    curseforge("curseforgeFabric") {
+        from cfOptions
+        file project(":fabric")
+        modLoaders.add("fabric")
+        requires {
+            slug = "fabric-api"
+        }
+    }
+
+    // Forge specific options for CurseForge
+    curseforge("curseforgeForge") {
+        from cfOptions
+        file project(":forge")
+        modLoaders.add("forge")
+    }
+
+    // NeoForge specific options for CurseForge
+    curseforge("curseforgeForge") {
+        from cfOptions
+        file project(":neoforge")
+        modLoaders.add("neoforge")
+    }
+
+    // Fabric specific options for Modrinth
+    modrinth("modrinthFabric") {
+        from mrOptions
+        file project(":fabric")
+        modLoaders.add("fabric")
+        requires {
+            slug = "fabric-api"
+        }
+    }
+
+    // Forge specific options for Modrinth
+    modrinth("modrinthForge") {
+        from mrOptions
+        file project(":forge")
+        modLoaders.add("forge")
+    }
+
+    // NeoForge specific options for Modrinth
+    modrinth("modrinthNeoForge") {
+        from mrOptions
+        file project(":neoforge")
+        modLoaders.add("neoforge")
+    }
+}
