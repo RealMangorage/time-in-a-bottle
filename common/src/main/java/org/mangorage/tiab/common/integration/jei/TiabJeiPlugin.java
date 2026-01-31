@@ -6,6 +6,7 @@ import mezz.jei.api.registration.IAdvancedRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
+import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.mangorage.tiab.common.CommonConstants;
@@ -20,6 +21,7 @@ public final class TiabJeiPlugin implements IModPlugin {
         return ResourceLocation.fromNamespaceAndPath(CommonConstants.MODID, "information");
     }
 
+
     @Override
     public void registerCategories(IRecipeCategoryRegistration reg) {
         tiabCategory = TiabCategory.create(reg.getJeiHelpers());
@@ -27,15 +29,8 @@ public final class TiabJeiPlugin implements IModPlugin {
     }
 
     @Override
-    public void registerAdvanced(IAdvancedRegistration reg) {
-    }
-
-    @Override
-    public void registerItemSubtypes(ISubtypeRegistration reg) {
-    }
-
-    @Override
     public void registerRecipes(IRecipeRegistration reg) {
+        tiabCategory = TiabCategory.create(reg.getJeiHelpers());
         reg.addRecipes(tiabCategory.getRecipeType(), TiabCategoryInfo.create(reg.getJeiHelpers().getIngredientManager().getAllItemStacks().stream().map(ItemStack::getItem).toList()));
     }
 

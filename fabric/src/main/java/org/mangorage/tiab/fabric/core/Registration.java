@@ -19,6 +19,7 @@ import org.mangorage.tiab.common.core.StoredTimeComponent;
 import org.mangorage.tiab.common.entities.TimeAcceleratorEntity;
 import org.mangorage.tiab.common.items.TiabItem;
 import org.mangorage.tiab.common.lang.Translation;
+import org.mangorage.tiab.fabric.FabricTiabItem;
 
 import static org.mangorage.tiab.common.CommonConstants.MODID;
 
@@ -33,7 +34,7 @@ public final class Registration {
             .networkSynchronized(StoredTimeComponent.DIRECT_STREAM_CODEC)
             .build());
 
-    public static final TiabItem TIAB_ITEM = register(BuiltInRegistries.ITEM, "time_in_a_bottle", new TiabItem(
+    public static final TiabItem TIAB_ITEM = register(BuiltInRegistries.ITEM, "time_in_a_bottle", new FabricTiabItem(
             new Item.Properties()
                     .component(STORED_TIME_COMPONENT, new StoredTimeComponent(0, 0))
                     .component(DataComponents.MAX_STACK_SIZE, 1)

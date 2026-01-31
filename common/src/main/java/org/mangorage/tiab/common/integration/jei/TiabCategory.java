@@ -40,9 +40,15 @@ public record TiabCategory(IDrawable background, IDrawable icon, IDrawable slotB
         return Component.translatable("emi.category.tiab.test");
     }
 
+
     @Override
-    public IDrawable getBackground() {
-        return background;
+    public int getHeight() {
+        return background.getHeight();
+    }
+
+    @Override
+    public int getWidth() {
+        return background.getWidth();
     }
 
     @Override

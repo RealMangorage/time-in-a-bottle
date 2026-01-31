@@ -13,7 +13,7 @@ import org.mangorage.tiab.common.integration.TiabCategoryInfo;
 
 @EmiEntrypoint
 public record TiabEmiPlugin() implements EmiPlugin {
-    public static EmiRecipeCategory CATEGORY = new EmiRecipeCategory(ResourceLocation.fromNamespaceAndPath("tiab", "test"), EmiStack.of(ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getTiabItem().asItem()));
+    public static EmiRecipeCategory CATEGORY = new EmiRecipeCategory(ResourceLocation.fromNamespaceAndPath("tiab", "category"), EmiStack.of(ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getTiabItem().asItem()));
 
     @Override
     public void register(EmiRegistry emiRegistry) {
