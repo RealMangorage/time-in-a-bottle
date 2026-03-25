@@ -102,7 +102,7 @@ public class TiabItem extends Item implements ITiabItem {
             int usedUpTime = getEachUseDuration() - entityTA.getRemainingTime();
 
             if (currentRate >= Math.pow(2, cfg.MAX_RATE_MULTI() - 1)) {
-                return InteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS_SERVER;
             }
 
             nextRate = currentRate * 2;
@@ -110,7 +110,7 @@ public class TiabItem extends Item implements ITiabItem {
             energyRequired = getEnergyCost(nextRate);
 
             if (!canUse(stack, isCreativeMode, energyRequired)) {
-                return InteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS_SERVER;
             }
 
             entityTA.setTimeRate(nextRate);
@@ -118,7 +118,7 @@ public class TiabItem extends Item implements ITiabItem {
         } else {
             // First use
             if (!canUse(stack, isCreativeMode, energyRequired)) {
-                return InteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS_SERVER;
             }
 
             ITimeAcceleratorEntity entityTA = ICommonTimeInABottleAPI.COMMON_API.get().createEntity((ServerLevel) level);
@@ -137,7 +137,7 @@ public class TiabItem extends Item implements ITiabItem {
 
         CommonSoundHelper.playSound(level, pos, nextRate);
 
-        return InteractionResult.SUCCESS;
+        return InteractionResult.SUCCESS_SERVER;
     }
 
 
@@ -169,12 +169,13 @@ public class TiabItem extends Item implements ITiabItem {
         return true;
     }
 
-    // FORGE & NEOFORGE
-    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+    // Forge
+    public boolean shouldCauseReequipAnimation(ItemStack itemStack, ItemStack itemStack1, boolean b) {
         return false;
     }
 
-    public boolean shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
-        return false;
+    public boolean shouldCauseBlockBreakReset(ItemStack itemStack, ItemStack itemStack1) {
+        return true;
     }
+
 }

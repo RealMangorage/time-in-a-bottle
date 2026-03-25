@@ -1,6 +1,6 @@
 plugins {
     id 'multiloader-loader'
-    id 'fabric-loom' version '1.14-SNAPSHOT'
+    id 'net.fabricmc.fabric-loom' version "${fabric_loom_version}"
 }
 
 repositories {
@@ -14,20 +14,17 @@ dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
 
     // JEI
-    modCompileOnlyApi("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     if (RUN_JEI == "true") {
-        modRuntimeOnly("mezz.jei:jei-${minecraft_version}-fabric:${jei_version}")
+        runtimeOnly("mezz.jei:jei-${minecraft_version}-fabric:${jei_version}")
     }
 
     // EMI
-//    modCompileOnlyApi "dev.emi:emi-fabric:$emi_version+$minecraft_version:api"
-//    if (RUN_EMI == "true") {
-//        modRuntimeOnly "dev.emi:emi-fabric:$emi_version+$minecraft_version"
-//    }
+    if (RUN_EMI == "true") {
+        modRuntimeOnly "dev.emi:emi-fabric:$emi_version+$minecraft_version"
+    }
 
-    mappings loom.officialMojangMappings()
-    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    implementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 }
 
 loom {

@@ -51,7 +51,7 @@ publishMods {
     // Fabric specific options for CurseForge
     curseforge("curseforgeFabric") {
         from cfOptions
-        file = project(":fabric").tasks.remapJar.archiveFile
+        file = project(":fabric").tasks.jar.archiveFile
         modLoaders.add("fabric")
         requires {
             slug = "fabric-api"
@@ -75,7 +75,7 @@ publishMods {
     // Fabric specific options for Modrinth
     modrinth("modrinthFabric") {
         from mrOptions
-        file = project(":fabric").tasks.remapJar.archiveFile
+        file = project(":fabric").tasks.jar.archiveFile
         modLoaders.add("fabric")
         requires {
             slug = "fabric-api"

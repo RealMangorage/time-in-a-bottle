@@ -1,6 +1,6 @@
 plugins {
     id 'multiloader-loader'
-    id 'net.minecraftforge.gradle' version '7.0.0-beta.6'
+    id 'net.minecraftforge.gradle' version "${forge_gradle_version}"
 }
 
 base {
@@ -8,8 +8,6 @@ base {
 }
 
 minecraft {
-    mappings channel: 'official', version: minecraft_version
-
     runs.register("client")
     runs.register("server")
     runs.register("data")
@@ -19,7 +17,6 @@ sourceSets.main.resources.srcDir 'src/generated/resources'
 
 repositories {
     mavenLocal()
-    maven minecraft.maven
     maven fg.forgeMaven
     maven fg.minecraftLibsMaven
     mavenCentral()
@@ -28,14 +25,15 @@ repositories {
     }
 }
 
+minecraft.mavenizer(repositories)
+
 
 dependencies {
-    implementation minecraft.dep("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
+    implementation minecraft.dependency("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
 
     // JEI
-    compileOnly("mezz.jei:jei-${minecraft_version}-common-api:$jei_version")
     if (RUN_JEI == "true") {
-        //runtimeOnly("mezz.jei:jei-${minecraft_version}-forge:$jei_version")
+        runtimeOnly("mezz.jei:jei-${minecraft_version}-forge:$jei_version")
     }
 
     implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }

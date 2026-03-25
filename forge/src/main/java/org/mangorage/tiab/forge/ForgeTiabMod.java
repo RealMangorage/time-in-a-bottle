@@ -60,7 +60,7 @@ public final class ForgeTiabMod extends TiabMod {
 
     @Override
     public boolean isModLoaded(String modId) {
-        return ModList.get().isLoaded(modId);
+        return ModList.isLoaded(modId);
     }
 
     @Override

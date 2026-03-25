@@ -45,7 +45,7 @@ public final class CommonHelper {
     }
 
     public static void sendStatusMessage(ServerPlayer serverPlayer, String message) {
-        serverPlayer.displayClientMessage(Component.literal(message), true);
+        serverPlayer.sendSystemMessage(Component.literal(message), true);
     }
 
     public static <T> ResourceKey<T> getResourceKey(ResourceKey<? extends Registry<T>> registry, String id) {
