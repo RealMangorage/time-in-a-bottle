@@ -48,10 +48,8 @@ repositories {
 dependencies {
     implementation "net.neoforged:neoforge:${neoforge_version}"
 
-    // EMI
-    if (RUN_EMI == "true") {
-       runtimeOnly "dev.emi:emi-neoforge:$emi_version+$minecraft_version"
-    }
+    compileOnly("mezz.jei:jei-$minecraft_version-common-api:$jei_version")
+
 
     // JEI
     if (RUN_JEI == "true") {

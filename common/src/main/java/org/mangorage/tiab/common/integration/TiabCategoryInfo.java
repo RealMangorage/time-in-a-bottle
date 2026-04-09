@@ -37,8 +37,4 @@ public record TiabCategoryInfo(List<Item> items, int id) {
     public List<Item> getItems() {
         return items;
     }
-
-    public int getId() {
-        return id;
-    }
 }
