@@ -1,3 +1,3 @@
-# 7.0.0
+# 7.0.1 (Fabric)
 
-Ported to 26.1 and 26.1.1
+Fixed the mods mc version range json entry.
