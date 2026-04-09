@@ -1,5 +1,3 @@
 # 7.0.0
 
-# Finally, a proper Changelog file!
-
-Wonderful Stuff!
+Ported to 26.1 and 26.1.1
