@@ -2,27 +2,31 @@ package org.mangorage.tiab.forge.core;
 
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.component.ItemLore;
 import net.minecraftforge.eventbus.api.bus.BusGroup;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
 import org.mangorage.tiab.common.api.ITiabRegistration;
 import org.mangorage.tiab.common.api.impl.IStoredTimeComponent;
 import org.mangorage.tiab.common.api.impl.ITiabItem;
 import org.mangorage.tiab.common.core.StoredTimeComponent;
 import org.mangorage.tiab.common.entities.TimeAcceleratorEntity;
 import org.mangorage.tiab.common.items.TiabItem;
+import org.mangorage.tiab.common.lang.Styles;
 import org.mangorage.tiab.common.lang.Translation;
 import org.mangorage.tiab.common.misc.CommonHelper;
+
+import java.util.List;
 
 import static org.mangorage.tiab.common.CommonConstants.MODID;
 
@@ -39,11 +43,31 @@ public final class Registration {
                     .build());
 
     public static final RegistryObject<TiabItem> TIAB_ITEM = ITEMS.register("time_in_a_bottle",
-            () -> new TiabItem(
+            () -> new TiabItem(false,
                     new Item.Properties()
                             .component(STORED_TIME_COMPONENT.get(), new StoredTimeComponent(0, 0))
                             .component(DataComponents.MAX_STACK_SIZE, 1)
                             .setId(CommonHelper.getResourceKey(Registries.ITEM, "time_in_a_bottle"))
+            ));
+
+
+
+    public static final RegistryObject<TiabItem> CREATIVE_TIAB_ITEM = ITEMS.register("creative_time_in_a_bottle",
+            () -> new TiabItem(true,
+                    new Item.Properties()
+                        .component(STORED_TIME_COMPONENT.get(), new StoredTimeComponent(Integer.MAX_VALUE, Integer.MAX_VALUE))
+                        .component(DataComponents.MAX_STACK_SIZE, 1)
+                        .rarity(Rarity.EPIC)
+                        .component(
+                                DataComponents.LORE,
+                                new ItemLore(
+                                        List.of(
+                                                Component.translatable("item.tiab.time_in_a_bottle.tooltip.creative")
+                                                        .withStyle(Styles.AQUA.withBold(true).withItalic(true))
+                                        )
+                                )
+                        )
+                        .setId(CommonHelper.getResourceKey(Registries.ITEM, "creative_time_in_a_bottle"))
             ));
 
     public static final RegistryObject<EntityType<TimeAcceleratorEntity>> ACCELERATOR_ENTITY = ENTITY_TYPES.register("accelerator",
@@ -57,6 +81,7 @@ public final class Registration {
             .title(Translation.ITEM.componentTranslation())
             .displayItems((parameters, output) -> {
                 output.accept(TIAB_ITEM.get());
+                output.accept(CREATIVE_TIAB_ITEM.get());
             })
             .build());
 
@@ -71,6 +96,11 @@ public final class Registration {
         @Override
         default ITiabItem getTiabItem() {
             return TIAB_ITEM.get();
+        }
+
+        @Override
+        default ITiabItem getCreativeTiabItem() {
+            return CREATIVE_TIAB_ITEM.get();
         }
 
         @Override

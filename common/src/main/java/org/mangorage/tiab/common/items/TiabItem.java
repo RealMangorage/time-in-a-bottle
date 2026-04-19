@@ -2,6 +2,7 @@ package org.mangorage.tiab.common.items;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -20,33 +21,47 @@ import org.mangorage.tiab.common.api.impl.IStoredTimeComponent;
 import org.mangorage.tiab.common.api.impl.ITiabItem;
 import org.mangorage.tiab.common.api.impl.ITimeAcceleratorEntity;
 import org.mangorage.tiab.common.core.StoredTimeComponent;
+import org.mangorage.tiab.common.lang.Styles;
 import org.mangorage.tiab.common.misc.CommonHelper;
 import org.mangorage.tiab.common.misc.CommonSoundHelper;
 import java.util.List;
 import java.util.Optional;
 
 public class TiabItem extends Item implements ITiabItem {
-    public TiabItem(Properties properties) {
+
+    private final boolean creative;
+
+    public TiabItem(boolean creative, Properties properties) {
         super(properties);
+        this.creative = creative;
+    }
+
+    @Override
+    public boolean isCreative() {
+        return creative;
     }
 
     public void tickPlayer(Player player) {
+        if (creative) return;
         tickPlayer(player, 1);
     }
 
     @Override
     public void tickPlayer(Player player, int ticks) {
+        if (creative) return;
         final var item = ICommonTimeInABottleAPI.COMMON_API.get().findTiabItem(player);
-        if (item == null || item.isEmpty()) return;
+        if (item.isEmpty()) return;
         tickBottle(item, ticks);
     }
 
     @Override
     public void tickBottle(ItemStack stack) {
+        if (creative) return;
         tickBottle(stack, 1);
     }
 
     public void tickBottle(ItemStack stack, int ticks) {
+        if (creative) return;
         if (stack.getItem() != this || ticks <= 0) return;
 
         var comp = ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getStoredTime();
@@ -92,7 +107,7 @@ public class TiabItem extends Item implements ITiabItem {
 
         int nextRate = 1;
         int energyRequired = getEnergyCost(nextRate);
-        boolean isCreativeMode = player != null && player.isCreative();
+        boolean isCreativeMode = player != null && player.isCreative() || creative;
 
         Optional<? extends ITimeAcceleratorEntity> o = ICommonTimeInABottleAPI.COMMON_API.get().getEntities(level, new AABB(pos)).stream().findFirst();
 

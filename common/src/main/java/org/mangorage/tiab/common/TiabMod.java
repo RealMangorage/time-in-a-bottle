@@ -25,6 +25,8 @@ import org.mangorage.tiab.common.api.impl.ITimeAcceleratorEntity;
 import org.mangorage.tiab.common.commands.TiabCommand;
 import org.mangorage.tiab.common.core.StoredTimeComponent;
 import org.mangorage.tiab.common.entities.TimeAcceleratorEntity;
+import org.mangorage.tiab.common.items.TiabItem;
+
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -50,7 +52,9 @@ public abstract class TiabMod implements ICommonTimeInABottleAPI {
         // Default Search
         registerItemSearch(p -> {
             for (int i = 0; i < p.getInventory().getContainerSize(); i++) {
-                if (p.getInventory().getItem(i).getItem() instanceof ITiabItem) {
+
+                final var item = p.getInventory().getItem(i).getItem();
+                if (item instanceof ITiabItem tiabItem && !tiabItem.isCreative()) {
                     return p.getInventory().getItem(i);
                 }
             }
@@ -120,7 +124,7 @@ public abstract class TiabMod implements ICommonTimeInABottleAPI {
     protected void tickPlayer(Player player) {
         if (player instanceof ServerPlayer serverPlayer) {
             var server = serverPlayer.level().getServer();
-            if (server != null && server.getTickCount() % 20 == 0) {
+            if (server.getTickCount() % 20 == 0) {
                 ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getTiabItem().tickPlayer(player, 20);
             }
         }

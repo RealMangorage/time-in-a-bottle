@@ -8,6 +8,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
+import org.mangorage.tiab.common.api.annotations.API;
 import org.mangorage.tiab.common.api.impl.IStoredTimeComponent;
 import org.mangorage.tiab.common.api.impl.ITimeAcceleratorEntity;
 
@@ -19,10 +20,16 @@ public interface ICommonTimeInABottleAPI {
     /**
      * This is where you grab a reference to the API
      */
+    @API(since = "7.0.2")
     Supplier<ICommonTimeInABottleAPI> COMMON_API = Getter.GETTER.get();
+
+    @API(since = "7.0.2")
     LoaderSide getLoaderSide();
 
+    @API(since = "7.0.2")
     boolean isModLoaded(String modId);
+
+    @API(since = "7.0.2")
     ITiabRegistration getRegistration();
 
     /**
@@ -30,6 +37,7 @@ public interface ICommonTimeInABottleAPI {
      * find an Time In A Bottle ItemStack
      * Only finds the first one
      */
+    @API(since = "7.0.2")
     void registerItemSearch(ITiabItemSearch search);
 
     /**
@@ -40,19 +48,30 @@ public interface ICommonTimeInABottleAPI {
      *
      * @return ItemStack of the bottle. Or {@link ItemStack#EMPTY}
      */
+    @API(since = "7.0.2")
     @NotNull ItemStack findTiabItem(Player player);
 
+    @API(since = "7.0.2")
     TagKey<Block> getTagKey(); // get the un-acceleratable tag key
+
+    @API(since = "7.0.2")
     ITiabConfig getConfig();
 
+    @API(since = "7.0.2")
     IStoredTimeComponent createStoredTimeComponent(int stored, int total);
+
+    @API(since = "7.0.2")
     ITimeAcceleratorEntity createEntity(ServerLevel level);
 
     /**
      * @return A list of {@link ITiabItemSearch}
      */
+    @API(since = "7.0.2")
     List<ITiabItemSearch> getSearchHandlers();
-    String getModId();
 
+    @API(since = "7.0.2")
     List<? extends ITimeAcceleratorEntity> getEntities(Level level, AABB aabb);
+
+    @API(since = "7.0.2")
+    String getModId();
 }
