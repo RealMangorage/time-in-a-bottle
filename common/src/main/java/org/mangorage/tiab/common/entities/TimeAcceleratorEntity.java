@@ -26,6 +26,8 @@ import org.mangorage.tiab.common.TiabMod;
 import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
 import org.mangorage.tiab.common.api.impl.ITimeAcceleratorEntity;
 
+import java.util.Random;
+
 public final class TimeAcceleratorEntity extends Entity implements ITimeAcceleratorEntity {
     private static final EntityDataAccessor<Integer> timeRate = SynchedEntityData.defineId(TimeAcceleratorEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> timeRemaining = SynchedEntityData.defineId(TimeAcceleratorEntity.class, EntityDataSerializers.INT);
@@ -60,6 +62,7 @@ public final class TimeAcceleratorEntity extends Entity implements ITimeAccelera
             setTimeRate(1);
             return;
         }
+
         BlockEntity targetBlockEntity = level.getBlockEntity(pos);
         BlockEntityTicker<BlockEntity> targetTicker = null;
         if (targetBlockEntity != null)
@@ -70,9 +73,7 @@ public final class TimeAcceleratorEntity extends Entity implements ITimeAccelera
                 targetTicker.tick(level, pos, blockState, targetBlockEntity);
             } else if (blockState.isRandomlyTicking()) {
                 // if is random ticket block (grass block, sugar cane, wheat or sapling, ...)
-                if (level.getRandom().nextInt(1365) == 0) {
-                    blockState.randomTick(level, pos, level.getRandom());
-                }
+                blockState.randomTick(level, pos, level.getRandom());
             } else {
                 this.remove(RemovalReason.KILLED);
                 break;
@@ -80,6 +81,7 @@ public final class TimeAcceleratorEntity extends Entity implements ITimeAccelera
         }
 
         setRemainingTime(getRemainingTime() - 1);
+
         if (getRemainingTime() <= 0) {
             this.remove(RemovalReason.KILLED);
         }
