@@ -6,6 +6,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -86,33 +88,44 @@ public class TiabItem extends Item implements ITiabItem {
         stack.set(DataComponents.LORE, lore);
     }
 
-    @Override
-    public @NotNull InteractionResult useOn(UseOnContext context) {
-        Level level = context.getLevel();
+    private boolean isValidBlockTarget(Level level, BlockPos pos, BlockState state, BlockEntity be) {
+        return !((be == null && !state.isRandomlyTicking()) ||
+                state.is(ICommonTimeInABottleAPI.COMMON_API.get().getTagKey()));
+    }
+
+    private boolean isValidEntityTarget(Entity entity) {
+        return entity != null && entity.isAlive() && entity instanceof LivingEntity;
+    }
+
+
+    private InteractionResult accelerate(Level level, BlockPos pos, Entity targetEntity, ItemStack stack, Player player) {
         var cfg = ICommonTimeInABottleAPI.COMMON_API.get().getConfig();
-
-        if (level.isClientSide()) {
-            return InteractionResult.PASS;
-        }
-
-        BlockPos pos = context.getClickedPos();
-        BlockState blockState = level.getBlockState(pos);
-        BlockEntity targetTE = level.getBlockEntity(pos);
-        ItemStack stack = context.getItemInHand();
-        Player player = context.getPlayer();
-
-        if ((targetTE == null && !blockState.isRandomlyTicking()) || blockState.is(ICommonTimeInABottleAPI.COMMON_API.get().getTagKey())) {
-            return InteractionResult.FAIL;
-        }
 
         int nextRate = 1;
         int energyRequired = getEnergyCost(nextRate);
-        boolean isCreativeMode = player != null && player.isCreative() || creative;
+        boolean isCreativeMode = (player != null && player.isCreative()) || creative;
 
-        Optional<? extends ITimeAcceleratorEntity> o = ICommonTimeInABottleAPI.COMMON_API.get().getEntities(level, new AABB(pos)).stream().findFirst();
+        // Find existing accelerator
+        Optional<? extends ITimeAcceleratorEntity> o;
+
+        if (targetEntity != null) {
+            // Prefer UUID lookup if possible
+            o = ICommonTimeInABottleAPI.COMMON_API.get()
+                    .getEntities(level, new AABB(targetEntity.blockPosition()))
+                    .stream()
+                    .filter(e -> targetEntity.getUUID().equals(e.getTargetedEntityUUID()))
+                    .findFirst();
+        } else {
+            o = ICommonTimeInABottleAPI.COMMON_API.get()
+                    .getEntities(level, new AABB(pos))
+                    .stream()
+                    .filter(e -> e.getTargetedEntityUUID() == null)
+                    .findFirst();
+        }
 
         if (o.isPresent()) {
             ITimeAcceleratorEntity entityTA = o.get();
+
             int currentRate = entityTA.getTimeRate();
             int usedUpTime = getEachUseDuration() - entityTA.getRemainingTime();
 
@@ -130,29 +143,86 @@ public class TiabItem extends Item implements ITiabItem {
 
             entityTA.setTimeRate(nextRate);
             entityTA.setRemainingTime(entityTA.getRemainingTime() + timeAdded);
+
         } else {
-            // First use
             if (!canUse(stack, isCreativeMode, energyRequired)) {
                 return InteractionResult.SUCCESS_SERVER;
             }
 
             ITimeAcceleratorEntity entityTA = ICommonTimeInABottleAPI.COMMON_API.get().createEntity((ServerLevel) level);
-            entityTA.setBlockPos(pos);
+
+            // --- THIS is the important part you kept dodging ---
+            if (targetEntity != null) {
+                entityTA.setTargetedEntityUUID(targetEntity.getUUID());
+                entityTA.setTargetedBlockPos(null);
+            } else {
+                entityTA.setTargetedBlockPos(pos);
+                entityTA.setTargetedEntityUUID(null);
+            }
+
             entityTA.setRemainingTime(getEachUseDuration());
+
             level.addFreshEntity(entityTA.asEntity());
         }
 
         if (!isCreativeMode) {
             final int required = energyRequired;
-            CommonHelper.modify(stack, ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getStoredTime(), new StoredTimeComponent(0, 0), old -> {
-                var newStoredTime = Math.min(old.stored() - required, cfg.MAX_STORED_TIME());
-                return new StoredTimeComponent(newStoredTime, old.total());
-            });
+            CommonHelper.modify(
+                    stack,
+                    ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getStoredTime(),
+                    new StoredTimeComponent(0, 0),
+                    old -> new StoredTimeComponent(
+                            Math.min(old.stored() - required, cfg.MAX_STORED_TIME()),
+                            old.total()
+                    )
+            );
         }
 
         CommonSoundHelper.playSound(level, pos, nextRate);
 
         return InteractionResult.SUCCESS_SERVER;
+    }
+
+    @Override
+    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity entity, InteractionHand hand) {
+        Level level = entity.level();
+
+        if (level.isClientSide()) return InteractionResult.PASS;
+
+        if (!isValidEntityTarget(entity)) {
+            return InteractionResult.FAIL;
+        }
+
+        return accelerate(
+                level,
+                entity.blockPosition(),
+                entity,
+                stack,
+                player
+        );
+    }
+
+    @Override
+    public @NotNull InteractionResult useOn(UseOnContext context) {
+        Level level = context.getLevel();
+
+        if (level.isClientSide()) return InteractionResult.PASS;
+
+        BlockPos pos = context.getClickedPos();
+        BlockState state = level.getBlockState(pos);
+        BlockEntity be = level.getBlockEntity(pos);
+
+        if (!isValidBlockTarget(level, pos, state, be)) {
+            return InteractionResult.FAIL;
+        }
+
+        return accelerate(
+                level,
+                pos,
+                null,
+                context.getItemInHand(),
+                context.getPlayer()
+        );
     }
 
 

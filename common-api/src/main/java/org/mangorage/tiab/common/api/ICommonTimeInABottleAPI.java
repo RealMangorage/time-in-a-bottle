@@ -20,16 +20,16 @@ public interface ICommonTimeInABottleAPI {
     /**
      * This is where you grab a reference to the API
      */
-    @API(since = "7.0.2")
+    @API(since = "7.0.0")
     Supplier<ICommonTimeInABottleAPI> COMMON_API = Getter.GETTER.get();
 
-    @API(since = "7.0.2")
+    @API(since = "7.0.0")
     LoaderSide getLoaderSide();
 
-    @API(since = "7.0.2")
+    @API(since = "7.0.0")
     boolean isModLoaded(String modId);
 
-    @API(since = "7.0.2")
+    @API(since = "7.0.0")
     ITiabRegistration getRegistration();
 
     /**
@@ -37,7 +37,7 @@ public interface ICommonTimeInABottleAPI {
      * find an Time In A Bottle ItemStack
      * Only finds the first one
      */
-    @API(since = "7.0.2")
+    @API(since = "7.0.0")
     void registerItemSearch(ITiabItemSearch search);
 
     /**
@@ -48,30 +48,30 @@ public interface ICommonTimeInABottleAPI {
      *
      * @return ItemStack of the bottle. Or {@link ItemStack#EMPTY}
      */
-    @API(since = "7.0.2")
+    @API(since = "7.0.0")
     @NotNull ItemStack findTiabItem(Player player);
 
-    @API(since = "7.0.2")
+    @API(since = "7.0.0")
     TagKey<Block> getTagKey(); // get the un-acceleratable tag key
 
-    @API(since = "7.0.2")
+    @API(since = "7.0.0")
     ITiabConfig getConfig();
 
-    @API(since = "7.0.2")
+    @API(since = "7.0.0")
     IStoredTimeComponent createStoredTimeComponent(int stored, int total);
 
-    @API(since = "7.0.2")
+    @API(since = "7.0.0")
     ITimeAcceleratorEntity createEntity(ServerLevel level);
 
     /**
      * @return A list of {@link ITiabItemSearch}
      */
-    @API(since = "7.0.2")
+    @API(since = "7.0.0")
     List<ITiabItemSearch> getSearchHandlers();
 
-    @API(since = "7.0.2")
+    @API(since = "7.0.0")
     List<? extends ITimeAcceleratorEntity> getEntities(Level level, AABB aabb);
 
-    @API(since = "7.0.2")
+    @API(since = "7.0.0")
     String getModId();
 }

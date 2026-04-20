@@ -11,20 +11,20 @@ import org.mangorage.tiab.common.api.impl.ITiabItem;
 /**
  * Where you get registred objects from!
  */
-@API(since = "7.0.2")
+@API(since = "7.0.0")
 public interface ITiabRegistration {
-    @API(since = "7.0.2")
+    @API(since = "7.0.0")
     ITiabItem getTiabItem();
 
-    @API(since = "7.0.2")
+    @API(since = "7.0.0")
     ITiabItem getCreativeTiabItem();
 
-    @API(since = "7.0.2")
+    @API(since = "7.0.0")
     CreativeModeTab getCreativeTab();
 
-    @API(since = "7.0.2")
+    @API(since = "7.0.0")
     DataComponentType<IStoredTimeComponent> getStoredTime();
 
-    @API(since = "7.0.2")
+    @API(since = "7.0.0")
     EntityType<? extends Entity> getAcceleratorEntityType();
 }

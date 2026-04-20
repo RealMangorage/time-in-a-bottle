@@ -1,8 +1,7 @@
 package org.mangorage.tiab.common.entities;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
@@ -14,24 +13,24 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.mangorage.tiab.common.CommonConstants;
 import org.mangorage.tiab.common.TiabMod;
-import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
 import org.mangorage.tiab.common.api.impl.ITimeAcceleratorEntity;
+import org.mangorage.tiab.common.core.ticking.BlockTickingTarget;
+import org.mangorage.tiab.common.core.ticking.EntityTickingTarget;
 
-import java.util.Random;
+import java.util.UUID;
 
 public final class TimeAcceleratorEntity extends Entity implements ITimeAcceleratorEntity {
     private static final EntityDataAccessor<Integer> timeRate = SynchedEntityData.defineId(TimeAcceleratorEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> timeRemaining = SynchedEntityData.defineId(TimeAcceleratorEntity.class, EntityDataSerializers.INT);
-    private BlockPos pos;
+
+    private BlockPos targetedBlockPos;
+    private UUID targetedEntity;
 
     public TimeAcceleratorEntity(Level worldIn) {
         super(TiabMod.COMMON_API.get().getRegistration().getAcceleratorEntityType(), worldIn);
@@ -50,40 +49,34 @@ public final class TimeAcceleratorEntity extends Entity implements ITimeAccelera
         if (level().isClientSide()) return;
         ServerLevel level = (ServerLevel) level();
 
-        if (pos == null) {
-            this.remove(RemovalReason.KILLED);
+        if (targetedBlockPos == null && (targetedEntity == null || level.getEntity(targetedEntity) == null)) {
+            remove(RemovalReason.KILLED);
+            targetedEntity = null;
+            targetedBlockPos = null;
             return;
         }
 
-        BlockState blockState = level.getBlockState(pos);
-        if (blockState.is(ICommonTimeInABottleAPI.COMMON_API.get().getTagKey())) {
-            this.remove(RemovalReason.KILLED);
-            setRemainingTime(0);
-            setTimeRate(1);
-            return;
+        boolean isValid = true;
+
+        if (targetedEntity != null) {
+            // Tick Entity
+            isValid = EntityTickingTarget.tick(level, this);
+        } else {
+            // Tick Block!
+            isValid = BlockTickingTarget.tick(level, targetedBlockPos, this);
         }
 
-        BlockEntity targetBlockEntity = level.getBlockEntity(pos);
-        BlockEntityTicker<BlockEntity> targetTicker = null;
-        if (targetBlockEntity != null)
-            targetTicker = targetBlockEntity.getBlockState().getTicker(level, (BlockEntityType<BlockEntity>) targetBlockEntity.getType());
-
-        for (int i = 0; i < getTimeRate(); i++) {
-            if (targetTicker != null) {
-                targetTicker.tick(level, pos, blockState, targetBlockEntity);
-            } else if (blockState.isRandomlyTicking()) {
-                // if is random ticket block (grass block, sugar cane, wheat or sapling, ...)
-                blockState.randomTick(level, pos, level.getRandom());
-            } else {
-                this.remove(RemovalReason.KILLED);
-                break;
-            }
+        if (!isValid) {
+            remove(RemovalReason.KILLED);
+            targetedEntity = null;
+            targetedBlockPos = null;
+            return;
         }
 
         setRemainingTime(getRemainingTime() - 1);
 
         if (getRemainingTime() <= 0) {
-            this.remove(RemovalReason.KILLED);
+            remove(RemovalReason.KILLED);
         }
     }
 
@@ -106,14 +99,20 @@ public final class TimeAcceleratorEntity extends Entity implements ITimeAccelera
     protected void readAdditionalSaveData(ValueInput valueInput) {
         entityData.set(timeRate, valueInput.getIntOr(CommonConstants.NBTKeys.ENTITY_TIME_RATE, 1));
         setRemainingTime(valueInput.getIntOr(CommonConstants.NBTKeys.ENTITY_REMAINING_TIME, 10));
-        setBlockPos(valueInput.read(CommonConstants.NBTKeys.ENTITY_POS, BlockPos.CODEC).orElseGet(() -> new BlockPos(0, 0, 0)));
+        setTargetedBlockPos(valueInput.read(CommonConstants.NBTKeys.ENTITY_POS, BlockPos.CODEC).orElse(null));
+        setTargetedEntityUUID(valueInput.read(CommonConstants.NBTKeys.ENTITY_TARGETED_ENTITY, UUIDUtil.CODEC).orElse(null));
     }
 
     @Override
     protected void addAdditionalSaveData(ValueOutput valueOutput) {
         valueOutput.putInt(CommonConstants.NBTKeys.ENTITY_TIME_RATE, getTimeRate());
         valueOutput.putInt(CommonConstants.NBTKeys.ENTITY_REMAINING_TIME, getRemainingTime());
-        valueOutput.store(CommonConstants.NBTKeys.ENTITY_POS, BlockPos.CODEC, this.pos);
+        if (targetedBlockPos != null) {
+            valueOutput.store(CommonConstants.NBTKeys.ENTITY_POS, BlockPos.CODEC, this.targetedBlockPos);
+        }
+        if (targetedEntity != null) {
+            valueOutput.store(CommonConstants.NBTKeys.ENTITY_TARGETED_ENTITY, UUIDUtil.CODEC, this.targetedEntity);
+        }
     }
 
     @Override
@@ -122,9 +121,16 @@ public final class TimeAcceleratorEntity extends Entity implements ITimeAccelera
     }
 
     @Override
-    public void setBlockPos(BlockPos blockPos) {
-        this.pos = blockPos.immutable();
-        this.setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
+    public void setTargetedBlockPos(BlockPos blockPos) {
+        if (blockPos == null) return;
+        this.targetedBlockPos = blockPos.immutable();
+        this.setPos(this.targetedBlockPos.getX() + 0.5, this.targetedBlockPos.getY(), this.targetedBlockPos.getZ() + 0.5);
+    }
+
+    @Override
+    public void setTargetedEntityUUID(UUID uuid) {
+        if (uuid == null) return;
+        this.targetedEntity = uuid;
     }
 
     @Override
@@ -133,8 +139,13 @@ public final class TimeAcceleratorEntity extends Entity implements ITimeAccelera
     }
 
     @Override
-    public BlockPos getBlockPos() {
-        return pos;
+    public BlockPos getTargetedBlockPos() {
+        return targetedBlockPos;
+    }
+
+    @Override
+    public UUID getTargetedEntityUUID() {
+        return targetedEntity;
     }
 
     @Override
