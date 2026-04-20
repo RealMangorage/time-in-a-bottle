@@ -16,8 +16,6 @@ public final class EntityTickingTarget {
 
         Entity target = serverLevel.getEntity(uuid);
 
-        timeEntity.asEntity().setPos(target.getPosition(0f));
-
         // Entity gone? Yeah, kill the accelerator instead of pretending life is okay.
         if (target == null || !target.isAlive()) {
             timeEntity.asEntity().remove(Entity.RemovalReason.KILLED);
@@ -25,6 +23,8 @@ public final class EntityTickingTarget {
             timeEntity.setTimeRate(0);
             return false;
         }
+
+        timeEntity.asEntity().setPos(target.getX(), target.getY(), target.getZ());
 
         // Don’t tick yourself like an idiot
         if (target == timeEntity.asEntity()) {

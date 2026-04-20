@@ -106,22 +106,11 @@ public class TiabItem extends Item implements ITiabItem {
         boolean isCreativeMode = (player != null && player.isCreative()) || creative;
 
         // Find existing accelerator
-        Optional<? extends ITimeAcceleratorEntity> o;
-
-        if (targetEntity != null) {
-            // Prefer UUID lookup if possible
-            o = ICommonTimeInABottleAPI.COMMON_API.get()
-                    .getEntities(level, new AABB(targetEntity.blockPosition()))
-                    .stream()
-                    .filter(e -> targetEntity.getUUID().equals(e.getTargetedEntityUUID()))
-                    .findFirst();
-        } else {
-            o = ICommonTimeInABottleAPI.COMMON_API.get()
-                    .getEntities(level, new AABB(pos))
-                    .stream()
-                    .filter(e -> e.getTargetedEntityUUID() == null)
-                    .findFirst();
-        }
+        Optional<? extends ITimeAcceleratorEntity> o = ICommonTimeInABottleAPI.COMMON_API.get()
+                .getEntities(level, new AABB(pos))
+                .stream()
+                .filter(entity -> entity instanceof ITimeAcceleratorEntity)
+                .findAny();
 
         if (o.isPresent()) {
             ITimeAcceleratorEntity entityTA = o.get();
@@ -155,12 +144,14 @@ public class TiabItem extends Item implements ITiabItem {
             if (targetEntity != null) {
                 entityTA.setTargetedEntityUUID(targetEntity.getUUID());
                 entityTA.setTargetedBlockPos(null);
+                entityTA.asEntity().setPos(targetEntity.getX(), targetEntity.getY(), targetEntity.getZ());
             } else {
                 entityTA.setTargetedBlockPos(pos);
                 entityTA.setTargetedEntityUUID(null);
             }
 
             entityTA.setRemainingTime(getEachUseDuration());
+
 
             level.addFreshEntity(entityTA.asEntity());
         }

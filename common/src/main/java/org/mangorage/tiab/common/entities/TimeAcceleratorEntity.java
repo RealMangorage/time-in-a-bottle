@@ -43,7 +43,6 @@ public final class TimeAcceleratorEntity extends Entity implements ITimeAccelera
         builder.define(timeRemaining, 0);
     }
 
-    @SuppressWarnings("unchecked") // It's fine!
     @Override
     public void tick() {
         if (level().isClientSide()) return;
@@ -122,14 +121,20 @@ public final class TimeAcceleratorEntity extends Entity implements ITimeAccelera
 
     @Override
     public void setTargetedBlockPos(BlockPos blockPos) {
-        if (blockPos == null) return;
+        if (blockPos == null) {
+            this.targetedBlockPos = null;
+            return;
+        }
         this.targetedBlockPos = blockPos.immutable();
         this.setPos(this.targetedBlockPos.getX() + 0.5, this.targetedBlockPos.getY(), this.targetedBlockPos.getZ() + 0.5);
     }
 
     @Override
     public void setTargetedEntityUUID(UUID uuid) {
-        if (uuid == null) return;
+        if (uuid == null) {
+            this.uuid = null;
+            return;
+        }
         this.targetedEntity = uuid;
     }
 
