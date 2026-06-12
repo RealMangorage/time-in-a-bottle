@@ -10,6 +10,8 @@ import com.haoict.tiab.common.utils.Utils;
 import com.magorage.tiab.api.ITimeInABottleAPI;
 import com.magorage.tiab.api.TiabProvider;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
@@ -192,6 +194,24 @@ public final class TimeInABottleAPI implements ITimeInABottleAPI {
 
     @Override
     public InteractionResult accelerateBlock(ITimeInABottleAPI API, ItemStack stack, Player player, Level level, BlockPos pos) {
+        // If the requesting mod has had API access revoked via config, block the action
+        if (TiabConfig.COMMON.MODS_API.get().contains(API_MOD_ID)) {
+            return InteractionResult.FAIL;
+        }
+
+        // Also prevent accelerating blocks that belong to a mod listed in the API access blocklist
+        if (level != null && pos != null) {
+            var blockState = level.getBlockState(pos);
+            var block = blockState.getBlock();
+            ResourceLocation rl = ForgeRegistries.BLOCKS.getKey(block);
+            if (rl != null) {
+                String namespace = rl.getNamespace();
+                if (TiabConfig.COMMON.MODS_API.get().contains(namespace)) {
+                    return InteractionResult.FAIL;
+                }
+            }
+        }
+
         var api = REGISTRY.getRegistered(ITimeInABottleItemAPI.class);
         if (api != null) {
             return api.accelerateBlock(API, stack, player, level, pos);

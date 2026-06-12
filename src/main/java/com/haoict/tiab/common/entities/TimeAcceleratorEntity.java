@@ -20,6 +20,8 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.resources.ResourceLocation;
 
 public class TimeAcceleratorEntity extends Entity {
     private static final EntityDataAccessor<Integer> timeRate = SynchedEntityData.defineId(TimeAcceleratorEntity.class, EntityDataSerializers.INT);
@@ -55,6 +57,15 @@ public class TimeAcceleratorEntity extends Entity {
         }
 
         BlockState blockState = level.getBlockState(pos);
+        // If the block at this position belongs to a mod that is blocked in config, stop accelerating it
+        ResourceLocation rl = ForgeRegistries.BLOCKS.getKey(blockState.getBlock());
+        if (rl != null) {
+            String namespace = rl.getNamespace();
+            if (TiabConfig.COMMON.MODS_API.get().contains(namespace)) {
+                this.remove(RemovalReason.KILLED);
+                return;
+            }
+        }
         ServerLevel serverWorld = level.getServer().getLevel(level.dimension());
         BlockEntity targetTE = level.getBlockEntity(pos);
 
