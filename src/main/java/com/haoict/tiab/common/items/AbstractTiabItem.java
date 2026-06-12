@@ -4,10 +4,10 @@ import com.haoict.tiab.common.config.Constants;
 import com.haoict.tiab.common.config.TiabConfig;
 import com.haoict.tiab.common.entities.TimeAcceleratorEntity;
 import com.haoict.tiab.common.utils.PlaySound;
-import com.haoict.tiab.common.utils.SendMessage;
 import com.magorage.tiab.api.ITimeInABottleAPI;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -53,17 +53,35 @@ public abstract class AbstractTiabItem extends Item {
             return InteractionResult.FAIL;
         }
 
+        // Check if the block's owning mod is blocked from API access
+        ResourceLocation rl = ForgeRegistries.BLOCKS.getKey(blockState.getBlock());
+        if (rl != null) {
+            String namespace = rl.getNamespace();
+            if (TiabConfig.COMMON.MODS_API.get().contains(namespace)) {
+                return InteractionResult.FAIL;
+            }
+        }
+
         if (API.canUse()) {
             accelerateBlock(API, stack, player, level, pos);
         } else {
-            if (!API.callUseEvent(stack, player, level, pos) && player instanceof ServerPlayer serverPlayer)
-                SendMessage.sendStatusMessage(serverPlayer, "TIAB has had its API access revoked.");
-
+            // silently block when API usage is revoked
+            return InteractionResult.FAIL;
         }
         return InteractionResult.SUCCESS;
     }
 
     public InteractionResult accelerateBlock(ITimeInABottleAPI API, ItemStack stack, Player player, Level level, BlockPos pos) {
+        // Prevent acceleration if the block belongs to a blocked mod
+        var blockState = level.getBlockState(pos);
+        ResourceLocation rl = ForgeRegistries.BLOCKS.getKey(blockState.getBlock());
+        if (rl != null) {
+            String namespace = rl.getNamespace();
+            if (TiabConfig.COMMON.MODS_API.get().contains(namespace)) {
+                return InteractionResult.FAIL;
+            }
+        }
+
         int nextRate = 1;
         int energyRequired = API.getEnergyCost(nextRate);
         boolean isCreativeMode = player != null && player.isCreative();
