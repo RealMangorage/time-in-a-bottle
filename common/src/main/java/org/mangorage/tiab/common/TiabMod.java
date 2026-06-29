@@ -50,11 +50,14 @@ public abstract class TiabMod implements ICommonTimeInABottleAPI {
         // Default Search
         registerItemSearch(p -> {
             for (int i = 0; i < p.getInventory().getContainerSize(); i++) {
-                if (p.getInventory().getItem(i).getItem() instanceof ITiabItem) {
-                    return p.getInventory().getItem(i);
+                var stack = p.getInventory().getItem(i);
+                var isCreative = stack.getOrDefault(ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getCreativeComponent(), false);
+                if (isCreative) continue;
+                if (stack.getItem() instanceof ITiabItem) {
+                    return stack;
                 }
             }
-            return null;
+            return ItemStack.EMPTY;
         });
     }
 
@@ -86,7 +89,6 @@ public abstract class TiabMod implements ICommonTimeInABottleAPI {
     public @NotNull ItemStack findTiabItem(Player player) {
         for (ITiabItemSearch search : itemSearchList) {
             var item = search.findItem(player);
-            if (item == null) continue; // TODO: Remove in next major version. 26.1
             if (!item.isEmpty()) return item;
         }
         return ItemStack.EMPTY;
