@@ -11,5 +11,6 @@ public interface ITiabRegistration {
     ITiabItem getTiabItem();
     CreativeModeTab getCreativeTab();
     DataComponentType<IStoredTimeComponent> getStoredTime();
+    DataComponentType<Boolean> getCreativeComponent();
     EntityType<? extends Entity> getAcceleratorEntityType();
 }

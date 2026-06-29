@@ -2,10 +2,13 @@ package org.mangorage.tiab.forge;
 
 import net.minecraft.client.renderer.entity.EntityRenderers;
 
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -19,6 +22,7 @@ import org.mangorage.tiab.common.api.ITiabRegistration;
 import org.mangorage.tiab.common.CommonConstants;
 import org.mangorage.tiab.common.TiabMod;
 import org.mangorage.tiab.common.api.LoaderSide;
+import org.mangorage.tiab.common.api.impl.IStoredTimeComponent;
 import org.mangorage.tiab.common.client.renderer.TimeAcceleratorEntityRenderer;
 import org.mangorage.tiab.forge.core.Registration;
 
@@ -36,6 +40,8 @@ public final class ForgeTiabMod extends TiabMod {
         FMLClientSetupEvent.getBus(modGroup).addListener(this::onClient);
 
         TickEvent.PlayerTickEvent.Post.BUS.addListener(this::onPlayerTick);
+        ItemTooltipEvent.BUS.addListener(this::onTooltipEvent);
+
         RegisterCommandsEvent.BUS.addListener(this::onRegisterCommands);
 
         Pair<ForgeTiabConfig, ForgeConfigSpec> cfg = new ForgeConfigSpec.Builder()
@@ -56,6 +62,16 @@ public final class ForgeTiabMod extends TiabMod {
 
     public void onPlayerTick(TickEvent.PlayerTickEvent.Post event) {
         tickPlayer(event.player());
+    }
+
+    public void onTooltipEvent(ItemTooltipEvent event) {
+        event.getItemStack().addToTooltip(
+                ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getStoredTime(),
+                Item.TooltipContext.EMPTY,
+                TooltipDisplay.DEFAULT,
+                c -> event.getToolTip().add(c),
+                event.getFlags()
+        );
     }
 
     @Override

@@ -1,10 +1,14 @@
 package org.mangorage.tiab.fabric.core;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
@@ -33,27 +37,43 @@ public final class Registration {
     public static final DataComponentType<IStoredTimeComponent> STORED_TIME_COMPONENT = register(BuiltInRegistries.DATA_COMPONENT_TYPE, "stored_time", new DataComponentType.Builder<IStoredTimeComponent>()
             .persistent(StoredTimeComponent.DIRECT_CODEC)
             .networkSynchronized(StoredTimeComponent.DIRECT_STREAM_CODEC)
-            .build());
+            .cacheEncoding()
+            .build()
+    );
+
+    public static final DataComponentType<Boolean> CREATIVE_COMPONENT = register(BuiltInRegistries.DATA_COMPONENT_TYPE, "creative", new DataComponentType.Builder<Boolean>()
+            .persistent(Codec.BOOL)
+            .networkSynchronized(ByteBufCodecs.BOOL)
+            .build()
+    );
 
     public static final TiabItem TIAB_ITEM = register(BuiltInRegistries.ITEM, "time_in_a_bottle", new TiabItem(
             new Item.Properties()
                     .component(STORED_TIME_COMPONENT, new StoredTimeComponent(0, 0))
                     .component(DataComponents.MAX_STACK_SIZE, 1)
-                    .setId(CommonHelper.getResourceKey(Registries.ITEM, "time_in_a_bottle"))
-    ));
+                    .setId(CommonHelper.getResourceKey(Registries.ITEM, "time_in_a_bottle")))
+    );
 
     public static final EntityType<TimeAcceleratorEntity> ACCELERATOR_ENTITY = register(BuiltInRegistries.ENTITY_TYPE, "accelerator", EntityType.Builder.<TimeAcceleratorEntity>of(
-            (entityType, level) -> new TimeAcceleratorEntity(level),
-            MobCategory.MISC
-    ).sized(1.0f, 1.0f).build(CommonHelper.getResourceKey(Registries.ENTITY_TYPE, "accelerator")));
+            (entityType, level) -> new TimeAcceleratorEntity(level), MobCategory.MISC)
+            .sized(1.0f, 1.0f)
+            .build(CommonHelper.getResourceKey(Registries.ENTITY_TYPE, "accelerator"))
+    );
 
     public static final CreativeModeTab TIAB_CREATIVE_TAB = register(BuiltInRegistries.CREATIVE_MODE_TAB, "tiab", CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
             .icon(TIAB_ITEM::getDefaultInstance)
             .title(Translation.ITEM.componentTranslation())
             .displayItems((parameters, output) -> {
-                output.accept(TIAB_ITEM);
+                var regular = TIAB_ITEM.getDefaultInstance();
+                var creative = TIAB_ITEM.getDefaultInstance();
+
+                creative.set(CREATIVE_COMPONENT, true);
+
+                output.accept(regular);
+                output.accept(creative);
             })
-            .build());
+            .build()
+    );
 
     public static void register() {}
 
@@ -76,6 +96,11 @@ public final class Registration {
         @Override
         default EntityType<? extends Entity> getAcceleratorEntityType() {
             return ACCELERATOR_ENTITY;
+        }
+
+        @Override
+        default DataComponentType<Boolean> getCreativeComponent() {
+            return CREATIVE_COMPONENT;
         }
     }
 

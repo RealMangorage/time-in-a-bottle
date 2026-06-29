@@ -1,6 +1,8 @@
 package org.mangorage.tiab.neoforge;
 
 import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.ModLoadingContext;
@@ -10,6 +12,7 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.mangorage.tiab.common.TiabMod;
@@ -34,6 +37,7 @@ public final class NeoForgeTiabMod extends TiabMod {
         bus.addListener(this::onClient);
         NeoForge.EVENT_BUS.addListener(this::onRegisterCommands);
         NeoForge.EVENT_BUS.addListener(this::onPlayerTick);
+        NeoForge.EVENT_BUS.addListener(this::onTooltipEvent);
 
         Pair<NeoForgeTiabConfig, ModConfigSpec> cfg = new ModConfigSpec.Builder()
                 .configure(NeoForgeTiabConfig::new);
@@ -52,6 +56,16 @@ public final class NeoForgeTiabMod extends TiabMod {
 
     public void onPlayerTick(PlayerTickEvent.Post event) {
         tickPlayer(event.getEntity());
+    }
+
+    public void onTooltipEvent(ItemTooltipEvent event) {
+        event.getItemStack().addToTooltip(
+                ICommonTimeInABottleAPI.COMMON_API.get().getRegistration().getStoredTime(),
+                event.getContext(),
+                TooltipDisplay.DEFAULT,
+                c -> event.getToolTip().add(c),
+                event.getFlags()
+        );
     }
 
     @Override

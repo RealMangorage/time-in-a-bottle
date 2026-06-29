@@ -1,9 +1,11 @@
 package org.mangorage.tiab.neoforge.core;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
@@ -37,7 +39,16 @@ public final class Registration {
             () -> new DataComponentType.Builder<IStoredTimeComponent>()
                     .persistent(StoredTimeComponent.DIRECT_CODEC)
                     .networkSynchronized(StoredTimeComponent.DIRECT_STREAM_CODEC)
-                    .build());
+                    .build()
+    );
+
+    public static DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> CREATIVE_COMPONENT = DATA_COMPONENT_TYPES.register("creative",
+            () -> new DataComponentType.Builder<Boolean>()
+                    .persistent(Codec.BOOL)
+                    .networkSynchronized(ByteBufCodecs.BOOL)
+                    .build()
+    );
+
 
     public static final DeferredItem<TiabItem> TIAB_ITEM = ITEMS.register("time_in_a_bottle",
             () -> new TiabItem(
@@ -45,21 +56,30 @@ public final class Registration {
                             .component(STORED_TIME_COMPONENT.get(), new StoredTimeComponent(0, 0))
                             .component(DataComponents.MAX_STACK_SIZE, 1)
                             .setId(CommonHelper.getResourceKey(Registries.ITEM, "time_in_a_bottle"))
-            ));
+            )
+    );
 
     public static final DeferredHolder<EntityType<?>, EntityType<TimeAcceleratorEntity>> ACCELERATOR_ENTITY = ENTITY_TYPES.register("accelerator",
             () -> EntityType.Builder.<TimeAcceleratorEntity>of(
                     (entityType, level) -> new TimeAcceleratorEntity(level),
                     MobCategory.MISC
-            ).sized(1.0f, 1.0f).build(CommonHelper.getResourceKey(Registries.ENTITY_TYPE, "accelerator")));
+            ).sized(1.0f, 1.0f).build(CommonHelper.getResourceKey(Registries.ENTITY_TYPE, "accelerator"))
+    );
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> TIAB_CREATIVE_TAB = TABS.register("tiab", () -> CreativeModeTab.builder()
             .icon(() -> TIAB_ITEM.get().getDefaultInstance())
             .title(Translation.ITEM.componentTranslation())
             .displayItems((parameters, output) -> {
-                output.accept(TIAB_ITEM.get());
+                var regular = TIAB_ITEM.get().getDefaultInstance();
+                var creative = TIAB_ITEM.get().getDefaultInstance();
+
+                creative.set(CREATIVE_COMPONENT.get(), true);
+
+                output.accept(regular);
+                output.accept(creative);
             })
-            .build());
+            .build()
+    );
 
     public static void register(IEventBus modBus) {
         ITEMS.register(modBus);
@@ -82,6 +102,11 @@ public final class Registration {
         @Override
         default DataComponentType<IStoredTimeComponent> getStoredTime() {
             return STORED_TIME_COMPONENT.get();
+        }
+
+        @Override
+        default DataComponentType<Boolean> getCreativeComponent() {
+            return CREATIVE_COMPONENT.get();
         }
 
         @Override
