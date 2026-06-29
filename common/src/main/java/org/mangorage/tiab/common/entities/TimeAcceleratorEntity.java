@@ -70,9 +70,7 @@ public final class TimeAcceleratorEntity extends Entity implements ITimeAccelera
                 targetTicker.tick(level, pos, blockState, targetBlockEntity);
             } else if (blockState.isRandomlyTicking()) {
                 // if is random ticket block (grass block, sugar cane, wheat or sapling, ...)
-                if (level.getRandom().nextInt(1365) == 0) {
-                    blockState.randomTick(level, pos, level.getRandom());
-                }
+                blockState.randomTick(level, pos, level.getRandom());
             } else {
                 this.remove(RemovalReason.KILLED);
                 break;

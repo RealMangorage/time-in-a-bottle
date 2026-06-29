@@ -1,3 +1,4 @@
-# 7.0.1 (Fabric)
+# 7.1.0
 
-Fixed the mods mc version range json entry.
+Updated to 26.2.x
+Fixed Tick accelerating crops
