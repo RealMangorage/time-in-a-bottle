@@ -26,7 +26,7 @@ public record TextRendererHelper() {
         stack.pushPose();
         stack.translate(translateVector.x(), translateVector.y(), translateVector.z());
         stack.scale(0.02F, -0.02F, 0.02F);
-        stack.mulPose(rotate);
+        stack.rotate(rotate);
 
         collector.submitText(
                 stack,

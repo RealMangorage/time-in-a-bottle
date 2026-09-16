@@ -21,7 +21,7 @@ println("-------------------------------------------")
 
 publishMods {
     evaluationDependsOn(":fabric")
-    evaluationDependsOn(":forge")
+//    evaluationDependsOn(":forge")
     evaluationDependsOn(":neoforge")
 
     //file files("changelog.md").singleFile
@@ -59,11 +59,11 @@ publishMods {
     }
 
     // Forge specific options for CurseForge
-    curseforge("curseforgeForge") {
-        from cfOptions
-        file = project(":forge").tasks.jar.archiveFile
-        modLoaders.add("forge")
-    }
+//    curseforge("curseforgeForge") {
+//        from cfOptions
+//        file = project(":forge").tasks.jar.archiveFile
+//        modLoaders.add("forge")
+//    }
 
     // NeoForge specific options for CurseForge
     curseforge("curseforgeNeoForge") { nf ->
@@ -83,11 +83,11 @@ publishMods {
     }
 
     // Forge specific options for Modrinth
-    modrinth("modrinthForge") {
-        from mrOptions
-        file = project(":forge").tasks.jar.archiveFile
-        modLoaders.add("forge")
-    }
+//    modrinth("modrinthForge") {
+//        from mrOptions
+//        file = project(":forge").tasks.jar.archiveFile
+//        modLoaders.add("forge")
+//    }
 
     // NeoForge specific options for Modrinth
     modrinth("modrinthNeoForge") {

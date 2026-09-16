@@ -62,7 +62,7 @@ plugins {
 rootProject.name = 'Time in a bottle'
 include('common-api')
 include("common")
-include("forge")
+//include("forge")
 include("fabric")
 include("neoforge")
 
