@@ -49,7 +49,6 @@ tasks.getByName("publish").setGroup("modpublishing")
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            // Use project.tasks.getByName to reference the customJar task
             groupId = 'org.mangorage'
             artifactId = "tiab-common-api"
             version = "$version"
