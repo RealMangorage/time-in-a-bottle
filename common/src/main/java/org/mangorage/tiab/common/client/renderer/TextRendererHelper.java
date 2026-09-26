@@ -26,7 +26,7 @@ public record TextRendererHelper() {
         stack.pushPose();
         stack.translate(translateVector.x(), translateVector.y(), translateVector.z());
         stack.scale(0.02F, -0.02F, 0.02F);
-        stack.mulPose(rotate);
+        stack.last().rotate(rotate); // NOTE: 26.3 changes PoseStack#mulpose(Quaternionfc) -> PoseStack#rotate(Quaternionfc)
 
         collector.submitText(
                 stack,
