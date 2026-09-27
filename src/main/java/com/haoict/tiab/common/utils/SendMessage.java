@@ -5,6 +5,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class SendMessage {
     public static void sendStatusMessage(ServerPlayer serverPlayer, String message) {
+        if (serverPlayer == null) return;
         serverPlayer.displayClientMessage(Component.literal(message), true);
     }
 }

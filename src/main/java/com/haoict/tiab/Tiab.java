@@ -16,7 +16,11 @@ import com.magorage.tiab.api.ITimeInABottleAPI;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.commands.Commands;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -34,6 +38,8 @@ import static com.haoict.tiab.common.config.Constants.MOD_ID;
 
 @Mod(MOD_ID)
 public class Tiab {
+    public static final TagKey<Block> TIAB_UN_ACCELERATABLE = TagKey.create(Registries.BLOCK, new ResourceLocation(MOD_ID, "un_acceleratable"));
+
     private static final TiabProvider API_PROVIDER = new TiabProvider((api) -> {
         TiabCommands.setAPI(api);
         Utils.setAPI(api);

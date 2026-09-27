@@ -1,5 +1,6 @@
 package com.haoict.tiab.common.items;
 
+import com.haoict.tiab.Tiab;
 import com.haoict.tiab.common.config.Constants;
 import com.haoict.tiab.common.config.TiabConfig;
 import com.haoict.tiab.common.entities.TimeAcceleratorEntity;
@@ -47,17 +48,22 @@ public abstract class AbstractTiabItem extends Item {
         BlockState blockState = level.getBlockState(pos);
         BlockEntity targetTE = level.getBlockEntity(pos);
         ItemStack stack = context.getItemInHand();
-        Player player = context.getPlayer();
+        ServerPlayer player = (ServerPlayer) context.getPlayer();
 
         if (targetTE == null && !blockState.isRandomlyTicking()) {
+            return InteractionResult.FAIL;
+        }
+
+        if (blockState.is(Tiab.TIAB_UN_ACCELERATABLE)) {
+            SendMessage.sendStatusMessage(player, "Block Blacklisted from being tick accelerated!");
             return InteractionResult.FAIL;
         }
 
         if (API.canUse()) {
             accelerateBlock(API, stack, player, level, pos);
         } else {
-            if (!API.callUseEvent(stack, player, level, pos) && player instanceof ServerPlayer serverPlayer)
-                SendMessage.sendStatusMessage(serverPlayer, "TIAB has had its API access revoked.");
+            if (!API.callUseEvent(stack, player, level, pos))
+                SendMessage.sendStatusMessage(player, "TIAB has had its API access revoked.");
 
         }
         return InteractionResult.SUCCESS;
